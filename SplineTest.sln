@@ -1,0 +1,11 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 16
+VisualStudioVersion = 16.0.0.0
+MinimumVisualStudioVersion = 16.0.0.0
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplineTest.Windows", "SplineTest.Windows\SplineTest.Windows.csproj", "{6DB5ABB0-74E9-4722-B6AA-092FFE7751A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplineTest", "SplineTest\SplineTest.csproj", "{B4653E48-F60F-4907-91FC-D04B9250D5B4}"
+EndProject
+Global
+EndGlobal
