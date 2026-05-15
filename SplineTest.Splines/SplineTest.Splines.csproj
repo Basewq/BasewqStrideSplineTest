@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Stride.Engine" Version="4.3.0.2507" />
+    <PackageReference Include="Stride.Physics" Version="4.3.0.2507" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="SplineTest.GameStudioExt" />
+  </ItemGroup>
+</Project>

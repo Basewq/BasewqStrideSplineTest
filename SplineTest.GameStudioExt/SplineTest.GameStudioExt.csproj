@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Stride.GameStudio" Version="4.3.0.2507" GeneratePathProperty="true" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SplineTest.Splines\SplineTest.Splines.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Gizmos\*.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="AssetEditors\Gizmos\GizmoResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GizmoResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="AssetEditors\Gizmos\GizmoResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>GizmoResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

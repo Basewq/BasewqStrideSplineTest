@@ -1,0 +1,35 @@
+!SceneAsset
+Id: 96045505-0bbd-4970-a2ac-b29828075af1
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+ChildrenIds: []
+Offset: {X: 0.0, Y: 0.0, Z: 0.0}
+Hierarchy:
+    RootParts:
+        - ref!! f88b34a6-6df7-45e9-a92f-7e47b06dc6c4
+    Parts:
+        -   Entity:
+                Id: f88b34a6-6df7-45e9-a92f-7e47b06dc6c4
+                Name: SplineEntity
+                Components:
+                    c879b399b45079f223e065dedbc50150: !TransformComponent
+                        Id: c6f2475e-7b99-420c-bcfb-012829e769c9
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    fb3a95f8a603d97348ac4160cbf5d9f3: !SplineTest.Splines.Components.SplineComponent,SplineTest.Splines
+                        Id: 51d9b3e7-ba2a-437d-af56-40cc508797ba
+                        Control:
+                            EditSplineState: Disabled
+                        Spline:
+                            IsClosedLoop: false
+                            SplineNodes:
+                                be5f09b0ceae61af8f3d6bdc57d8b4c4:
+                                    Position: {X: -0.48429802, Y: 0.0, Z: -1.4768376}
+                                    TangentInPosition: {X: 1.3053664, Y: 0.0, Z: -1.4185779}
+                                    TangentOutPosition: {X: -2.2739623, Y: 0.0, Z: -1.5350974}
+                                2b61846d47beb96f5953d1101e5b78d0:
+                                    Position: {X: -1.9889586, Y: 0.0, Z: 2.895637}
+                                    TangentInPosition: {X: -1.9760728, Y: 0.0, Z: 1.7769408}
+                                    TangentOutPosition: {X: -2.0018444, Y: 0.0, Z: 4.0143332}
