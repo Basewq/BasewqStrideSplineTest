@@ -22,6 +22,7 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
     private const int SegmentLineTessellation = 16;
     private const float SegmentLineRadius = 0.025f;
     private const float GizmoDefaultSize = 48; // the default size of the gizmo on the screen in pixels.
+    private static readonly Color BoundingBoxColor = Color.Orange;
     private static readonly Color SegmentLineColor = Color.Aqua;
 
     internal const RenderGroup GizmoRenderGroup = DefaultGroup;
@@ -37,10 +38,15 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
     private SplineNodeGizmo mouseHoverNodeGizmo = null;
     private int mouseHoverNodeIndex = -1;
 
+    private Material boundingBoxMaterial;
     private Material segmentLineMaterial;
     private Entity splineVisualizerRootEntity;
+    private Entity splineVisualizerBoundingBoxEntity;
+    private ModelComponent splineVisualizerBoundingBoxModelComponent;
     private readonly List<SplineVisualizerSegmentEntityData> splineVisualizerSegmentEntityDataList = [];
     private readonly List<SplinePlacement> splinePlacements = [];
+
+    private readonly List<IDisposable> disposables = [];
 
     internal ISpline<SplineNode> Spline => Component.Spline;
 
@@ -59,6 +65,7 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
     {
         base.Initialize(services, editorScene);
 
+        boundingBoxMaterial = GizmoEmissiveColorMaterial.Create(GraphicsDevice, BoundingBoxColor, 0.75f);
         segmentLineMaterial = GizmoEmissiveColorMaterial.Create(GraphicsDevice, SegmentLineColor, 0.75f);
 
         splineEditorGizmoService = Game.EditorServices.Get<EditorGameSplineEditorGizmoService>();
@@ -89,6 +96,12 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
             data.GeometricPrimitive.Dispose();
         }
         splineVisualizerSegmentEntityDataList.Clear();
+
+        foreach (var disp in disposables)
+        {
+            disp.Dispose();
+        }
+        disposables.Clear();
 
         base.Destroy();
     }
@@ -144,10 +157,38 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
         {
             splineVisualizerRootEntity = new Entity("SplineVisualizer");
             splineVisualizerRootEntity.SetParent(GizmoRootEntity);
+
+            // Add bounding box entity
+            var boundingBoxMesh = GizmoBoundingBoxMesh.CreateMesh(GraphicsDevice);
+            disposables.Add(boundingBoxMesh);
+            var boundingBoxMeshDraw = boundingBoxMesh.ToMeshDraw();
+            splineVisualizerBoundingBoxModelComponent = new ModelComponent
+            {
+                Enabled = true,
+                Model = new Model { boundingBoxMaterial, new Mesh { Draw = boundingBoxMeshDraw } },
+                RenderGroup = RenderGroup,
+                IsShadowCaster = false,
+            };
+            splineVisualizerBoundingBoxEntity = new Entity("SplineBoundingBox")
+            {
+                splineVisualizerBoundingBoxModelComponent
+            };
+            splineVisualizerBoundingBoxEntity.SetParent(splineVisualizerRootEntity);
         }
 
         splinePlacements.Clear();
         Component.Spline.CollectSplinePlacements(splinePlacements);
+
+        // Bounding box
+        splineVisualizerBoundingBoxModelComponent.Enabled = splinePlacements.Count > 1;
+        if (splineVisualizerBoundingBoxModelComponent.Enabled)
+        {
+            var boundingBox = Component.Spline.CalculateBoundingBox();
+            var boxLengths = boundingBox.Maximum - boundingBox.Minimum;
+            splineVisualizerBoundingBoxEntity.Transform.Scale = boxLengths;
+            splineVisualizerBoundingBoxEntity.Transform.Position = boundingBox.Center;
+        }
+
         int splineSegmentCount = splinePlacements.Count - 1;
         if (Component.Spline.IsClosedLoop)
         {

@@ -60,7 +60,7 @@ public class SplineNodeGizmo : GizmoBase
     private TangentEntityData tangentInEntityData;
     private TangentEntityData tangentOutEntityData;
 
-    private List<GeometricPrimitive> disposableGeometricPrimitives = [];
+    private readonly List<GeometricPrimitive> disposableGeometricPrimitives = [];
 
     /// <summary>
     /// Gets the gizmo default scale in ratio of screen height ( 1 => full screen vertically )

@@ -208,6 +208,24 @@ public class BezierSpline : ISpline<SplineNode> /*, ICollection<SplineNode>*/
         }
     }
 
+    public BoundingBox CalculateBoundingBox()
+    {
+        BuildLookupTable();
+
+        var min = new Vector3(float.MaxValue);
+        var max = new Vector3(float.MinValue);
+
+        var curveTToPositionLookupTableSpan = CollectionsMarshal.AsSpan(curveTToPositionLookupTable);
+        for (int i = 0; i < curveTToPositionLookupTableSpan.Length; i++)
+        {
+            ref var tableValue = ref curveTToPositionLookupTableSpan[i];
+            Vector3.Min(ref min, ref tableValue.Position, out min);
+            Vector3.Max(ref max, ref tableValue.Position, out max);
+        }
+
+        return new BoundingBox(min, max);
+    }
+
     public SplinePlacement GetPlacementFromSplineDistance(float splineDistance)
     {
         BuildLookupTable();
@@ -376,30 +394,6 @@ public class BezierSpline : ISpline<SplineNode> /*, ICollection<SplineNode>*/
     //IEnumerator<SplineNode> IEnumerable<SplineNode>.GetEnumerator() => GetEnumerator();
 
     //IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-    //private void UpdateBoundingBox()
-    //{
-    //    var allCurvePointsPositions = new List<Vector3>();
-    //    for (int i = 0; i < SplineNodes.Count; i++)
-    //    {
-    //        if (!IsClosedLoop && i == SplineNodes.Count - 1)
-    //        {
-    //            break;
-    //        }
-
-    //        var positions = SplineNodes[i].GetBezierPoints();
-    //        if (positions != null)
-    //        {
-    //            for (int j = 0; j < positions.Length; j++)
-    //            {
-    //                if (positions[j] != null)
-    //                    allCurvePointsPositions.Add(positions[j].Position);
-    //            }
-    //        }
-    //    }
-    //    BoundingBox.FromPoints(allCurvePointsPositions.ToArray(), out var NewBoundingBox);
-    //    BoundingBox = NewBoundingBox;
-    //}
 
     private void SetField<T>(ref T backingField, T newValue)
     {
