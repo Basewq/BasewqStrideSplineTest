@@ -138,7 +138,7 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
 
                 if (nodeTangentTransformGizmo.IsEnabled && activeNodeIndex < ActiveSplineComponent.Spline.Count)
                 {
-                    var splinePosition = ActiveSplineComponent.Entity.Transform.Position;
+                    var splinePosition = ActiveSplineComponent.Entity.Transform.WorldMatrix.TranslationVector;
 
                     var node = ActiveSplineComponent.Spline[activeNodeIndex];
                     if (refreshAnchorPosition)
@@ -235,7 +235,7 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
         {
             nodeTangentTransformGizmo.IsEnabled = true;
 
-            var splinePosition = ActiveSplineComponent.Entity.Transform.Position;
+            var splinePosition = ActiveSplineComponent.Entity.Transform.WorldMatrix.TranslationVector;
             activeNodeTangentAnchorEntity.Transform.Position = splinePosition;
 
             var node = ActiveSplineComponent.Spline[activeNodeIndex];
