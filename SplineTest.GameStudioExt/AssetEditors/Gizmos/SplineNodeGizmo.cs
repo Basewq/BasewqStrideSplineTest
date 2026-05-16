@@ -106,7 +106,7 @@ public class SplineNodeGizmo : GizmoBase
         disposableGeometricPrimitives.Add(handleMesh);
         var handleMeshDraw = handleMesh.ToMeshDraw();
         const float LineLength = 1;     // The line's true length will be changed via the entity's scale
-        var lineMesh = GeometricPrimitive.Cylinder.New(GraphicsDevice, LineLength, LineRadius, LineTessellation);
+        var lineMesh = GizmoModelHelper.CreateLine(GraphicsDevice, LineLength, LineRadius, LineTessellation);
         disposableGeometricPrimitives.Add(lineMesh);
         var lineMeshDraw = lineMesh.ToMeshDraw();
         BuildTangentGizmoEntity("TangentIn", tangentInMaterial, tangentLineMaterial, handleMeshDraw, lineMeshDraw, out tangentInEntityData);
@@ -118,11 +118,10 @@ public class SplineNodeGizmo : GizmoBase
     private void BuildTangentGizmoEntity(string name, Material handleMaterial, Material lineMaterial, MeshDraw handleMeshDraw, MeshDraw lineMeshDraw, out TangentEntityData data)
     {
         data = new();
-        // Four entities will be used to represent the tangent for easier management:
+        // Three entities will be used to represent the tangent for easier management:
         // - TangentInRoot/TangentOutRoot: The 'container' entity for the rest of the entities.
         // - TangentInHandle/TangentOutHandle: The handle of the tangent.
-        // - TangentInLineRoot/TangentOutLineRoot: The root of the tangent line to rotate so the line points in the right direction.
-        // - TangentInLineModel/TangentOutLineModel: The line model entity where adjusting the scale will make the correct line length.
+        // - TangentInLineModel/TangentOutLineModel: The line model entity used to show the node to handle connection.
         data.RootEntity = new Entity($"{name}_Root_{splineNodeIndex}");
         // The handle model
         data.HandleModelComponent = new ModelComponent
@@ -135,9 +134,6 @@ public class SplineNodeGizmo : GizmoBase
         data.HandleEntity = new Entity($"SplineNode_{name}_Handle_{splineNodeIndex}") { data.HandleModelComponent };
         data.HandleEntity.SetParent(data.RootEntity);
 
-        // The line root (handles rotation and overall scale)
-        data.LineRootEntity = new Entity($"SplineNode_{name}_LineRoot_{splineNodeIndex}");
-        data.LineRootEntity.SetParent(data.RootEntity);
         // The line model
         data.LineModelComponent = new ModelComponent
         {
@@ -146,10 +142,11 @@ public class SplineNodeGizmo : GizmoBase
             RenderGroup = RenderGroup,
             IsShadowCaster = false,
         };
-        data.LineModelEntity = new Entity($"{name}_LineModel_{splineNodeIndex}") { data.LineModelComponent };
-        // Don't need to set the line's position here, as this will be changed immediately in the first Update call.
-        data.LineModelEntity.Transform.Rotation = Quaternion.RotationX(MathUtil.PiOverTwo);  // Line mesh sits on XZ plane pointing to +Z
-        data.LineModelEntity.SetParent(data.LineRootEntity);
+        data.LineModelEntity = new Entity($"SplineNode_{name}_LineModel_{splineNodeIndex}")
+        {
+            data.LineModelComponent
+        };
+        data.LineModelEntity.SetParent(data.RootEntity);
 
         // Attach to root gizmo entity
         data.RootEntity.SetParent(nodeRootGizmoEntity);
@@ -281,14 +278,10 @@ public class SplineNodeGizmo : GizmoBase
         // Update handle position
         tangentEntityData.HandleEntity.Transform.Position = tangentHandleLocalPosition;
         tangentEntityData.HandleEntity.Transform.Scale = new Vector3(targetedScale, targetedScale * HandleCubeHeightScale, targetedScale);
-        // Make line point in the correct direction and rescale the overall mesh
+        // Make line point in the correct direction and rescale the mesh
         var lineRotation = Quaternion.LookRotation(forward: Vector3.Normalize(tangentHandleLocalPosition), upVec);
-        tangentEntityData.LineRootEntity.Transform.Rotation = lineRotation;
-        tangentEntityData.LineRootEntity.Transform.Scale = new Vector3(targetedScale);
-        // Adjust the length of the line and re-center
-        float rescaledLineLength = nodeToHandleLength / targetedScale;
-        tangentEntityData.LineModelEntity.Transform.Position.Z = rescaledLineLength * 0.5f;   // The model's center point
-        tangentEntityData.LineModelEntity.Transform.Scale = new Vector3(1, rescaledLineLength, 1);
+        tangentEntityData.LineModelEntity.Transform.Rotation = lineRotation;
+        tangentEntityData.LineModelEntity.Transform.Scale = new Vector3(targetedScale, targetedScale, nodeToHandleLength);
     }
 
     internal bool TryRaycastOnHandle(Ray clickRay, SplineNodeRaycastFilterFlags raycastFilterFlags, ref float minHitDistance, ref SplineNodeEditingSelectionType newSelection)
@@ -357,7 +350,6 @@ public class SplineNodeGizmo : GizmoBase
         public Entity HandleEntity;
         public ModelComponent HandleModelComponent;
 
-        public Entity LineRootEntity;
         public Entity LineModelEntity;
         public ModelComponent LineModelComponent;
     }

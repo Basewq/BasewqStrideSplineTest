@@ -84,8 +84,8 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
 
         foreach (var data in splineVisualizerSegmentEntityDataList)
         {
-            data.RootEntity.SetParent(null);
-            data.RootEntity.Scene = null;
+            data.LineModelEntity.SetParent(null);
+            data.LineModelEntity.Scene = null;
             data.GeometricPrimitive.Dispose();
         }
         splineVisualizerSegmentEntityDataList.Clear();
@@ -164,32 +164,9 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
             {
                 int splineSegmentIndex = segmentStartIndex + i;
 
-                // The line root (handles rotation and overall scale)
-                var rootSegmentEntity = new Entity($"SplineSegment_Root_{splineSegmentIndex}");
-                // Make line point in the correct direction
-                int nextSegmentIndex = splineSegmentIndex + 1;
-                if (nextSegmentIndex >= splinePlacements.Count)
-                {
-                    nextSegmentIndex = 0;   // Loop back
-                }
-                var nextSegmentPos = splinePlacements[nextSegmentIndex].Position;
-                var currentSegmentPos = splinePlacements[splineSegmentIndex].Position;
-                var segmentForward = Vector3.Normalize(nextSegmentPos - currentSegmentPos);
-                Quaternion lineRotation;
-                if (MathUtil.IsZero(segmentForward.LengthSquared()))
-                {
-                    lineRotation = Quaternion.Identity;
-                }
-                else
-                {
-                    var upVec = Vector3.UnitY;  // TODO?
-                    lineRotation = Quaternion.LookRotation(forward: segmentForward, upVec);
-                }
-                rootSegmentEntity.Transform.Position = currentSegmentPos;
-                rootSegmentEntity.Transform.Rotation = lineRotation;
                 // The line model
                 const float LineLength = 1;     // The line's true length will be changed via the entity's scale
-                var lineMesh = GeometricPrimitive.Cylinder.New(GraphicsDevice, LineLength, SegmentLineRadius, SegmentLineTessellation);
+                var lineMesh = GizmoModelHelper.CreateLine(GraphicsDevice, LineLength, SegmentLineRadius, SegmentLineTessellation);
                 var lineMeshDraw = lineMesh.ToMeshDraw();
                 var lineModelComponent = new ModelComponent
                 {
@@ -198,19 +175,19 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
                     RenderGroup = RenderGroup,
                     IsShadowCaster = false,
                 };
-                var lineModelEntity = new Entity($"SplineSegment_LineModel_{splineSegmentIndex}") { lineModelComponent };
-                // Don't need to set the line's position here, as this will be changed immediately in the first Update call.
-                lineModelEntity.Transform.Rotation = Quaternion.RotationX(MathUtil.PiOverTwo);  // Line mesh sits on XZ plane pointing to +Z
-                lineModelEntity.SetParent(rootSegmentEntity);
+                var lineModelEntity = new Entity($"SplineSegment_LineModel_{splineSegmentIndex}")
+                {
+                    lineModelComponent
+                };
+                // Don't need to update line position/rotation here, wait until UpdateSplineVisualizerTransformation is called
 
                 // Attach to root visualizer entity
-                rootSegmentEntity.SetParent(splineVisualizerRootEntity);
+                lineModelEntity.SetParent(splineVisualizerRootEntity);
 
                 var segmentEntityData = new SplineVisualizerSegmentEntityData
                 {
-                    RootEntity = rootSegmentEntity,
-                    ModelEntity = lineModelEntity,
-                    ModelComponent = lineModelComponent,
+                    LineModelEntity = lineModelEntity,
+                    LineModelComponent = lineModelComponent,
                     GeometricPrimitive = lineMesh,
                 };
                 splineVisualizerSegmentEntityDataList.Add(segmentEntityData);
@@ -223,8 +200,8 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
             for (int i = splineVisualizerSegmentEntityDataList.Count - 1; i >= segmentEndIndex; i--)
             {
                 var data = splineVisualizerSegmentEntityDataList[i];
-                data.RootEntity.SetParent(null);
-                data.RootEntity.Scene = null;
+                data.LineModelEntity.SetParent(null);
+                data.LineModelEntity.Scene = null;
                 data.GeometricPrimitive.Dispose();
 
                 splineVisualizerSegmentEntityDataList.RemoveAt(i);
@@ -443,14 +420,10 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
                 var upVec = Vector3.UnitY;  // TODO?
                 lineRotation = Quaternion.LookRotation(forward: Vector3.Normalize(segmentToNextSegment), upVec);
             }
-            data.RootEntity.Transform.Position = segmentStartPos;
-            data.RootEntity.Transform.Rotation = lineRotation;
-            data.RootEntity.Transform.Scale = new Vector3(targetedScale);
-            // Adjust the length of the line and re-center
+            data.LineModelEntity.Transform.Position = segmentStartPos;
+            data.LineModelEntity.Transform.Rotation = lineRotation;
             float lineLength = segmentToNextSegment.Length();
-            float rescaledLineLength = lineLength / targetedScale;
-            data.ModelEntity.Transform.Position.Z = rescaledLineLength * 0.5f;   // The model's center point
-            data.ModelEntity.Transform.Scale = new Vector3(1, rescaledLineLength, 1);
+            data.LineModelEntity.Transform.Scale = new Vector3(targetedScale, targetedScale, lineLength);
         }
 
         Vector3 GetNextSegmentPosition(int segmentIndex)
@@ -480,9 +453,8 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
 
     private struct SplineVisualizerSegmentEntityData
     {
-        public Entity RootEntity;
-        public Entity ModelEntity;
-        public ModelComponent ModelComponent;
+        public Entity LineModelEntity;
+        public ModelComponent LineModelComponent;
         public GeometricPrimitive GeometricPrimitive;
     }
 }
