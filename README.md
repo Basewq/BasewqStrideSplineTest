@@ -7,6 +7,11 @@ The purpose of this project examine the problems with editor integration, as of 
 Please refer to [Editor Integration Issues](EditorIntegrationIssues.md) for outstanding issues.
 
 ---
+### Demonstration
+
+https://github.com/user-attachments/assets/201bc08c-eda5-4654-afd1-1f225d132b62
+
+---
 ### Project Structure
 
 The projects are linked in the following way:
