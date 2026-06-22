@@ -50,7 +50,7 @@ Editor controls within the scene:
   - [SplineNodeGizmo.cs](SplineTest.GameStudioExt/AssetEditors/Gizmos/SplineNodeGizmo.cs): Handles the visual of node points and tangent handles when editing the node.
 - `SplineTest.Splines`
   - [SplineComponent.cs](SplineTest.Splines/Components/SplineComponent.cs): The spline properties as it appears in the editor.
-  - [BezierSpline.cs](SplineTest.Splines/Splines/Models/BezierSpline.cs): The actual implementation of the spline. Can be used independently.
+  - [Spline.cs](SplineTest.Splines/Splines/Models/Spline.cs): The actual implementation of the spline. Can be used independently.
 
 ---
 ## Credits/Thanks

@@ -22,7 +22,7 @@ public class SplineRenderSettings
     public event SplineRenderSettingsChangedHandler RenderSettingsChanged;
 
     /// <summary>
-    /// Display spline curve mesh
+    /// Display spline segment mesh
     /// </summary>
     [Display(10, "Show segments")]
     public bool ShowSegments
@@ -82,7 +82,7 @@ public class SplineRenderSettings
     }
 
     /// <summary>
-    /// The render group used to when displaying the curve segment, node and bounding box.
+    /// The render group used to when displaying the spline segments, nodes and bounding boxes.
     /// </summary>
     public RenderGroup RenderGroup { get; set; } = RenderGroup.Group4;
 

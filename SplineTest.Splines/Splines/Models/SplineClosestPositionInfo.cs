@@ -17,5 +17,5 @@ public readonly struct SplineClosestPositionInfo
     /// <summary>
     /// T value in range [0...1] between <see cref="SplineNodeAIndex"/> and <see cref="SplineNodeBIndex"/>.
     /// </summary>
-    public readonly float CurveT { get; init; }
+    public readonly float LocalT { get; init; }
 }

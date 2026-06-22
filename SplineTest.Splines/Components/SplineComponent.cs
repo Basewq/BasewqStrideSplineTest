@@ -32,10 +32,10 @@ public class SplineComponent : EntityComponent
     [Display("Editor control", Expand = ExpandRule.Once)]
     public EditSplineControl Control = new();
 
-    private BezierSpline spline;
+    private Spline spline;
     [DataMember(10)]
     [Display(10, Expand = ExpandRule.Once)]
-    public BezierSpline Spline
+    public Spline Spline
     {
         get => spline;
         internal set
@@ -53,7 +53,7 @@ public class SplineComponent : EntityComponent
         SplinePropertyChanged?.Invoke(this);
     }
 
-    private void OnSplineNodeCollectionChanged(object sender, ref SplineNodeCollectionChangedEventArgs<SplineNode> e)
+    private void OnSplineNodeCollectionChanged(object sender, ref SplineNodeCollectionChangedEventArgs e)
     {
         SplineNodeChanged?.Invoke(this);
     }

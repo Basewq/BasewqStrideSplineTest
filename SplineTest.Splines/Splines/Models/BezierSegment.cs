@@ -5,7 +5,7 @@ using Stride.Core.Mathematics;
 
 namespace Stride.Engine.Splines.Models;
 
-public struct BezierCurve
+public struct BezierSegment
 {
     /// <summary>
     /// The first control point.
@@ -28,11 +28,11 @@ public struct BezierCurve
     public readonly Vector3 StartPosition => P0;
     public readonly Vector3 EndPosition => P3;
 
-    public BezierCurve(Vector3 p0, Vector3 p3)
+    public BezierSegment(Vector3 p0, Vector3 p3)
         : this(p0, p0, p3, p3)
     { }
 
-    public BezierCurve(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
+    public BezierSegment(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
     {
         P0 = p0;
         P1 = p1;
@@ -40,7 +40,7 @@ public struct BezierCurve
         P3 = p3;
     }
 
-    public BezierCurve(in SplineNode node1, in SplineNode node2)
+    public BezierSegment(in SplineNode node1, in SplineNode node2)
     {
         P0 = node1.Position;
         P1 = node1.TangentOutPosition;
@@ -67,7 +67,7 @@ public struct BezierCurve
         const int SampleSizePerCurve = 10;
         float dt = 1f / SampleSizePerCurve;
 
-        // First position is always just the initial value of the curve
+        // First position is always just the initial value of the segment
         splinePositionToTraverse.Add(P0);
 
         for (int i = 1; i < SampleSizePerCurve; i++)

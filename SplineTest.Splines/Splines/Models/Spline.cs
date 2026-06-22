@@ -9,24 +9,32 @@ using System.Runtime.InteropServices;
 
 namespace Stride.Engine.Splines.Models;
 
+public delegate void SplinePropertyChangedEventHandler(object sender);
+
+public delegate void SplineNodeEventHandler<TEventArgs>(object sender, ref TEventArgs e);
+
 [DataContract]
 [Display(Expand = ExpandRule.Once)]
-public class BezierSpline : ISpline<SplineNode> /*, ICollection<SplineNode>*/
+public class Spline
 {
-    private readonly List<BezierCurve> splineCurves = [];   // The start pos of the curve is the same as the node on the same index in SplineNodes list.
-    private readonly List<CurveTToPositionTable> curveTToPositionLookupTable = [];
+    private readonly List<BezierSegment> splineSegments = [];   // The start pos of the segment is the same as the node on the same index in SplineNodes list.
+    private readonly List<SegmentTToPositionTable> segmentTToPositionLookupTable = [];
     private bool isRebuildLookupTableRequired;
 
     public event SplinePropertyChangedEventHandler SplinePropertyChanged;
-    public event SplineNodeEventHandler<SplineNodeCollectionChangedEventArgs<SplineNode>> NodeCollectionChanged;
+    public event SplineNodeEventHandler<SplineNodeCollectionChangedEventArgs> NodeCollectionChanged;
 
     private bool isClosedLoop;
+    /// <summary>
+    /// Gets or sets a value indicating whether the last spline node connects back to the first spline node to form a loop.
+    /// Default is <c>false</c>.
+    /// </summary>
+    /// <remarks>
+    /// This is only applicable where there are at least two spline nodes.
+    /// </remarks>
     public bool IsClosedLoop
     {
-        get
-        {
-            return isClosedLoop;
-        }
+        get => isClosedLoop;
         set
         {
             isRebuildLookupTableRequired = true;
@@ -53,7 +61,7 @@ public class BezierSpline : ISpline<SplineNode> /*, ICollection<SplineNode>*/
         isRebuildLookupTableRequired = true;
         SplineNode newItem = (SplineNode?)e.Item  ?? default;
         SplineNode oldItem = (SplineNode?)e.OldItem ?? default;
-        var eventArgs = new SplineNodeCollectionChangedEventArgs<SplineNode>(e.Action, newItem, oldItem, index: e.Index, e.CollectionChanged);
+        var eventArgs = new SplineNodeCollectionChangedEventArgs(e.Action, newItem, oldItem, index: e.Index, e.CollectionChanged);
         NodeCollectionChanged?.Invoke(this, ref eventArgs);
     }
 
@@ -69,11 +77,14 @@ public class BezierSpline : ISpline<SplineNode> /*, ICollection<SplineNode>*/
         }
     }
 
+    /// <summary>
+    /// Gets the number of nodes in this spline.
+    /// </summary>
     public int Count => SplineNodes.Count;
 
     ////public bool IsReadOnly => false;
 
-    public BezierSpline()
+    public Spline()
     {
         SplineNodes = [];
     }
@@ -129,14 +140,18 @@ public class BezierSpline : ISpline<SplineNode> /*, ICollection<SplineNode>*/
     }
 
     /// <summary>
-    /// The total distance of the spline curve.
+    /// Returns the total distance over the entire spline.
     /// </summary>
     public float GetTotalDistance()
     {
         BuildLookupTable();
-        return curveTToPositionLookupTable[curveTToPositionLookupTable.Count - 1].TotalSplineDistance;
+        return segmentTToPositionLookupTable[segmentTToPositionLookupTable.Count - 1].TotalSplineDistance;
     }
 
+    /// <summary>
+    /// Returns the position on the spline segment closest to <paramref name="position"/>.
+    /// </summary>
+    /// <param name="position">Position in the spline's local space.</param>
     public SplineClosestPositionInfo GetClosestPointOnSpline(Vector3 position)
     {
         if (SplineNodes.Count == 0)
@@ -147,14 +162,14 @@ public class BezierSpline : ISpline<SplineNode> /*, ICollection<SplineNode>*/
 
         int minNodeIndex = -1;
         Vector3 minPointOnSpline = Vector3.Zero;
-        float minPointCurveT = 0;
+        float minPointLocalT = 0;
         float minDistSqrd = float.MaxValue;
-        // TODO Calculate closest distance from actual curve equation instead of linear approx
-        var curveTToPositionLookupTableSpan = CollectionsMarshal.AsSpan(curveTToPositionLookupTable);
-        for (int i = 0; i < curveTToPositionLookupTableSpan.Length - 1; i++)
+        // TODO Calculate closest distance from actual segment equation instead of linear approx
+        var segmentTToPositionLookupTableSpan = CollectionsMarshal.AsSpan(segmentTToPositionLookupTable);
+        for (int i = 0; i < segmentTToPositionLookupTableSpan.Length - 1; i++)
         {
-            ref var tableValue1 = ref curveTToPositionLookupTableSpan[i];
-            ref var tableValue2 = ref curveTToPositionLookupTableSpan[i + 1];
+            ref var tableValue1 = ref segmentTToPositionLookupTableSpan[i];
+            ref var tableValue2 = ref segmentTToPositionLookupTableSpan[i + 1];
             var startPos = tableValue1.Position;
             var endPos = tableValue2.Position;
             var pointOnLine = GetClosestPointOnLine(startPos, endPos, position, out float lineT);
@@ -164,7 +179,7 @@ public class BezierSpline : ISpline<SplineNode> /*, ICollection<SplineNode>*/
                 minDistSqrd = distSqrd;
                 minNodeIndex = tableValue1.NodeIndex;
                 minPointOnSpline = pointOnLine;
-                minPointCurveT = tableValue1.NodeCurveT + lineT;
+                minPointLocalT = tableValue1.NodeLocalT + lineT;
             }
         }
 
@@ -175,7 +190,7 @@ public class BezierSpline : ISpline<SplineNode> /*, ICollection<SplineNode>*/
             Position = minPointOnSpline,
             SplineNodeAIndex = nodeAIndex,
             SplineNodeBIndex = nodeBIndex,
-            CurveT = minPointCurveT,
+            LocalT = minPointLocalT,
         };
         return closestPosInfo;
     }
@@ -194,15 +209,15 @@ public class BezierSpline : ISpline<SplineNode> /*, ICollection<SplineNode>*/
     public void CollectSplinePlacements(List<SplinePlacement> splinePlacements)
     {
         BuildLookupTable();
-        splinePlacements.EnsureCapacity(curveTToPositionLookupTable.Count);
-        var curveTToPositionLookupTableSpan = CollectionsMarshal.AsSpan(curveTToPositionLookupTable);
-        for (int i = 0; i < curveTToPositionLookupTableSpan.Length; i++)
+        splinePlacements.EnsureCapacity(segmentTToPositionLookupTable.Count);
+        var segmentTToPositionLookupTableSpan = CollectionsMarshal.AsSpan(segmentTToPositionLookupTable);
+        for (int i = 0; i < segmentTToPositionLookupTableSpan.Length; i++)
         {
-            ref var tableValue = ref curveTToPositionLookupTableSpan[i];
+            ref var tableValue = ref segmentTToPositionLookupTableSpan[i];
             var placement = new SplinePlacement
             {
                 Position = tableValue.Position,
-                Rotation = CalculateRotation(tableValue.NodeIndex, tableValue.NodeCurveT),
+                Rotation = CalculateRotation(tableValue.NodeIndex, tableValue.NodeLocalT),
             };
             splinePlacements.Add(placement);
         }
@@ -215,10 +230,10 @@ public class BezierSpline : ISpline<SplineNode> /*, ICollection<SplineNode>*/
         var min = new Vector3(float.MaxValue);
         var max = new Vector3(float.MinValue);
 
-        var curveTToPositionLookupTableSpan = CollectionsMarshal.AsSpan(curveTToPositionLookupTable);
-        for (int i = 0; i < curveTToPositionLookupTableSpan.Length; i++)
+        var segmentTToPositionLookupTableSpan = CollectionsMarshal.AsSpan(segmentTToPositionLookupTable);
+        for (int i = 0; i < segmentTToPositionLookupTableSpan.Length; i++)
         {
-            ref var tableValue = ref curveTToPositionLookupTableSpan[i];
+            ref var tableValue = ref segmentTToPositionLookupTableSpan[i];
             Vector3.Min(ref min, ref tableValue.Position, out min);
             Vector3.Max(ref max, ref tableValue.Position, out max);
         }
@@ -250,11 +265,11 @@ public class BezierSpline : ISpline<SplineNode> /*, ICollection<SplineNode>*/
         {
             splineDistance = MathUtil.Clamp(splineDistance, min: 0, max: totalDistance);
         }
-        var curveTToPositionLookupTableSpan = CollectionsMarshal.AsSpan(curveTToPositionLookupTable);
-        int tableValueStartIndex = curveTToPositionLookupTableSpan.Length - 1;
-        for (int i = 1; i < curveTToPositionLookupTableSpan.Length; i++)
+        var segmentTToPositionLookupTableSpan = CollectionsMarshal.AsSpan(segmentTToPositionLookupTable);
+        int tableValueStartIndex = segmentTToPositionLookupTableSpan.Length - 1;
+        for (int i = 1; i < segmentTToPositionLookupTableSpan.Length; i++)
         {
-            if (splineDistance < curveTToPositionLookupTableSpan[i].TotalSplineDistance)
+            if (splineDistance < segmentTToPositionLookupTableSpan[i].TotalSplineDistance)
             {
                 tableValueStartIndex = i - 1;
                 break;
@@ -265,21 +280,21 @@ public class BezierSpline : ISpline<SplineNode> /*, ICollection<SplineNode>*/
         if (IsClosedLoop)
         {
             // For a closed loop spline, the last table value is the same as the first value,
-            // so subtract one from curveTToPositionLookupTable.Count when we use modulo to skip it.
-            tableValueEndIndex = (tableValueStartIndex + 1) % (curveTToPositionLookupTableSpan.Length - 1);
+            // so subtract one from segmentTToPositionLookupTable.Count when we use modulo to skip it.
+            tableValueEndIndex = (tableValueStartIndex + 1) % (segmentTToPositionLookupTableSpan.Length - 1);
         }
         else
         {
-            tableValueEndIndex = Math.Min(tableValueStartIndex + 1, curveTToPositionLookupTableSpan.Length);
+            tableValueEndIndex = Math.Min(tableValueStartIndex + 1, segmentTToPositionLookupTableSpan.Length);
         }
 
-        ref var tableValue1 = ref curveTToPositionLookupTableSpan[tableValueStartIndex];
-        ref var tableValue2 = ref curveTToPositionLookupTableSpan[tableValueEndIndex];
+        ref var tableValue1 = ref segmentTToPositionLookupTableSpan[tableValueStartIndex];
+        ref var tableValue2 = ref segmentTToPositionLookupTableSpan[tableValueEndIndex];
 
         if (tableValueStartIndex == tableValueEndIndex)
         {
             // Lies exactly on a table value
-            float tValue = tableValue1.NodeCurveT;
+            float tValue = tableValue1.NodeLocalT;
             return new SplinePlacement
             {
                 Position = tableValue1.Position,
@@ -312,20 +327,20 @@ public class BezierSpline : ISpline<SplineNode> /*, ICollection<SplineNode>*/
             return;
         }
 
-        splineCurves.Clear();
-        curveTToPositionLookupTable.Clear();
+        splineSegments.Clear();
+        segmentTToPositionLookupTable.Clear();
 
         var totalNodeCount = SplineNodes.Count;
         if (totalNodeCount > 1)
         {
-            splineCurves.EnsureCapacity(IsClosedLoop ? totalNodeCount : totalNodeCount - 1);
+            splineSegments.EnsureCapacity(IsClosedLoop ? totalNodeCount : totalNodeCount - 1);
             for (int i = 0; i < totalNodeCount - 1; i++)
             {
                 var currentSplineNode = this[i];
                 var nextSplineNode = this[i + 1];
 
-                var curve = new BezierCurve(currentSplineNode, nextSplineNode);
-                splineCurves.Add(curve);
+                var segment = new BezierSegment(currentSplineNode, nextSplineNode);
+                splineSegments.Add(segment);
 
             }
             if (IsClosedLoop)
@@ -333,41 +348,41 @@ public class BezierSpline : ISpline<SplineNode> /*, ICollection<SplineNode>*/
                 var currentSplineNode = this[totalNodeCount - 1];
                 var nextSplineNode = this[0];
 
-                var curve = new BezierCurve(currentSplineNode, nextSplineNode);
-                splineCurves.Add(curve);
+                var segment = new BezierSegment(currentSplineNode, nextSplineNode);
+                splineSegments.Add(segment);
             }
 
             // TODO add additional sampling thresholds (eg. distance, angle change)
-            const int SampleSizePerCurve = 10;
-            float dt = 1f / SampleSizePerCurve;
-            var splineCurvesSpan = CollectionsMarshal.AsSpan(splineCurves);
-            curveTToPositionLookupTable.EnsureCapacity(totalNodeCount * SampleSizePerCurve);
+            const int SampleSizePerSegment = 10;
+            float dt = 1f / SampleSizePerSegment;
+            var splineSegmentsSpan = CollectionsMarshal.AsSpan(splineSegments);
+            segmentTToPositionLookupTable.EnsureCapacity(totalNodeCount * SampleSizePerSegment);
             float totalCurveDistance = 0;
-            var previousPos = splineCurvesSpan[0].P0;
-            for (int nodeIndex = 0; nodeIndex < splineCurves.Count; nodeIndex++)
+            var previousPos = splineSegmentsSpan[0].P0;
+            for (int nodeIndex = 0; nodeIndex < splineSegments.Count; nodeIndex++)
             {
-                ref var curve = ref splineCurvesSpan[nodeIndex];
-                totalCurveDistance += (curve.P0 - previousPos).Length();
-                previousPos = curve.P0;
-                // First position is always just the initial value of the curve
-                curveTToPositionLookupTable.Add(new CurveTToPositionTable
+                ref var segment = ref splineSegmentsSpan[nodeIndex];
+                totalCurveDistance += (segment.P0 - previousPos).Length();
+                previousPos = segment.P0;
+                // First position is always just the initial value of the segment
+                segmentTToPositionLookupTable.Add(new SegmentTToPositionTable
                 {
                     NodeIndex = nodeIndex,
-                    NodeCurveT = 0,
+                    NodeLocalT = 0,
                     TotalSplineDistance = totalCurveDistance,
-                    Position = curve.StartPosition
+                    Position = segment.StartPosition
                 });
 
-                for (int i = 1; i < SampleSizePerCurve; i++)
+                for (int i = 1; i < SampleSizePerSegment; i++)
                 {
                     float currentT = dt * i;
-                    var currentPos = curve.GetPosition(currentT);
+                    var currentPos = segment.GetPosition(currentT);
                     totalCurveDistance += (currentPos - previousPos).Length();
                     previousPos = currentPos;
-                    curveTToPositionLookupTable.Add(new CurveTToPositionTable
+                    segmentTToPositionLookupTable.Add(new SegmentTToPositionTable
                     {
                         NodeIndex = nodeIndex,
-                        NodeCurveT = currentT,
+                        NodeLocalT = currentT,
                         TotalSplineDistance = totalCurveDistance,
                         Position = currentPos
                     });
@@ -375,12 +390,12 @@ public class BezierSpline : ISpline<SplineNode> /*, ICollection<SplineNode>*/
             }
 
             // Add the final position (this is included even when IsClosedLoop = true, because it contains the full TotalCurveDistance)
-            var finalPos = splineCurvesSpan[splineCurves.Count - 1].EndPosition;
+            var finalPos = splineSegmentsSpan[splineSegments.Count - 1].EndPosition;
             totalCurveDistance += (finalPos - previousPos).Length();
-            curveTToPositionLookupTable.Add(new CurveTToPositionTable
+            segmentTToPositionLookupTable.Add(new SegmentTToPositionTable
             {
-                NodeIndex = splineCurves.Count - 1,
-                NodeCurveT = 1,
+                NodeIndex = splineSegments.Count - 1,
+                NodeLocalT = 1,
                 TotalSplineDistance = totalCurveDistance,
                 Position = finalPos
             });
@@ -401,7 +416,7 @@ public class BezierSpline : ISpline<SplineNode> /*, ICollection<SplineNode>*/
         SplinePropertyChanged?.Invoke(this);
     }
 
-    private struct CurveTToPositionTable
+    private struct SegmentTToPositionTable
     {
         /// <summary>
         /// The starting node this belongs to.
@@ -410,7 +425,7 @@ public class BezierSpline : ISpline<SplineNode> /*, ICollection<SplineNode>*/
         /// <summary>
         /// Value 0 to 1 from NodeIndex to (NodeIndex + 1)
         /// </summary>
-        public float NodeCurveT;
+        public float NodeLocalT;
         /// <summary>
         /// Travel distance on the spline to this position.
         /// </summary>

@@ -440,7 +440,7 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
 
     private void UpdateSplineVisualizerTransformation()
     {
-        // TODO Only check if camera has moved or curve placements changed
+        // TODO Only check if camera has moved or segment placements changed
         cameraService ??= Game.EditorServices.Get<IEditorGameCameraService>();
         float targetedScale = GetTargetedScale(cameraService);
 

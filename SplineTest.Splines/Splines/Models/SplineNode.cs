@@ -9,7 +9,7 @@ namespace Stride.Engine.Splines.Models;
 
 [DataContract]
 [Display(Expand = ExpandRule.Once)]
-public struct SplineNode : ISplineNode, IEquatable<SplineNode>
+public struct SplineNode : IEquatable<SplineNode>
 {
     /// <summary>
     /// Local position relative to the spline.
@@ -21,11 +21,11 @@ public struct SplineNode : ISplineNode, IEquatable<SplineNode>
     [DataMemberIgnore, Obsolete("Unused?")]
     public Quaternion Rotation;
     /// <summary>
-    /// Local position of the tangent relative to the spline that determines the direction of the curve entering this node.
+    /// Local position of the tangent relative to the spline that determines the direction of the segment entering this node.
     /// </summary>
     public Vector3 TangentInPosition;
     /// <summary>
-    /// Local position of the tangent relative to the spline that determines the direction of the curve leaving this node.
+    /// Local position of the tangent relative to the spline that determines the direction of the segment leaving this node.
     /// </summary>
     public Vector3 TangentOutPosition;
 
