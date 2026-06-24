@@ -1,0 +1,29 @@
+!PrefabAsset
+Id: 459c96ff-90c0-4265-8310-1e568a1c4832
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+Hierarchy:
+    RootParts:
+        - ref!! af9aa1ab-06e8-42a7-96b7-84162f14e8aa
+    Parts:
+        -   Entity:
+                Id: af9aa1ab-06e8-42a7-96b7-84162f14e8aa
+                Name: StreetLight_holmhansen
+                Components:
+                    7ae58587ded46138c1c0d17e60bfb11a: !TransformComponent
+                        Id: 9d15ae83-672d-4ab1-a723-88223dd1a6d8
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: -0.0, Y: -0.70710677, Z: 0.0, W: 0.70710677}
+                        Scale: {X: 0.23430581, Y: 0.23430581, Z: 0.23430581}
+                        Children: {}
+                    62fb3d568af89b53e76cf80a18162d10: !ModelComponent
+                        Id: 98245358-8291-448c-84d5-c9a5fe7e365a
+                        Model: 96693a0a-d44d-4007-a21c-5d57d8cd16b7:Prefabs/Streetlight/StreetLight_holmhansen
+                        Materials:
+                            07e286ca06c87885efa805a71eed59bb~0: 09daf103-75c8-4782-ac1d-cfdfa29d551c:Prefabs/Streetlight/mat_beam_holder
+                            f34a7b1beb3f6deec2306f5d4c033c05~1: bd4d5970-3414-4b99-b87b-522d8e2c5571:Prefabs/Streetlight/mat_lamp
+                            a522fc4af576bc8ba7a16acbec85a35d~2: a9559ccd-1621-4e5b-b637-f51b98f30713:Prefabs/Streetlight/mat_ring
+                            0ab0f18f3633695b4ee37d8c0cf528c3~3: 8f72564c-4c48-45f2-87c5-cb36f4b6ef18:Prefabs/Streetlight/mat_emit
+                            8f6098e8694c529f5002d04a66e5646e~4: 8c38ff37-3422-49e1-ade1-c836ceebb40a:Prefabs/Streetlight/mat_beam_ver
+                            2f1797f56269dbfc74820672dd24060a~5: d543eaf5-8c33-40f8-b27a-5e1a5d714077:Prefabs/Streetlight/mat_beam_hor
+                            70234be0960e3437bd2cbc4b9c1aad2c~6: b74d8e77-d503-49bb-8672-db79f5b52528:Prefabs/Streetlight/mat_lamp_holder

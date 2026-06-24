@@ -1,0 +1,580 @@
+!SceneAsset
+Id: 4688a67a-2aec-4fc3-816c-c5a52355f096
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+ChildrenIds: []
+Offset: {X: 0.0, Y: 0.0, Z: 0.0}
+Hierarchy:
+    RootParts:
+        - ref!! e41f2148-8538-4dfc-b8bb-acb26c400894
+        - ref!! 0cc12f7d-46ee-4d2d-ad91-24208b809f28
+        - ref!! d48a452e-8823-4daf-a152-9f28173c9d22
+        - ref!! f6bf2050-b1d3-4c54-9c21-79bdcef5161a
+        - ref!! 57dc6ecb-4a43-42fe-8985-cf873842c3ec
+        - ref!! 097ca0b8-d9e6-4e93-a4a8-d27fc0d11665
+        - ref!! bed58f6b-3ad6-4df9-add4-7f19dcb45e96
+        - ref!! 320989d9-37d0-4fff-96ee-abd07f89b91d
+        - ref!! 06802fc6-3625-4780-a035-81d305eb863e
+        - ref!! 2f6ab147-0c7c-4007-ae9e-b0223b9cabb0
+    Parts:
+        -   Entity:
+                Id: 06802fc6-3625-4780-a035-81d305eb863e
+                Name: Ground
+                Components:
+                    0833a95fa07e0336a89218e61bf8046c: !TransformComponent
+                        Id: 72821ff4-1d26-4d5d-bd62-ce5d76830990
+                        Position: {X: 0.03231883, Y: 0.0, Z: 0.6200143}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 5.0, Y: 1.0, Z: 5.0}
+                        Children: {}
+                    6ac4fb0b37a5eb65bf13042faaf85daf: !ModelComponent
+                        Id: ba3371f0-4644-4043-ac0d-0212d8f74289
+                        Model: 136576a0-e08f-4b73-aef1-03df8e422709:Ground
+                        Materials: {}
+        -   Entity:
+                Id: 097ca0b8-d9e6-4e93-a4a8-d27fc0d11665
+                Name: SplineTraverserLoop
+                Components:
+                    3048e49ff5a16ef987b325d524fcfaf9: !TransformComponent
+                        Id: ce898b6e-2daf-4dbd-811f-e14ff21ef073
+                        Position: {X: 3.3182135, Y: 0.36120296, Z: 0.7675243}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.1749723, Y: 0.1749723, Z: 0.1749723}
+                        Children: {}
+                    09be169be47c889dd7bfc170407ed6f9: !ModelComponent
+                        Id: f18984f6-194c-4478-8e92-10bb6043b0bd
+                        Model: fbd48d95-45c7-4c3a-b544-e236a6244a51:Sphere
+                        Materials:
+                            b6ef819d97a7accaeaec0204511c0478~0: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
+                    65744a38339860ea657b5d4d22511b31: !SplineTools.SplineTraverserEventsDemo,SplineTools
+                        Id: 6ddba76a-cdb3-4e16-a5a0-5c67e1545e67
+                        SplineEndReachedParticle: ref!! d48a452e-8823-4daf-a152-9f28173c9d22
+                        SplineNodeReachedParticle: ref!! f6bf2050-b1d3-4c54-9c21-79bdcef5161a
+                        ReverseOnEnd: false
+                    a2b718c420fccfec13c3289b7cb72b42: !SplineTraverserComponent
+                        Id: 2021a2ed-a93f-4d09-8614-bdcb27c9ac6e
+                        SplineComponent: ref!! 9e7b486e-6d17-483a-b371-303006c98282
+                        Speed: 1.0
+                        IsMoving: true
+                        IsRotating: false
+        -   Entity:
+                Id: 0cc12f7d-46ee-4d2d-ad91-24208b809f28
+                Name: Directional light
+                Components:
+                    2735ba6df4c5b50f232760f354230d8c: !TransformComponent
+                        Id: 8ba3b033-36b8-41fd-8ad5-2120a78f7c85
+                        Position: {X: -22.047579, Y: -1.5983908, Z: -17.825735}
+                        Rotation: {X: -0.08102894, Y: -0.9173682, Z: -0.24580808, W: -0.3024042}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    d2d1d0606bd5517b9bb780f5c7356a67: !LightComponent
+                        Id: f687f360-693d-4c96-ace7-cbc25ed8b37c
+                        Type: !LightDirectional
+                            Color: !ColorRgbProvider
+                                Value: {R: 1.0, G: 1.0, B: 1.0}
+                            Shadow:
+                                Enabled: true
+                                Filter: !LightShadowMapFilterTypePcf
+                                    FilterSize: Filter5x5
+                                Size: Large
+                                DepthRange: {}
+                                PartitionMode: !LightDirectionalShadowMap.PartitionLogarithmic {}
+                                ComputeTransmittance: false
+                                BiasParameters: {}
+                        Intensity: 20.0
+        -   Entity:
+                Id: 2acfc15f-9316-4b5f-9115-fe72793a28ba
+                Name: Node3
+                Components:
+                    12849867b907b4f072ad6b0a722e7113: !TransformComponent
+                        Id: ad1d33f9-a9c3-4bd2-874e-cb2d88ea6b9c
+                        Position: {X: -2.599135, Y: 0.0, Z: -1.2253697}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    4cfe05c90ae3791cacbe14b76d3cdf38: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
+                        Id: 44da1e52-46ff-4478-b9fe-f3274f416426
+                        SplineNode:
+                            Segments: 2
+                            TangentOutLocal: {X: 1.0, Y: 0.0, Z: 0.0}
+                            TangentInLocal: {X: 0.0, Y: 0.0, Z: 1.0}
+                            BoundingBox:
+                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
+                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
+        -   Entity:
+                Id: 2f6ab147-0c7c-4007-ae9e-b0223b9cabb0
+                Name: Teapot
+                Components:
+                    ab403e8a21a7e5fcb11c947df128116c: !TransformComponent
+                        Id: 73c38d68-dc02-46dd-bf34-9e21f8b511b8
+                        Position: {X: -0.03300188, Y: 0.34612775, Z: 1.23388}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    dd5c954a7935871cc73eb4d0fd1c04e4: !ModelComponent
+                        Id: 21ea3a42-7302-425d-a7cf-659ab478870d
+                        Model: 6419b69e-2ca2-456d-a706-7a4d71edcd0e:Teapot
+                        Materials: {}
+        -   Entity:
+                Id: 320989d9-37d0-4fff-96ee-abd07f89b91d
+                Name: SplineTraverserNoLoop
+                Components:
+                    3048e49ff5a16ef987b325d524fcfaf9: !TransformComponent
+                        Id: 3cbcac15-035e-4453-b37a-81d2e7b1b538
+                        Position: {X: -0.88848364, Y: 0.46677294, Z: -0.36366352}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.1749723, Y: 0.1749723, Z: 0.1749723}
+                        Children: {}
+                    09be169be47c889dd7bfc170407ed6f9: !ModelComponent
+                        Id: 8c41e01f-8cc5-4767-9cfc-57195ce39df6
+                        Model: fbd48d95-45c7-4c3a-b544-e236a6244a51:Sphere
+                        Materials:
+                            b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
+                    4f8f576b17e38f4a60560c52441defe6: !SplineTraverserComponent
+                        Id: 4fc692d6-ea0f-4dbf-842d-28ce46f74fec
+                        SplineComponent: ref!! 090b149c-6e37-443a-9c05-75d3cb0e45d9
+                        Speed: 1.0
+                        IsMoving: true
+                        IsRotating: false
+                    e829a761a45bd157b30c5c59e0db5f11: !SplineTools.SplineTraverserEventsDemo,SplineTools
+                        Id: ca5ae71a-646e-47bd-8d4e-4a9afd07f627
+                        SplineEndReachedParticle: ref!! d48a452e-8823-4daf-a152-9f28173c9d22
+                        SplineNodeReachedParticle: ref!! f6bf2050-b1d3-4c54-9c21-79bdcef5161a
+                        ReverseOnEnd: true
+        -   Entity:
+                Id: 44f8fbda-a2f0-41db-add1-9281a4f458ab
+                Name: Camera
+                Components:
+                    f29994c5681a8c2d045f5c0f5bd4ded9: !TransformComponent
+                        Id: 80ce1132-1e5f-4e35-bb5b-76883bbf87d0
+                        Position*: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation*: {X: -0.47387767, Y: 0.5248237, Z: 0.47387767, W: 0.5248236}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    05167499ad9121ce9e96b1b4c5444b0a: !CameraComponent
+                        Id: 3a61eff3-8230-486a-bada-fc9fe4085b26
+                        Name: null
+                        Projection: Perspective
+                        VerticalFieldOfView*: 80.0
+                        Slot: 74df2f5f-7b3c-4819-8415-58dfc3199aea
+                    13c784dc3527224fd0f7dc445499473d: !UIComponent
+                        Id: 653e38ad-9d9f-497d-b089-535d24eba1fa
+                        Page: 72db55a9-0b76-4c3c-918b-afaf40334293:UI/MainPage
+                        Resolution: {X: 1280.0, Y: 720.0, Z: 1000.0}
+                        Size: {X: 1.28, Y: 0.72, Z: 1.0}
+                    ee0c014ab223f17f3503cd630f77f399: !SplineTools.BasicCameraController,SplineTools
+                        Id: cb32d2f8-b825-4f35-a16d-36a6642f6ca0
+                        Gamepad: false
+                        KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
+                        TouchMovementSpeed: {X: 0.7, Y: 0.7, Z: 0.3}
+                        SpeedFactor: 5.0
+                        KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
+                        MouseRotationSpeed: {X: 1.0, Y: 1.0}
+                        TouchRotationSpeed: {X: 1.0, Y: 0.7}
+                    ad128bc66dad332dd16c8d312ee050b3: !SplineTools.SwitchScene,SplineTools
+                        Id: 1797a4b3-c885-42dc-8125-fe80b586bc28
+                        Scenes:
+                            c5800989324242552c79a79c023b21d9: 25542675-edbb-436c-97aa-ee45d9f5b004:Scenes/1.MainScene
+                            2ffe2ccfd77f2a4211bf1184c609a16a: 13836056-32b5-43b5-8f33-a772afc5291a:Scenes/2.SplineByCode
+                            a5e99e94542079249676bcf9b9fe73c5: d6c6e743-2d04-4ceb-a66f-6e43ed9241fd:Scenes/3.SplineClosestPoint
+                            fe573d561e8d3e880c6a2834f7460a01: f2a651a3-c947-4709-b97c-65e0ac1dd399:Scenes/4.SplineTraverser
+                            76050d92d9a15b40836baffc47ddfc88: 7b5a7073-7dba-4190-8e98-b5554860c195:Scenes/5.SplineTraverserByCode
+                            83aea174e763f98a391df33dfd5a62a0: 4688a67a-2aec-4fc3-816c-c5a52355f096:Scenes/6.SplineTraverserEvents
+                            4b4c7429b3ea228c536b09a186c581c5: 6e8bdc37-82de-4aab-aca0-8ae82d197ce4:Scenes/7.SplineTraverserCamera
+                            a68c3accc4557497e0b88b83dbafc98a: 881a00ce-94a4-4ee3-ab22-6b64a2321e60:Scenes/20.SplineStressTesting
+                            92751329c3a3b1c8b741d77c2930a99b: 2b452418-3f9d-4c71-8fac-f3090c5e53cd:Scenes/21.SplineTraverserStressTest
+                        ShowMenu: true
+            Base:
+                BasePartAsset: cb026551-9c62-4058-9896-d2d3f36539fa:Camera
+                BasePartId: 08472225-3859-4500-adbc-a22796f88494
+                InstanceId: 4bb69c94-2327-4395-97ef-261d39eb7be4
+        -   Folder: null
+            Entity:
+                Id: 4a4aae98-0547-46a9-a77e-a913bf1133f2
+                Name: Node2
+                Components:
+                    12849867b907b4f072ad6b0a722e7113: !TransformComponent
+                        Id: 97b6d011-794a-4e88-9f95-0d5bb2b302ae
+                        Position: {X: -0.99907243, Y: 0.0, Z: 0.820913}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    4cfe05c90ae3791cacbe14b76d3cdf38: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
+                        Id: 679b045d-e25a-49e8-940d-0963ad623c8d
+                        SplineNode:
+                            Segments: 20
+                            TangentOutLocal: {X: -2.0, Y: 0.0, Z: 0.0}
+                            TangentInLocal: {X: 0.0, Y: 0.0, Z: -1.0}
+                            BoundingBox:
+                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
+                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
+        -   Entity:
+                Id: 57dc6ecb-4a43-42fe-8985-cf873842c3ec
+                Name: SplineLoop
+                Components:
+                    22d316f19b166a501801ec29d82d5617: !TransformComponent
+                        Id: 343387c3-780a-4ebd-b950-0e7c1e72f2e4
+                        Position: {X: 2.3451223, Y: 0.33133176, Z: -0.9173965}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            fcaff8bfc7ccc2997d1ad89405f6483d: ref!! 7bea44d5-fbdb-4048-b95f-2004c224918a
+                            4c6bcbb9739788ace98ad12051002038: ref!! 97b6d011-794a-4e88-9f95-0d5bb2b302ae
+                            7ee9f029df57dd7c6869829e5ffd516f: ref!! b9e607f2-eb88-42a9-aeaa-cd638b42389e
+                    24e554ca1177df07bc9473147d12c446: !SplineComponent
+                        Id: 9e7b486e-6d17-483a-b371-303006c98282
+                        Loop: true
+                        Nodes:
+                            e706a950956bc6e1a6d615287b67553d: ref!! 456342ce-1848-4fc6-831c-f83e1cb72a73
+                            a5268efe20e6e447f9add4fe4bf46082: ref!! 679b045d-e25a-49e8-940d-0963ad623c8d
+                            313d2ab5a61a986bd022a63ff99060e1: ref!! 84c1f3c1-5269-4496-a39f-a1c8ca557a77
+                        RenderSettings:
+                            ShowSegments: true
+                            SegmentsMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
+                            ShowNodes: true
+                            NodesMaterial: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
+                            ShowBoundingBox: false
+                            BoundingBoxMaterial: null
+        -   Folder: null
+            Entity:
+                Id: 6a03cc73-83b7-4ad3-9e6d-d76d07e21807
+                Name: Node1
+                Components:
+                    12849867b907b4f072ad6b0a722e7113: !TransformComponent
+                        Id: 7bea44d5-fbdb-4048-b95f-2004c224918a
+                        Position: {X: 1.0009276, Y: 0.0, Z: 0.820913}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    4cfe05c90ae3791cacbe14b76d3cdf38: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
+                        Id: 456342ce-1848-4fc6-831c-f83e1cb72a73
+                        SplineNode:
+                            Segments: 20
+                            TangentOutLocal: {X: 0.0, Y: 0.0, Z: -1.0}
+                            TangentInLocal: {X: 2.0, Y: 0.0, Z: 0.0}
+                            BoundingBox:
+                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
+                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
+        -   Entity:
+                Id: 75c33332-328a-4cdb-bdaf-ce8c5ff0efc0
+                Name: Node1
+                Components:
+                    12849867b907b4f072ad6b0a722e7113: !TransformComponent
+                        Id: 44d97dbf-d52c-482c-8fa3-9527b8ed0e4a
+                        Position: {X: 0.8732637, Y: 0.0, Z: -1.2202845}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    4cfe05c90ae3791cacbe14b76d3cdf38: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
+                        Id: da59a3a4-c183-48e5-b455-90ba71d2b9df
+                        SplineNode:
+                            Segments: 2
+                            TangentOutLocal: {X: 0.0, Y: 0.0, Z: -1.0}
+                            TangentInLocal: {X: 1.0, Y: 0.0, Z: 0.0}
+                            BoundingBox:
+                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
+                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
+        -   Folder: null
+            Entity:
+                Id: 77cd9447-fde5-4b3e-af52-796ecc176633
+                Name: Node3
+                Components:
+                    12849867b907b4f072ad6b0a722e7113: !TransformComponent
+                        Id: b9e607f2-eb88-42a9-aeaa-cd638b42389e
+                        Position: {X: 0.0009275675, Y: 0.0, Z: -0.14404362}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    4cfe05c90ae3791cacbe14b76d3cdf38: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
+                        Id: 84c1f3c1-5269-4496-a39f-a1c8ca557a77
+                        SplineNode:
+                            Segments: 20
+                            TangentOutLocal: {X: 2.0, Y: 0.0, Z: -2.0}
+                            TangentInLocal: {X: -2.0, Y: 0.0, Z: -2.0}
+                            BoundingBox:
+                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
+                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
+        -   Entity:
+                Id: bed58f6b-3ad6-4df9-add4-7f19dcb45e96
+                Name: SplineNoLoop
+                Components:
+                    22d316f19b166a501801ec29d82d5617: !TransformComponent
+                        Id: 42aa61de-31f4-427f-98a3-fdd2751350d8
+                        Position: {X: -1.6426357, Y: 0.22177047, Z: 0.236036}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            fcaff8bfc7ccc2997d1ad89405f6483d: ref!! 44d97dbf-d52c-482c-8fa3-9527b8ed0e4a
+                            4c6bcbb9739788ace98ad12051002038: ref!! a9424c3a-4bda-434f-928f-b8d9fe01a46e
+                            7ee9f029df57dd7c6869829e5ffd516f: ref!! ad1d33f9-a9c3-4bd2-874e-cb2d88ea6b9c
+                    24e554ca1177df07bc9473147d12c446: !SplineComponent
+                        Id: 090b149c-6e37-443a-9c05-75d3cb0e45d9
+                        Loop: false
+                        Nodes:
+                            e706a950956bc6e1a6d615287b67553d: ref!! da59a3a4-c183-48e5-b455-90ba71d2b9df
+                            a5268efe20e6e447f9add4fe4bf46082: ref!! 49e4a9ab-834b-4caf-bf38-67ff46fde308
+                            313d2ab5a61a986bd022a63ff99060e1: ref!! 44da1e52-46ff-4478-b9fe-f3274f416426
+                        RenderSettings:
+                            ShowSegments: true
+                            SegmentsMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
+                            ShowNodes: true
+                            NodesMaterial: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
+                            ShowBoundingBox: false
+                            BoundingBoxMaterial: null
+        -   Entity:
+                Id: d48a452e-8823-4daf-a152-9f28173c9d22
+                Name: SplineEndReachedParticle
+                Components:
+                    1d3332e19a6b6df4b62b8218abec01e2: !TransformComponent
+                        Id: 9e17261a-2316-43eb-a135-d53a849611b8
+                        Position: {X: -0.23725618, Y: 0.0, Z: -0.021710183}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    7465c5ba0d0fd5403613d80c7a522d08: !ParticleSystemComponent
+                        Id: c49e2a2d-2fc2-4561-9b54-67c72f672c79
+                        Enabled: false
+                        Control:
+                            ResetSeconds: 5.0
+                            Control: Play
+                        Color: {R: 0.125, G: 1.0, B: 0.0, A: 1.0}
+                        Speed: 1.0
+                        ParticleSystem:
+                            Settings: {}
+                            BoundingShape: null
+                            Emitters:
+                                e583c6df89790421e38059e92aa746c4:
+                                    ParticleLifetime: {X: 1.0, Y: 3.0}
+                                    ShapeBuilder: !ShapeBuilderHexagon
+                                        SamplerPosition: null
+                                        SamplerSize: null
+                                        SamplerRotation: null
+                                    Material: !ParticleMaterialComputeColor
+                                        ComputeColor: !ComputeTextureColor
+                                            FallbackValue:
+                                                Value: {R: 0.68125, G: 0.666667, B: 0.097929694, A: 1.0}
+                                            Scale: {X: 1.0, Y: 1.0}
+                                            Offset: {X: 0.0, Y: 0.0}
+                                            Enabled: false
+                                            Swizzle: null
+                                        UVBuilder: null
+                                        ForceTexCoords: false
+                                    Spawners:
+                                        dd6e2227dd0053c129ca7da8e264c01c: !SpawnerPerSecond
+                                            LoopCondition: OneShot
+                                            Delay: {X: 0.0, Y: 0.0}
+                                            Duration: {X: 1.0, Y: 1.0}
+                                            SpawnCount: 100.0
+                                    Initializers:
+                                        524f4b1c94abce9d354d5c5ca0576404: !InitialSizeSeed
+                                            InheritPosition: true
+                                            Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                                            InheritRotation: true
+                                            Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                            InheritScale: true
+                                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                                            ScaleUniform: 1.0
+                                            SeedOffset: 0
+                                            DisplayParticlePosition: false
+                                            DisplayParticleRotation: false
+                                            DisplayParticleScale: false
+                                            DisplayParticleScaleUniform: true
+                                            RandomSize: {X: 0.15, Y: 0.15}
+                                        011b418897ff1346470254e2005352b3: !InitialPositionSeed
+                                            InheritPosition: true
+                                            Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                                            InheritRotation: true
+                                            Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                            InheritScale: true
+                                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                                            ScaleUniform: 1.0
+                                            SeedOffset: 0
+                                            DisplayParticlePosition: false
+                                            DisplayParticleRotation: true
+                                            DisplayParticleScale: false
+                                            DisplayParticleScaleUniform: true
+                                            PositionMin: {X: -0.1, Y: 0.0, Z: -0.1}
+                                            PositionMax: {X: 0.0, Y: 0.0, Z: 0.0}
+                                            Interpolate: false
+                                        b3cb59013e10de3fb92487a4ac050235: !InitialVelocitySeed
+                                            InheritPosition: true
+                                            Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                                            InheritRotation: true
+                                            Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                            InheritScale: true
+                                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                                            ScaleUniform: 1.0
+                                            SeedOffset: 0
+                                            DisplayParticlePosition: false
+                                            DisplayParticleRotation: true
+                                            DisplayParticleScale: false
+                                            DisplayParticleScaleUniform: true
+                                            VelocityMin: {X: 0.0, Y: 1.0, Z: 0.0}
+                                            VelocityMax: {X: 0.2, Y: 2.5, Z: 0.3}
+                                    Updaters:
+                                        fb043c7ef57fc1b3d7b79bc115630d36: !UpdaterForceField
+                                            InheritPosition: true
+                                            Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                                            InheritRotation: true
+                                            Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                            InheritScale: true
+                                            Scale: {X: 0.0, Y: 0.0, Z: 0.0}
+                                            ScaleUniform: 1.0
+                                            DisplayParticlePosition: true
+                                            FieldShape: null
+                                            DisplayParticleRotation: true
+                                            DisplayParticleScale: true
+                                            DisplayParticleScaleUniform: false
+                                            FieldFalloff:
+                                                StrengthInside: 1.0
+                                                FalloffStart: 0.1
+                                                StrengthOutside: 1.0
+                                                FalloffEnd: 0.9
+                                            EnergyConservation: 1.0
+                                            ForceDirected: 0.0
+                                            ForceVortex: 0.0
+                                            ForceRepulsive: 0.0
+                                            ForceFixed: {X: 0.0, Y: -1.0, Z: 0.0}
+        -   Entity:
+                Id: e09178b0-f0a5-4afe-bbef-3a54110e3e0c
+                Name: Node2
+                Components:
+                    12849867b907b4f072ad6b0a722e7113: !TransformComponent
+                        Id: a9424c3a-4bda-434f-928f-b8d9fe01a46e
+                        Position: {X: -0.5571159, Y: 0.0, Z: -1.3706224}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    4cfe05c90ae3791cacbe14b76d3cdf38: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
+                        Id: 49e4a9ab-834b-4caf-bf38-67ff46fde308
+                        SplineNode:
+                            Segments: 2
+                            TangentOutLocal: {X: 0.0, Y: 0.0, Z: 1.0}
+                            TangentInLocal: {X: 0.0, Y: 0.0, Z: -1.0}
+                            BoundingBox:
+                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
+                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
+        -   Entity:
+                Id: e41f2148-8538-4dfc-b8bb-acb26c400894
+                Name: Camera
+                Components:
+                    841ecd05e53d3b5aa0e68cfb8ccadcae: !TransformComponent
+                        Id: e60c4025-1704-40e2-b5ec-96ff6e4de61d
+                        Position: {X: 0.497284, Y: 4.5129642, Z: -1.9585172}
+                        Rotation: {X: -0.102994986, Y: 0.6995656, Z: -0.10299501, W: 0.6995656}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            f81f7590486f34d226a8cf37bee2d260: ref!! 80ce1132-1e5f-4e35-bb5b-76883bbf87d0
+        -   Entity:
+                Id: f6bf2050-b1d3-4c54-9c21-79bdcef5161a
+                Name: NodeReachedParticle
+                Components:
+                    1d3332e19a6b6df4b62b8218abec01e2: !TransformComponent
+                        Id: 05c44aa7-1070-42ad-a67c-aa571eb20307
+                        Position: {X: 0.2083294, Y: 0.0, Z: 0.024862397}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    7465c5ba0d0fd5403613d80c7a522d08: !ParticleSystemComponent
+                        Id: 707e7ddb-005b-4f44-a3ad-6b15cb40515e
+                        Enabled: false
+                        Control:
+                            ResetSeconds: 5.0
+                            Control: Play
+                        Color: {R: 0.8625, G: 0.31804687, B: 0.31804687, A: 1.0}
+                        Speed: 1.0
+                        ParticleSystem:
+                            Settings: {}
+                            BoundingShape: null
+                            Emitters:
+                                e583c6df89790421e38059e92aa746c4:
+                                    ParticleLifetime: {X: 1.0, Y: 3.0}
+                                    ShapeBuilder: !ShapeBuilderBillboard
+                                        SamplerPosition: null
+                                        SamplerSize: null
+                                        SamplerRotation: null
+                                    Material: !ParticleMaterialComputeColor
+                                        ComputeColor: !ComputeTextureColor
+                                            FallbackValue:
+                                                Value: {R: 0.68125, G: 0.666667, B: 0.097929694, A: 1.0}
+                                            Scale: {X: 1.0, Y: 1.0}
+                                            Offset: {X: 0.0, Y: 0.0}
+                                            Swizzle: null
+                                        UVBuilder: null
+                                        ForceTexCoords: false
+                                    Spawners:
+                                        dd6e2227dd0053c129ca7da8e264c01c: !SpawnerPerSecond
+                                            LoopCondition: OneShot
+                                            Delay: {X: 0.0, Y: 0.0}
+                                            Duration: {X: 1.0, Y: 1.0}
+                                            SpawnCount: 100.0
+                                    Initializers:
+                                        524f4b1c94abce9d354d5c5ca0576404: !InitialSizeSeed
+                                            InheritPosition: true
+                                            Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                                            InheritRotation: true
+                                            Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                            InheritScale: true
+                                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                                            ScaleUniform: 1.0
+                                            SeedOffset: 0
+                                            DisplayParticlePosition: false
+                                            DisplayParticleRotation: false
+                                            DisplayParticleScale: false
+                                            DisplayParticleScaleUniform: true
+                                            RandomSize: {X: 0.15, Y: 0.15}
+                                        011b418897ff1346470254e2005352b3: !InitialPositionSeed
+                                            InheritPosition: true
+                                            Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                                            InheritRotation: true
+                                            Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                            InheritScale: true
+                                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                                            ScaleUniform: 1.0
+                                            SeedOffset: 0
+                                            DisplayParticlePosition: false
+                                            DisplayParticleRotation: true
+                                            DisplayParticleScale: false
+                                            DisplayParticleScaleUniform: true
+                                            PositionMin: {X: -0.1, Y: 0.0, Z: -0.1}
+                                            PositionMax: {X: 0.0, Y: 0.0, Z: 0.0}
+                                            Interpolate: false
+                                        b3cb59013e10de3fb92487a4ac050235: !InitialVelocitySeed
+                                            InheritPosition: true
+                                            Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                                            InheritRotation: true
+                                            Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                            InheritScale: true
+                                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                                            ScaleUniform: 1.0
+                                            SeedOffset: 0
+                                            DisplayParticlePosition: false
+                                            DisplayParticleRotation: true
+                                            DisplayParticleScale: false
+                                            DisplayParticleScaleUniform: true
+                                            VelocityMin: {X: 0.0, Y: 1.0, Z: 0.0}
+                                            VelocityMax: {X: 0.2, Y: 2.5, Z: 0.3}
+                                    Updaters:
+                                        fb043c7ef57fc1b3d7b79bc115630d36: !UpdaterForceField
+                                            InheritPosition: true
+                                            Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                                            InheritRotation: true
+                                            Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                            InheritScale: true
+                                            Scale: {X: 0.0, Y: 0.0, Z: 0.0}
+                                            ScaleUniform: 1.0
+                                            DisplayParticlePosition: true
+                                            FieldShape: null
+                                            DisplayParticleRotation: true
+                                            DisplayParticleScale: true
+                                            DisplayParticleScaleUniform: false
+                                            FieldFalloff:
+                                                StrengthInside: 1.0
+                                                FalloffStart: 0.1
+                                                StrengthOutside: 1.0
+                                                FalloffEnd: 0.9
+                                            EnergyConservation: 1.0
+                                            ForceDirected: 0.0
+                                            ForceVortex: 0.0
+                                            ForceRepulsive: 0.0
+                                            ForceFixed: {X: 0.0, Y: -1.0, Z: 0.0}

@@ -1,0 +1,39 @@
+!Model
+Id: 96693a0a-d44d-4007-a21c-5d57d8cd16b7
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../../Resources/Streetlight/StreetLight_holmhansen.fbx
+Skeleton: null
+PivotPosition: {X: 0.0, Y: 0.0, Z: 0.0}
+Materials:
+    a77f0d96652746c13f78f811c658d359:
+        Name: mat_beam_holder
+        MaterialInstance:
+            Material: 09daf103-75c8-4782-ac1d-cfdfa29d551c:Prefabs/Streetlight/mat_beam_holder
+    b73afd9f2c60174c9e35bb7dcb3b9e5c:
+        Name: mat_lamp
+        MaterialInstance:
+            Material: bd4d5970-3414-4b99-b87b-522d8e2c5571:Prefabs/Streetlight/mat_lamp
+    c66a802e826764897b6bc38be324e86a:
+        Name: mat_ring
+        MaterialInstance:
+            Material: a9559ccd-1621-4e5b-b637-f51b98f30713:Prefabs/Streetlight/mat_ring
+    4f59a40d1bcc531e5a62a1be87013fa6:
+        Name: mat_emit
+        MaterialInstance:
+            Material: 8f72564c-4c48-45f2-87c5-cb36f4b6ef18:Prefabs/Streetlight/mat_emit
+    08aef9c17a8705915d97b40e7a8fdf98:
+        Name: mat_beam_ver
+        MaterialInstance:
+            Material: 8c38ff37-3422-49e1-ade1-c836ceebb40a:Prefabs/Streetlight/mat_beam_ver
+    3bef8e054e4db6f5d146a90587d9b79f:
+        Name: mat_beam_hor
+        MaterialInstance:
+            Material: d543eaf5-8c33-40f8-b27a-5e1a5d714077:Prefabs/Streetlight/mat_beam_hor
+    e1efa9d4f6c237c72fadf17270222b3d:
+        Name: mat_lamp_holder
+        MaterialInstance:
+            Material: b74d8e77-d503-49bb-8672-db79f5b52528:Prefabs/Streetlight/mat_lamp_holder
+Modifiers: {}
+~SourceHashes:
+    7a94a429a784d85ee9cd59bf0f760e52~../../../Resources/Streetlight/StreetLight_holmhansen.fbx: b097d594477d0bb0f9eade5e1b871673

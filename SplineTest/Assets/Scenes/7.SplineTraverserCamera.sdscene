@@ -1,0 +1,1457 @@
+!SceneAsset
+Id: 6e8bdc37-82de-4aab-aca0-8ae82d197ce4
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+ChildrenIds: []
+Offset: {X: 0.0, Y: 0.0, Z: 0.0}
+Hierarchy:
+    RootParts:
+        - ref!! c72b4578-907e-4ceb-8694-a10afda3d6eb
+        - ref!! 22a46959-9ebb-4817-b0d6-4297ae497845
+        - ref!! cd352203-1c31-45bb-9826-00529a103ddd
+        - ref!! 7fa72180-3f6e-4625-a47b-ea88ac591d24
+        - ref!! 61186a8b-f6d0-4176-8395-dfb6f99a15a0
+        - ref!! b8e42363-7354-40d6-90a7-008e4c670a34
+        - ref!! c902517b-6b4f-4404-ba8c-f707d0c5e978
+        - ref!! 27cb811c-7b0b-405d-98b8-b1bab86471ca
+        - ref!! ad6433bc-53d0-46f7-a5d3-6ec222f09a49
+        - ref!! a94716dc-9600-42d9-b0ed-e6458751819d
+        - ref!! 6cd721d6-2f69-4d97-bd00-708193cbf00e
+        - ref!! b9fc4cd9-450f-4525-a104-db02baa770fe
+        - ref!! 98a129cf-583d-4a3e-b35c-a90119af0d82
+    Parts:
+        -   Entity:
+                Id: 0260dd7e-c8c1-4895-abcf-9fc2f43ba623
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 50bbe4db-a210-43b7-a8e8-30c7db89af22
+                        Position: {X: -2.4999998, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 781f535e-16d2-49c5-a062-9df943ab7d27
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 03ea66e1-567e-4683-ba45-32f02bd5d721
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: e0b9f710-40e8-4c99-879e-cc36cc6ffbfe
+                        Position: {X: 1.5, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 374f9c9e-679f-4dea-acbd-1956b9a644ff
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 0a09fa5a-071c-49f0-ad3d-cba9957250aa
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 25a6240c-eb0c-4325-9588-50af1f57ff08
+                        Position: {X: -0.5, Y: 3.0, Z: 6.3941417}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 5.0, Y: 0.5, Z: 5.0}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 2c2f026f-1b61-4c1f-b749-d3f4f1ab4d05
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials:
+                            7bb3c15ca6261e6bf941fd1aa8cf62aa~0: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
+        -   Folder: null
+            Entity:
+                Id: 0adaa689-3ad5-46d4-88af-24181d48e4e7
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 3c5e2b82-03d1-497d-92bb-3bad3c90db98
+                        Position: {X: -2.4999998, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: c94cd5c8-2075-46ff-ace1-5c069d3b4df3
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 0af74688-91c9-4fb9-8880-4f4ebf7ffbf1
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: cfb4c558-9d87-460d-ad97-ce765218715e
+                        Position: {X: 1.5, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: f07defe7-1489-4400-a082-1e5a032aea50
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 127aae06-9d08-4dd6-8a29-bc7b0c05e031
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 64a18ede-861b-46b9-a9ba-33e8e20d4b81
+                        Position: {X: 1.5, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: a40ec554-7ddf-4dd8-8d0f-46fef81922b1
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Entity:
+                Id: 12c103de-317c-481b-bc19-1160095bc14f
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 7add810c-656a-453d-80f7-bc47056d6e01
+                        Position: {X: -2.4999998, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: e840edc8-9a33-4e9b-be6b-6c5793509066
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 172df1d1-885e-4b37-a8ea-7957d2f4fbd0
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: b65fbee6-096b-4ba8-b002-51f156dd49bc
+                        Position: {X: 1.5, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: da122275-48d5-4732-9c6d-dd405ab2b51c
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 1bf6d01f-f064-4f0b-9f27-a17e545385f1
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 5bd67947-4776-4c08-bbd5-db289440cf74
+                        Position: {X: -2.4999998, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 0a8c10f0-b8b2-4283-a83d-a2d59acded2a
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 1eec09ac-d2f6-4910-b35b-8e3b7fa6fd7c
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: a519b59b-d29b-4030-a468-e3b7509c39b9
+                        Position: {X: 1.5, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 91fe82a1-0aa6-48c0-ace2-b58fe723feaa
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Entity:
+                Id: 205164f7-1d26-4dce-a81a-6f68bfaf385b
+                Name: Node3
+                Components:
+                    12849867b907b4f072ad6b0a722e7113: !TransformComponent
+                        Id: 2ffd2146-b000-4af5-b4fb-65e49708beee
+                        Position: {X: 3.6333284, Y: 1.22353, Z: 7.79498}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    4cfe05c90ae3791cacbe14b76d3cdf38: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
+                        Id: 481d8cbe-6839-4c38-be0f-7fc06d8c528a
+                        SplineNode:
+                            Segments: 40
+                            TangentOutLocal: {X: 0.0, Y: 0.0, Z: 3.0}
+                            TangentInLocal: {X: 0.0, Y: 0.0, Z: -2.0}
+                            BoundingBox:
+                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
+                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
+        -   Entity:
+                Id: 22a46959-9ebb-4817-b0d6-4297ae497845
+                Name: Ambient light
+                Components:
+                    e37510ab5443025085f5a3f7882a05dc: !TransformComponent
+                        Id: 4d77b624-98c7-45b7-bbde-0620f6f540b8
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    6cf578a3add60dd781100320c874c9a2: !LightComponent
+                        Id: 62474234-99d1-48a2-8e32-9567dfeaae02
+                        Type: !LightAmbient
+                            Color: !ColorRgbProvider
+                                Value: {R: 0.96875, G: 0.83070314, B: 0.62363285}
+                        Intensity: 0.3
+        -   Folder: null
+            Entity:
+                Id: 2454f173-537a-4c86-98a3-a5863157a3db
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 054b76b2-e423-4d3c-9412-43e242b27b20
+                        Position: {X: -0.5, Y: 3.0, Z: 6.3941417}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 5.0, Y: 0.5, Z: 5.0}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 5517fa49-558f-46df-9ddf-1be169c5d227
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials:
+                            7bb3c15ca6261e6bf941fd1aa8cf62aa~0: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
+        -   Entity:
+                Id: 25021088-630b-41e9-b1a9-3f9cd8586cd1
+                Name: Camera
+                Components:
+                    f29994c5681a8c2d045f5c0f5bd4ded9: !TransformComponent
+                        Id: 955fa274-de8e-45ba-a022-799afce30dea
+                        Position*: {X: 0.0, Y: 0.2, Z: -0.5}
+                        Rotation*: {X: 8.634707E-08, Y: 1.0, Z: 6.5190226E-15, W: 7.54979E-08}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    05167499ad9121ce9e96b1b4c5444b0a: !CameraComponent
+                        Id: 08008626-211b-42f7-afa0-ee882d484c56
+                        Name: null
+                        Projection: Perspective
+                        Slot: 74df2f5f-7b3c-4819-8415-58dfc3199aea
+                    13c784dc3527224fd0f7dc445499473d: !UIComponent
+                        Id: 818709e2-2d3b-466d-95b5-0004c3e8ed6a
+                        Page: 72db55a9-0b76-4c3c-918b-afaf40334293:UI/MainPage
+                        Resolution: {X: 1280.0, Y: 720.0, Z: 1000.0}
+                        Size: {X: 1.28, Y: 0.72, Z: 1.0}
+                    ee0c014ab223f17f3503cd630f77f399: !SplineTools.BasicCameraController,SplineTools
+                        Id: 159e7fea-edf9-4e06-bbd2-385b9de80809
+                        Gamepad: false
+                        KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
+                        TouchMovementSpeed: {X: 0.7, Y: 0.7, Z: 0.3}
+                        SpeedFactor: 5.0
+                        KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
+                        MouseRotationSpeed: {X: 1.0, Y: 1.0}
+                        TouchRotationSpeed: {X: 1.0, Y: 0.7}
+                    ad128bc66dad332dd16c8d312ee050b3: !SplineTools.SwitchScene,SplineTools
+                        Id: 3b6ab943-3089-4d6e-936b-c54a7e34e7d9
+                        Scenes:
+                            c5800989324242552c79a79c023b21d9: 25542675-edbb-436c-97aa-ee45d9f5b004:Scenes/1.MainScene
+                            2ffe2ccfd77f2a4211bf1184c609a16a: 13836056-32b5-43b5-8f33-a772afc5291a:Scenes/2.SplineByCode
+                            a5e99e94542079249676bcf9b9fe73c5: d6c6e743-2d04-4ceb-a66f-6e43ed9241fd:Scenes/3.SplineClosestPoint
+                            fe573d561e8d3e880c6a2834f7460a01: f2a651a3-c947-4709-b97c-65e0ac1dd399:Scenes/4.SplineTraverser
+                            76050d92d9a15b40836baffc47ddfc88: 7b5a7073-7dba-4190-8e98-b5554860c195:Scenes/5.SplineTraverserByCode
+                            83aea174e763f98a391df33dfd5a62a0: 4688a67a-2aec-4fc3-816c-c5a52355f096:Scenes/6.SplineTraverserEvents
+                            4b4c7429b3ea228c536b09a186c581c5: 6e8bdc37-82de-4aab-aca0-8ae82d197ce4:Scenes/7.SplineTraverserCamera
+                            a68c3accc4557497e0b88b83dbafc98a: 881a00ce-94a4-4ee3-ab22-6b64a2321e60:Scenes/20.SplineStressTesting
+                            92751329c3a3b1c8b741d77c2930a99b: 2b452418-3f9d-4c71-8fac-f3090c5e53cd:Scenes/21.SplineTraverserStressTest
+                        ShowMenu: true
+                    75803d53350d25f4e32b7961de560093*: !SplineTools.BasicCameraController,SplineTools
+                        Id: b6a1defa-0227-464e-afd4-39a7d1acba87
+                        Gamepad: false
+                        KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
+                        TouchMovementSpeed: {X: 0.7, Y: 0.7, Z: 0.3}
+                        SpeedFactor: 5.0
+                        KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
+                        MouseRotationSpeed: {X: 1.0, Y: 1.0}
+                        TouchRotationSpeed: {X: 1.0, Y: 0.7}
+            Base:
+                BasePartAsset: cb026551-9c62-4058-9896-d2d3f36539fa:Camera
+                BasePartId: 08472225-3859-4500-adbc-a22796f88494
+                InstanceId: 05d4730c-2614-4848-88f8-8ad2a44b2429
+        -   Folder: null
+            Entity:
+                Id: 2711da0a-81f5-45b6-a645-46b7b96e838b
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: f615a631-2afb-479b-892f-669cfd0ece98
+                        Position: {X: 1.5, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 37a38aa8-6f29-48f2-8803-67b5ebad6fce
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Entity:
+                Id: 27cb811c-7b0b-405d-98b8-b1bab86471ca
+                Name: largeTower
+                Components:
+                    9dfad0d7667cc0cb83e6c3482116d8b2: !TransformComponent
+                        Id: a1469303-fc1a-40da-8528-084230818e04
+                        Position: {X: -5.9501066, Y: 4.5669575, Z: -16.144512}
+                        Rotation: {X: 0.3813085, Y: 0.47667247, Z: -0.13605459, W: 0.7803052}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            6afb09b1f530c4bd3e483ec1be046e9a: ref!! d2be2e9e-a054-4c8e-9193-c5f8f40c85e1
+                            1b699ffab108696445642fcd1f960e97: ref!! 7d78311b-e0c9-44de-b32f-866d0d311d61
+        -   Folder: null
+            Entity:
+                Id: 291b92f3-956f-4969-80bd-2a5ad57ef4c6
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 48c2ba10-a458-43ac-928e-872a11dbec57
+                        Position: {X: -2.4999998, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: c427602b-8926-43dd-9052-494e2230e92c
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 2e7fd743-7e08-4917-b0c4-b1a0aec0d7b6
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 7c5aa6b1-dda5-41f3-8dab-624d64aed894
+                        Position: {X: 1.5, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 8f9e502b-20bc-402a-90d3-85836e580bc9
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 2ed2a8aa-4b00-462d-b598-017762c321fb
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 5d6d45b7-d89d-45f4-b88b-c7909c9d96c5
+                        Position: {X: -0.5, Y: 3.0, Z: 6.3941417}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 5.0, Y: 0.5, Z: 5.0}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 9dc5f37d-2884-4cc5-8962-34b27018460d
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials:
+                            7bb3c15ca6261e6bf941fd1aa8cf62aa~0: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
+        -   Folder: null
+            Entity:
+                Id: 31542be2-3bb3-4de7-963f-86f5f34027e7
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 5194ec74-6b22-44b8-a55a-22bf703950a4
+                        Position: {X: -2.4999998, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 48acab34-3cf7-4e6c-b3c5-68ca0108ccaf
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 3468186a-0a6a-4bfd-933b-4d34becf7ffd
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 303a6581-6baf-4071-af53-9a7c30ae045c
+                        Position: {X: -2.4999998, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: b2eebada-213c-4832-bd80-e226d844a15e
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Entity:
+                Id: 35823ffa-7430-45ff-b49d-f9fdd84e5851
+                Name: Node4
+                Components:
+                    12849867b907b4f072ad6b0a722e7113: !TransformComponent
+                        Id: 5dcaa54d-b771-41d6-b24b-c353b8ad70eb
+                        Position: {X: -4.8340545, Y: 3.9971855, Z: 8.473149}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    4cfe05c90ae3791cacbe14b76d3cdf38: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
+                        Id: eb4fdf84-63fd-4ae2-9dc1-c19d9bcc7557
+                        SplineNode:
+                            Segments: 40
+                            TangentOutLocal: {X: 0.0, Y: 0.0, Z: -4.0}
+                            TangentInLocal: {X: 0.0, Y: 0.0, Z: 4.0}
+                            BoundingBox:
+                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
+                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
+        -   Folder: null
+            Entity:
+                Id: 36c4eb78-92c1-4c26-bf49-7bb0eba8c540
+                Name: Tower
+                Components:
+                    e81cfef05faa2c67dadfda74045f137c: !TransformComponent
+                        Id: 7d78311b-e0c9-44de-b32f-866d0d311d61
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            cbac65b84e0025f6fafc060ebe9da3b8: ref!! d2cb0f2a-4ef9-4f58-a475-646fa8e63f61
+                            a2764167ccaf2a3edbbd22f47e29f8d6: ref!! b5d1c865-5275-4e4c-993a-aee513d9e7cc
+                            6002b9358d17eee5c827f7b209e1ed1c: ref!! f615a631-2afb-479b-892f-669cfd0ece98
+                            c4eb206756b39d0867a03049d646b665: ref!! 7c5aa6b1-dda5-41f3-8dab-624d64aed894
+                            57fe4044108c85d8c56ab49057f77078: ref!! e44139cb-7e9c-48c9-8865-ac4e9336deb2
+        -   Folder: null
+            Entity:
+                Id: 375b6f48-60c0-449e-9f92-612a4ab42b7f
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: d12be814-93a2-4b13-9e5b-a4a3e23ca0da
+                        Position: {X: -2.4999998, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 88c25651-eda9-40fb-8256-629e66bc1a52
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 3c5f09c9-c612-4f2d-afcc-6f0bdaf09ab6
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: d7df515e-5d24-4598-a4cb-eb60c40d492f
+                        Position: {X: -2.4999998, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: f1fb3db7-b13a-4248-82b2-d6b02a5edc31
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 3c910a4c-f41c-4821-8a18-9d69d6d78182
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: a66b018b-5b91-43ee-9beb-b2adc3f90c79
+                        Position: {X: 1.5, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: dc64a5be-9f42-4768-a557-6bba9d8b42b4
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 45248289-cea4-44f4-b526-c28ed3950ef9
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: a2eb83f6-8980-4339-be1c-378013fe5b64
+                        Position: {X: -2.4999998, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 681fed48-2fd8-418e-aeda-7d55876b039b
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 487fc14c-2dfb-45e9-baf0-0766d009df24
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: f6c88df9-f7bc-4952-8e1c-a19184205d01
+                        Position: {X: -0.5, Y: 3.0, Z: 6.3941417}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 5.0, Y: 0.5, Z: 5.0}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: fb0c7a11-49b5-4197-9124-138e064d99ec
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials:
+                            7bb3c15ca6261e6bf941fd1aa8cf62aa~0: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
+        -   Folder: null
+            Entity:
+                Id: 4e14a0b5-d2da-4da0-b4a9-a6950854d460
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: a9e368e4-3ad8-45ad-be5d-d421821f7fed
+                        Position: {X: 1.5, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: f0a50ba8-ba6a-4255-b837-b3ee45817fd7
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 517e9718-f0dc-4d73-b760-4eb61dd4f094
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: afba8e9e-fc33-48cf-ba5a-2da0fd5fcf61
+                        Position: {X: 1.5, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 99fd6696-1667-47a1-a1b7-8be56daf0e69
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 53b9410b-b733-464f-91ca-a19b97270891
+                Name: Tower
+                Components:
+                    e81cfef05faa2c67dadfda74045f137c: !TransformComponent
+                        Id: cf2a4ddf-c938-4eb7-92da-17ce57c3f261
+                        Position: {X: 0.0, Y: 6.0000005, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            cbac65b84e0025f6fafc060ebe9da3b8: ref!! 8e247eda-8094-4c8e-bbdf-efb66a9d9cf2
+                            a2764167ccaf2a3edbbd22f47e29f8d6: ref!! 26d6a369-66b7-4214-8bf7-826b3e5f81f5
+                            6002b9358d17eee5c827f7b209e1ed1c: ref!! a3b36832-e42f-4043-88ff-773bb2c46b36
+                            c4eb206756b39d0867a03049d646b665: ref!! 0564d850-8deb-4656-8fd8-0d1d0bc2ac29
+                            57fe4044108c85d8c56ab49057f77078: ref!! 054b76b2-e423-4d3c-9412-43e242b27b20
+        -   Folder: null
+            Entity:
+                Id: 54b95555-54a3-4821-90f2-937e62af2bd1
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 0564d850-8deb-4656-8fd8-0d1d0bc2ac29
+                        Position: {X: 1.5, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 9801b96d-4c8a-45bd-83fc-b30797b56cfd
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 577b3cb3-079e-4904-bd60-3ad04f01941e
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 574383bb-eaa7-4118-a0de-5987a17f7bf7
+                        Position: {X: 1.5, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 0a41e52b-539e-4a39-815a-bb73cef67846
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 5a4f1629-5dd1-47c5-aecb-412120b3b2b2
+                Name: Tower
+                Components:
+                    e81cfef05faa2c67dadfda74045f137c: !TransformComponent
+                        Id: df12d28d-d920-47cd-b134-eef35d63a9e1
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            cbac65b84e0025f6fafc060ebe9da3b8: ref!! 36936156-486d-4e21-8a43-578a1c12993c
+                            a2764167ccaf2a3edbbd22f47e29f8d6: ref!! 3c5e2b82-03d1-497d-92bb-3bad3c90db98
+                            6002b9358d17eee5c827f7b209e1ed1c: ref!! 41662c75-d851-45f5-80e9-129d1da6f4e6
+                            c4eb206756b39d0867a03049d646b665: ref!! e0b9f710-40e8-4c99-879e-cc36cc6ffbfe
+                            57fe4044108c85d8c56ab49057f77078: ref!! 55589130-ad30-4eab-96f2-af85bcca613a
+        -   Folder: null
+            Entity:
+                Id: 5d0c8703-a921-4293-9a8c-e6889b94858d
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: ec50860c-aa68-4257-bc7c-b965d1b0451f
+                        Position: {X: -2.4999998, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 7c60b372-fbea-4e54-8221-feea6fa4cbec
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Entity:
+                Id: 61186a8b-f6d0-4176-8395-dfb6f99a15a0
+                Name: largeTower
+                Components:
+                    9dfad0d7667cc0cb83e6c3482116d8b2: !TransformComponent
+                        Id: 6e4bfabd-194f-4bc1-977a-1a88542e672c
+                        Position: {X: -7.942861, Y: 0.0, Z: 12.307242}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            6afb09b1f530c4bd3e483ec1be046e9a: ref!! 40099569-3916-42a8-91b9-e8a195fa8827
+                            1b699ffab108696445642fcd1f960e97: ref!! 08527173-3178-45af-8dbc-6e88ac075085
+        -   Folder: null
+            Entity:
+                Id: 6152f407-e533-46ed-aeec-7e0d6623d294
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: d262de20-d4b1-47f6-8752-298e1cf38bec
+                        Position: {X: -2.4999998, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: d273bdd3-18a0-491a-940f-41bbf863a96f
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 66a132ce-9960-4dd0-82db-6852fe83c284
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 07dc55cd-e59a-4427-8cdd-ab46c20467f2
+                        Position: {X: -0.5, Y: 3.0, Z: 6.3941417}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 5.0, Y: 0.5, Z: 5.0}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: da99f762-d436-434e-8e67-7080c1438ad3
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials:
+                            7bb3c15ca6261e6bf941fd1aa8cf62aa~0: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
+        -   Entity:
+                Id: 6cd721d6-2f69-4d97-bd00-708193cbf00e
+                Name: largeTower
+                Components:
+                    9dfad0d7667cc0cb83e6c3482116d8b2: !TransformComponent
+                        Id: e62b6ff6-2510-4f1c-ad83-944147813ef7
+                        Position: {X: -16.656, Y: -1.5542893, Z: -13.693621}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            6afb09b1f530c4bd3e483ec1be046e9a: ref!! e2f9dd51-18fa-478a-8b3a-960e8515b346
+                            1b699ffab108696445642fcd1f960e97: ref!! 87c627dc-319e-45e0-a075-3f7d84dd7b79
+        -   Folder: null
+            Entity:
+                Id: 6d53b731-82b9-4fd0-952a-547df0ddbf78
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 36936156-486d-4e21-8a43-578a1c12993c
+                        Position: {X: -2.4999998, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: ee5262c3-b1ee-4b3f-b2fa-6c9fba4ae89e
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 6d9152a0-b9ed-43ad-b4e0-4bd4ce6ef61f
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 55589130-ad30-4eab-96f2-af85bcca613a
+                        Position: {X: -0.5, Y: 3.0, Z: 6.3941417}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 5.0, Y: 0.5, Z: 5.0}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 11270a02-26af-425a-ae44-69652173350b
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials:
+                            7bb3c15ca6261e6bf941fd1aa8cf62aa~0: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
+        -   Folder: null
+            Entity:
+                Id: 7057b73a-4f1d-48a6-b841-d62f272c30a6
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 4139fae4-9b6a-4780-b62c-e86e325d80e6
+                        Position: {X: -2.4999998, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: dc373095-66ae-48f2-9284-e7ab1fd11a38
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 74da3b42-f2e9-4656-ac43-7bb860fd9056
+                Name: Tower
+                Components:
+                    e81cfef05faa2c67dadfda74045f137c: !TransformComponent
+                        Id: 87c627dc-319e-45e0-a075-3f7d84dd7b79
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            cbac65b84e0025f6fafc060ebe9da3b8: ref!! a2eb83f6-8980-4339-be1c-378013fe5b64
+                            a2764167ccaf2a3edbbd22f47e29f8d6: ref!! d12be814-93a2-4b13-9e5b-a4a3e23ca0da
+                            c4eb206756b39d0867a03049d646b665: ref!! a66b018b-5b91-43ee-9beb-b2adc3f90c79
+                            57fe4044108c85d8c56ab49057f77078: ref!! 25a6240c-eb0c-4325-9588-50af1f57ff08
+        -   Folder: null
+            Entity:
+                Id: 799334a9-12c5-4310-9007-fc31ab9d517e
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: e86c2d4f-4246-43c5-9234-ef49b052ba6b
+                        Position: {X: 1.5, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 7154555b-3644-44c0-afb2-34e34304f938
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 7ad8b0f5-3a41-4c46-ad41-60eae796cca5
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: c99b48e7-cbb8-485f-bd80-7787c0e16e7c
+                        Position: {X: 1.5, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 69cbd525-8c9e-4ecf-b7a6-5165ccf17fb9
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: 7eed3648-b392-4cf1-babf-2341ce185ea8
+                Name: Node2
+                Components:
+                    12849867b907b4f072ad6b0a722e7113: !TransformComponent
+                        Id: 505441cb-c540-4057-9bc1-07257375250a
+                        Position: {X: -5.136718, Y: 1.1483831, Z: 5.4437494}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    4cfe05c90ae3791cacbe14b76d3cdf38: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
+                        Id: aa083b8d-967d-4135-8dd4-2f227e6b554f
+                        SplineNode:
+                            Segments: 40
+                            TangentOutLocal: {X: 0.2, Y: 0.0, Z: 2.0}
+                            TangentInLocal: {X: 0.0, Y: 0.0, Z: 0.0}
+                            BoundingBox:
+                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
+                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
+        -   Entity:
+                Id: 7fa72180-3f6e-4625-a47b-ea88ac591d24
+                Name: Tower
+                Components:
+                    e81cfef05faa2c67dadfda74045f137c: !TransformComponent
+                        Id: 9edbefb2-86df-4d07-9ffd-812daa7d24f5
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            cbac65b84e0025f6fafc060ebe9da3b8: ref!! 7add810c-656a-453d-80f7-bc47056d6e01
+                            a2764167ccaf2a3edbbd22f47e29f8d6: ref!! 50bbe4db-a210-43b7-a8e8-30c7db89af22
+                            6002b9358d17eee5c827f7b209e1ed1c: ref!! 3c320c88-91bf-4497-930f-7808d9597a43
+                            c4eb206756b39d0867a03049d646b665: ref!! 00c7b70c-8166-425f-9089-b5a0b15761f0
+                            57fe4044108c85d8c56ab49057f77078: ref!! 265e2a4a-b3df-43e4-a81b-c0ad9d5949da
+        -   Folder: null
+            Entity:
+                Id: 82c24a59-a141-43b3-ac6f-22a74eb1df50
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: a4989e5a-df15-4228-bcd7-594f2ea72299
+                        Position: {X: 1.5, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 2641d0eb-d5ea-4758-a373-5a93e4ff25e4
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Entity:
+                Id: 8ac8593c-8b1c-45f1-bb8a-14c777df1453
+                Name: Tower
+                Components:
+                    e81cfef05faa2c67dadfda74045f137c: !TransformComponent
+                        Id: 08527173-3178-45af-8dbc-6e88ac075085
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            cbac65b84e0025f6fafc060ebe9da3b8: ref!! ec50860c-aa68-4257-bc7c-b965d1b0451f
+                            a2764167ccaf2a3edbbd22f47e29f8d6: ref!! f7836eee-2a7b-4a07-b605-c2932ee4ffc4
+                            6002b9358d17eee5c827f7b209e1ed1c: ref!! 64a18ede-861b-46b9-a9ba-33e8e20d4b81
+                            c4eb206756b39d0867a03049d646b665: ref!! c99b48e7-cbb8-485f-bd80-7787c0e16e7c
+                            57fe4044108c85d8c56ab49057f77078: ref!! 4819f66a-d3d2-45e7-aab8-ce59a3411e44
+        -   Folder: null
+            Entity:
+                Id: 8b81a97e-1627-4a61-ac67-7cb531bd7573
+                Name: Node1
+                Components:
+                    12849867b907b4f072ad6b0a722e7113: !TransformComponent
+                        Id: 0eed9134-5ea5-4bae-b0e5-3c8395aa2c1a
+                        Position: {X: -0.6980336, Y: 0.8207536, Z: 2.15112}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    4cfe05c90ae3791cacbe14b76d3cdf38: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
+                        Id: ca696027-49d0-49aa-845c-fc0a3df2fe13
+                        SplineNode:
+                            Segments: 40
+                            TangentOutLocal: {X: -6.0, Y: 0.0, Z: 0.0}
+                            TangentInLocal: {X: 4.0, Y: 0.0, Z: 0.0}
+                            BoundingBox:
+                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
+                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
+        -   Entity:
+                Id: 8f862aee-e101-4e6d-ace2-ecf834ac932f
+                Name: Tower
+                Components:
+                    e81cfef05faa2c67dadfda74045f137c: !TransformComponent
+                        Id: 40099569-3916-42a8-91b9-e8a195fa8827
+                        Position: {X: 0.0, Y: 6.0000005, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            cbac65b84e0025f6fafc060ebe9da3b8: ref!! 303a6581-6baf-4071-af53-9a7c30ae045c
+                            a2764167ccaf2a3edbbd22f47e29f8d6: ref!! f71831fc-6ced-465e-af64-04fbc7a96262
+                            6002b9358d17eee5c827f7b209e1ed1c: ref!! afba8e9e-fc33-48cf-ba5a-2da0fd5fcf61
+                            c4eb206756b39d0867a03049d646b665: ref!! b65fbee6-096b-4ba8-b002-51f156dd49bc
+                            57fe4044108c85d8c56ab49057f77078: ref!! ed81aec2-6fe6-46e4-a354-ff87c53fcc1a
+        -   Folder: null
+            Entity:
+                Id: 930c3b75-c609-4531-93d5-9387a44f46a1
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 26d6a369-66b7-4214-8bf7-826b3e5f81f5
+                        Position: {X: -2.4999998, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: c9c7a921-67f4-44df-8e0e-a3d6c522509c
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Entity:
+                Id: 98a129cf-583d-4a3e-b35c-a90119af0d82
+                Name: Spline1
+                Components:
+                    22d316f19b166a501801ec29d82d5617: !TransformComponent
+                        Id: c1e98e1b-0047-4488-bd95-2a3ec292d99f
+                        Position: {X: 0.0, Y: 0.98628247, Z: 0.51887697}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            fcaff8bfc7ccc2997d1ad89405f6483d: ref!! 0eed9134-5ea5-4bae-b0e5-3c8395aa2c1a
+                            4c6bcbb9739788ace98ad12051002038: ref!! 505441cb-c540-4057-9bc1-07257375250a
+                            c8acc1eb3c43cfcd6db8a4b020b8538c: ref!! 2ffd2146-b000-4af5-b4fb-65e49708beee
+                            6689228b15e865d1a308f2fd71f85472: ref!! 5dcaa54d-b771-41d6-b24b-c353b8ad70eb
+                            a36cadc17b513168527d5e2e26682694: ref!! 4ad89f1b-6d70-4b98-a3ce-211ee98a5d7e
+                    24e554ca1177df07bc9473147d12c446: !SplineComponent
+                        Id: 1714df4b-0f90-4e5f-b8fb-e7960e97857f
+                        Loop: true
+                        Nodes:
+                            e706a950956bc6e1a6d615287b67553d: ref!! ca696027-49d0-49aa-845c-fc0a3df2fe13
+                            a062211d59d321ce068fec0f17ccbbc8: ref!! aa083b8d-967d-4135-8dd4-2f227e6b554f
+                            f4c39bd90370928458e71c587f76621d: ref!! 481d8cbe-6839-4c38-be0f-7fc06d8c528a
+                            885308ac3297d33c2f76f83b3b1e3d3c: ref!! eb4fdf84-63fd-4ae2-9dc1-c19d9bcc7557
+                            22f9aaa6b9f712a8a40b86b2bb90aded: ref!! d91dfd6b-1e99-4ef7-97b3-7271ac6ddd03
+                        RenderSettings:
+                            ShowSegments: true
+                            SegmentsMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
+                            ShowNodes: false
+                            NodesMaterial: null
+                            ShowBoundingBox: false
+                            BoundingBoxMaterial: null
+        -   Folder: null
+            Entity:
+                Id: 9e8c571f-8b29-451c-832e-88b58d6c9210
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: ed81aec2-6fe6-46e4-a354-ff87c53fcc1a
+                        Position: {X: -0.5, Y: 3.0, Z: 6.3941417}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 5.0, Y: 0.5, Z: 5.0}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 8ed006bf-b2d3-46f1-9cc6-c1aa288897b2
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials:
+                            7bb3c15ca6261e6bf941fd1aa8cf62aa~0: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
+        -   Folder: null
+            Entity:
+                Id: a3ff4aa1-dee7-4162-b9fc-a26b64565263
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 8e247eda-8094-4c8e-bbdf-efb66a9d9cf2
+                        Position: {X: -2.4999998, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: ce48aad7-879d-4b15-b727-8224c816708b
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: a5c9bc4d-35f1-4124-a630-0466bea81035
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 4819f66a-d3d2-45e7-aab8-ce59a3411e44
+                        Position: {X: -0.5, Y: 3.0, Z: 6.3941417}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 5.0, Y: 0.5, Z: 5.0}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: ec12d5f6-87d9-4050-a546-c1969203838c
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials:
+                            7bb3c15ca6261e6bf941fd1aa8cf62aa~0: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
+        -   Folder: null
+            Entity:
+                Id: a7ba21a1-b4f4-44db-8ed2-4f932162d075
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 809daa58-c9d5-4f2d-a17a-fa84e8a664ef
+                        Position: {X: 1.5, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 34a98ef4-9466-4971-b255-8bceb11701e0
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Entity:
+                Id: a94716dc-9600-42d9-b0ed-e6458751819d
+                Name: largeTower
+                Components:
+                    9dfad0d7667cc0cb83e6c3482116d8b2: !TransformComponent
+                        Id: ca7421fb-fa84-486b-a9dc-523d9e08e20d
+                        Position: {X: -11.166437, Y: 4.5669575, Z: 3.124353}
+                        Rotation: {X: 0.40440622, Y: 0.1444132, Z: 0.019042473, W: 0.90290517}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            6afb09b1f530c4bd3e483ec1be046e9a: ref!! d4eed30e-fd36-4cdb-ab22-a2255f8ddff7
+                            1b699ffab108696445642fcd1f960e97: ref!! df12d28d-d920-47cd-b134-eef35d63a9e1
+        -   Folder: null
+            Entity:
+                Id: a9f000d8-d136-4461-b92d-2b3d06950ff4
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: dd92b3cc-a5b8-4992-b068-6873af95c4ba
+                        Position: {X: 1.5, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: c43030d5-0963-49e5-9935-68cc7afb52c8
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Entity:
+                Id: ad6433bc-53d0-46f7-a5d3-6ec222f09a49
+                Name: largeTower
+                Components:
+                    9dfad0d7667cc0cb83e6c3482116d8b2: !TransformComponent
+                        Id: 27ae128a-b488-408d-946d-b8b2cde274ce
+                        Position: {X: 12.915726, Y: 6.990823, Z: 3.5010338}
+                        Rotation: {X: 0.70710677, Y: 0.0, Z: 0.0, W: 0.70710677}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            6afb09b1f530c4bd3e483ec1be046e9a: ref!! cf2a4ddf-c938-4eb7-92da-17ce57c3f261
+                            1b699ffab108696445642fcd1f960e97: ref!! 1ab30238-506e-4b27-bc37-6dc549b29a83
+        -   Folder: null
+            Entity:
+                Id: b3c68eda-49a4-4513-b185-bf452bdf9705
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: b5d1c865-5275-4e4c-993a-aee513d9e7cc
+                        Position: {X: -2.4999998, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 8444de4c-52f8-4181-a137-40a0d11230a2
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: b5db723e-c758-4e41-bf06-e89935c77230
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: f7836eee-2a7b-4a07-b605-c2932ee4ffc4
+                        Position: {X: -2.4999998, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: ab4700cf-4bc2-43b5-91df-b644116921e6
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: b64bb7b8-9d68-4ea0-9dce-03ad8d23681d
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: f71831fc-6ced-465e-af64-04fbc7a96262
+                        Position: {X: -2.4999998, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 48d27410-c07a-489b-a8b8-89909a1a8d9c
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: b73f42c1-48da-42c5-a180-9af1b55c5bfa
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 8f29ff4f-086d-4295-829c-16a492ac22fe
+                        Position: {X: 1.5, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: d3712a06-9080-4dbe-9dd0-1d36e8742be9
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Entity:
+                Id: b8e42363-7354-40d6-90a7-008e4c670a34
+                Name: Tower
+                Components:
+                    e81cfef05faa2c67dadfda74045f137c: !TransformComponent
+                        Id: 2819e000-294b-4ed4-9b54-d49fe7735323
+                        Position: {X: 1.3292341, Y: -2.0, Z: -12.415577}
+                        Rotation: {X: 0.0, Y: 0.42472407, Z: 0.0, W: 0.90532285}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            cbac65b84e0025f6fafc060ebe9da3b8: ref!! 4139fae4-9b6a-4780-b62c-e86e325d80e6
+                            a2764167ccaf2a3edbbd22f47e29f8d6: ref!! 5bd67947-4776-4c08-bbd5-db289440cf74
+                            6002b9358d17eee5c827f7b209e1ed1c: ref!! dd92b3cc-a5b8-4992-b068-6873af95c4ba
+                            c4eb206756b39d0867a03049d646b665: ref!! 574383bb-eaa7-4118-a0de-5987a17f7bf7
+                            57fe4044108c85d8c56ab49057f77078: ref!! f6c88df9-f7bc-4952-8e1c-a19184205d01
+        -   Entity:
+                Id: b9fc4cd9-450f-4525-a104-db02baa770fe
+                Name: PlanePrefab
+                Components:
+                    f7f53c27e19918845427a432d9b4c6ce: !TransformComponent
+                        Id: fa0744d2-bab0-4a21-a050-85f649fdd643
+                        Position: {X: 0.33328807, Y: 1.7932607, Z: 2.3080785}
+                        Rotation: {X: -0.0, Y: -0.70710677, Z: 0.0, W: 0.70710677}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            8ab57e7d0120ef65ac9187bf18df72be: ref!! b4875648-6641-479d-a5e2-698207a16f32
+                            52168f45832f1f0bf8fa53a5fe1ba4f6: ref!! 895abd3f-27af-40dd-a9e7-0d3cc7739b6a
+                    96df55baed7f370ee34a0ad537dac00e: !SplineTraverserComponent
+                        Id: 5e90302b-109e-40f8-b6d6-897818a55168
+                        SplineComponent: ref!! 1714df4b-0f90-4e5f-b8fb-e7960e97857f
+                        Speed: 2.0
+                        IsMoving: true
+                        IsRotating: true
+        -   Entity:
+                Id: be9d93d8-ed3c-4574-8b6a-9d1aa8a73bbf
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 265e2a4a-b3df-43e4-a81b-c0ad9d5949da
+                        Position: {X: -0.5, Y: 3.0, Z: 6.3941417}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 5.0, Y: 0.5, Z: 5.0}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 23006a38-ae48-4c0e-9601-0c3fbef9740f
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials:
+                            7bb3c15ca6261e6bf941fd1aa8cf62aa~0: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
+        -   Entity:
+                Id: bfe05de2-386b-4e29-9538-9054e43432e3
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 3c320c88-91bf-4497-930f-7808d9597a43
+                        Position: {X: 1.5, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 2939deb2-1db5-44f6-b319-bd0ee5a78f8d
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: c355c70b-f30c-4525-b7a1-1fa23ef00194
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 1948f10a-6b8c-4323-b297-c9d978958d6f
+                        Position: {X: -2.4999998, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 86d00831-da06-4f78-92a1-2f028310bdb2
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: c68c957e-7476-4926-a18f-ed1627360cd2
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 63eb0efa-a419-4069-8d66-5561cab9821c
+                        Position: {X: -0.5, Y: 3.0, Z: 6.3941417}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 5.0, Y: 0.5, Z: 5.0}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: a591d8df-d891-4a48-a591-72d7587da281
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials:
+                            7bb3c15ca6261e6bf941fd1aa8cf62aa~0: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
+        -   Folder: null
+            Entity:
+                Id: c6aee00e-8e14-454c-8f4c-93677e20ef2d
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: b97d7745-339a-40fc-aec3-cbf702a73cd0
+                        Position: {X: -2.4999998, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 159fb6ef-385c-4cd0-a631-c53f20b66836
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Entity:
+                Id: c72b4578-907e-4ceb-8694-a10afda3d6eb
+                Name: Directional light
+                Components:
+                    2735ba6df4c5b50f232760f354230d8c: !TransformComponent
+                        Id: 4af8ce9f-88bb-42f8-a2df-dac58ebb5425
+                        Position: {X: -22.047579, Y: -1.5983908, Z: -17.825735}
+                        Rotation: {X: 0.18590894, Y: -0.92444247, Z: -0.27944058, W: -0.18098848}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    d2d1d0606bd5517b9bb780f5c7356a67: !LightComponent
+                        Id: 5975b104-33f2-40e2-b73f-a7b5bc22ac21
+                        Type: !LightDirectional
+                            Color: !ColorRgbProvider
+                                Value: {R: 1.0, G: 1.0, B: 1.0}
+                            Shadow:
+                                Enabled: true
+                                Filter: !LightShadowMapFilterTypePcf
+                                    FilterSize: Filter5x5
+                                Size: Large
+                                DepthRange: {}
+                                PartitionMode: !LightDirectionalShadowMap.PartitionLogarithmic {}
+                                ComputeTransmittance: false
+                                BiasParameters:
+                                    NormalOffsetScale: 1.0
+                        Intensity: 5.0
+        -   Entity:
+                Id: c80f2a65-ad4f-4d96-bb48-b8c3e4033c08
+                Name: Node5
+                Components:
+                    12849867b907b4f072ad6b0a722e7113: !TransformComponent
+                        Id: 4ad89f1b-6d70-4b98-a3ce-211ee98a5d7e
+                        Position: {X: 3.93174, Y: 2.711413, Z: 4.489991}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    4cfe05c90ae3791cacbe14b76d3cdf38: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
+                        Id: d91dfd6b-1e99-4ef7-97b3-7271ac6ddd03
+                        SplineNode:
+                            Segments: 40
+                            TangentOutLocal: {X: 0.0, Y: 0.0, Z: -2.0}
+                            TangentInLocal: {X: 0.0, Y: 0.0, Z: 3.0}
+                            BoundingBox:
+                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
+                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
+        -   Entity:
+                Id: c902517b-6b4f-4404-ba8c-f707d0c5e978
+                Name: Tower
+                Components:
+                    e81cfef05faa2c67dadfda74045f137c: !TransformComponent
+                        Id: d61a9453-018c-43b5-91fa-c02fa0af7ef5
+                        Position: {X: 1.3292341, Y: -2.0, Z: -12.415577}
+                        Rotation: {X: 0.0, Y: 0.42472407, Z: 0.0, W: 0.90532285}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            cbac65b84e0025f6fafc060ebe9da3b8: ref!! a9cb7200-eb49-4769-89cc-b0254e5a80a6
+                            a2764167ccaf2a3edbbd22f47e29f8d6: ref!! d7df515e-5d24-4598-a4cb-eb60c40d492f
+                            6002b9358d17eee5c827f7b209e1ed1c: ref!! a9e368e4-3ad8-45ad-be5d-d421821f7fed
+                            c4eb206756b39d0867a03049d646b665: ref!! a519b59b-d29b-4030-a468-e3b7509c39b9
+                            57fe4044108c85d8c56ab49057f77078: ref!! 07dc55cd-e59a-4427-8cdd-ab46c20467f2
+        -   Folder: null
+            Entity:
+                Id: c92c8bb6-5c4e-48ed-bfae-274e5bd51d97
+                Name: Tower
+                Components:
+                    e81cfef05faa2c67dadfda74045f137c: !TransformComponent
+                        Id: d4eed30e-fd36-4cdb-ab22-a2255f8ddff7
+                        Position: {X: 0.0, Y: 6.0000005, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            cbac65b84e0025f6fafc060ebe9da3b8: ref!! b97d7745-339a-40fc-aec3-cbf702a73cd0
+                            a2764167ccaf2a3edbbd22f47e29f8d6: ref!! 1948f10a-6b8c-4323-b297-c9d978958d6f
+                            6002b9358d17eee5c827f7b209e1ed1c: ref!! 809daa58-c9d5-4f2d-a17a-fa84e8a664ef
+                            c4eb206756b39d0867a03049d646b665: ref!! f79aaa17-ffd3-4d1e-95d2-a492dce40d56
+                            57fe4044108c85d8c56ab49057f77078: ref!! 63eb0efa-a419-4069-8d66-5561cab9821c
+        -   Folder: null
+            Entity:
+                Id: c9d8c14a-16f5-4ca0-ba3d-cd82550fe8b8
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 2f5e17a8-6ec1-449a-8652-7d874ef87c68
+                        Position: {X: -2.4999998, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: f080d5bb-9c93-4d56-9b6a-2a2c1313c8d7
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Entity:
+                Id: cd352203-1c31-45bb-9826-00529a103ddd
+                Name: Ground
+                Components:
+                    55a9aa5abde162ce0ef68f2227e8e025: !TransformComponent
+                        Id: 2d7790d1-f1df-4f5f-89bb-2ebe5eac9997
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 20.0, Y: 1.0, Z: 20.0}
+                        Children: {}
+                    3b7dfa1b125c179fd3a6f28da739ba63: !ModelComponent
+                        Id: a48522f8-11d5-4748-bde6-41e9eabaa0ec
+                        Model: 136576a0-e08f-4b73-aef1-03df8e422709:Ground
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: ce444df5-47f8-4f14-bf0b-c28e3e3b57ce
+                Name: Tower
+                Components:
+                    e81cfef05faa2c67dadfda74045f137c: !TransformComponent
+                        Id: e2f9dd51-18fa-478a-8b3a-960e8515b346
+                        Position: {X: 0.0, Y: 6.0000005, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            a2764167ccaf2a3edbbd22f47e29f8d6: ref!! d262de20-d4b1-47f6-8752-298e1cf38bec
+        -   Folder: null
+            Entity:
+                Id: cee234e1-8144-4f67-bf24-fe2b5b2c3c7d
+                Name: Tower
+                Components:
+                    e81cfef05faa2c67dadfda74045f137c: !TransformComponent
+                        Id: d2be2e9e-a054-4c8e-9193-c5f8f40c85e1
+                        Position: {X: 0.0, Y: 6.0000005, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            cbac65b84e0025f6fafc060ebe9da3b8: ref!! 2f5e17a8-6ec1-449a-8652-7d874ef87c68
+                            a2764167ccaf2a3edbbd22f47e29f8d6: ref!! 5194ec74-6b22-44b8-a55a-22bf703950a4
+                            6002b9358d17eee5c827f7b209e1ed1c: ref!! cfb4c558-9d87-460d-ad97-ce765218715e
+                            c4eb206756b39d0867a03049d646b665: ref!! e86c2d4f-4246-43c5-9234-ef49b052ba6b
+                            57fe4044108c85d8c56ab49057f77078: ref!! 4ca27035-5b43-4e55-84af-e4bf11a077c2
+        -   Entity:
+                Id: d17bb382-cd24-4c79-a845-03150db7504b
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 00c7b70c-8166-425f-9089-b5a0b15761f0
+                        Position: {X: 1.5, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 6570636b-a6d4-4a3c-a28f-097759f2c634
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: d4076c98-dcfe-4878-954c-2bf8505e1df7
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: f79aaa17-ffd3-4d1e-95d2-a492dce40d56
+                        Position: {X: 1.5, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 484f9884-5ffe-4e6e-8d74-fa1530233f99
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: d44a8782-1b17-4127-a77c-4d1405e9fb83
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 4ca27035-5b43-4e55-84af-e4bf11a077c2
+                        Position: {X: -0.5, Y: 3.0, Z: 6.3941417}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 5.0, Y: 0.5, Z: 5.0}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 29f3e238-49f0-4078-a3dc-ba1c87a7e201
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials:
+                            7bb3c15ca6261e6bf941fd1aa8cf62aa~0: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
+        -   Entity:
+                Id: d5183aad-83ad-4a6d-b24f-a651fa3bcb15
+                Name: plane
+                Components:
+                    9eb87e5b91d99fa12c0c604039a7ea3d: !TransformComponent
+                        Id: b4875648-6641-479d-a5e2-698207a16f32
+                        Position*: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation*: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale*: {X: 0.0037065607, Y: 0.0037065607, Z: 0.0037065607}
+                        Children: {}
+                    e36e9e8d628e9fd8f981468927d99190: !ModelComponent
+                        Id: 469f9c29-f181-48d2-aed5-ac3a6e78ae8b
+                        Model: 69f5d18d-6719-413b-9bfb-e7034055361b:Prefabs/Plane/plane
+                        Materials: {}
+            Base:
+                BasePartAsset: 12d04c4b-b724-4c97-807b-92ffe980f03f:Prefabs/Plane/PlanePrefab
+                BasePartId: 8c50f3e8-e5fe-492b-b049-955acef166b6
+                InstanceId: 44d2c222-503b-4ae9-860f-1285079e3c10
+        -   Folder: null
+            Entity:
+                Id: dcb37254-d0c5-4831-945b-5757bb8ea0d0
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: a9cb7200-eb49-4769-89cc-b0254e5a80a6
+                        Position: {X: -2.4999998, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 43bf4672-b46d-4a82-b12d-4af5725b89ad
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: ddbbbd4e-0b00-4fcf-ba4f-15ad40ab05dd
+                Name: Tower
+                Components:
+                    e81cfef05faa2c67dadfda74045f137c: !TransformComponent
+                        Id: 1ab30238-506e-4b27-bc37-6dc549b29a83
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            a2764167ccaf2a3edbbd22f47e29f8d6: ref!! 48c2ba10-a458-43ac-928e-872a11dbec57
+                            6002b9358d17eee5c827f7b209e1ed1c: ref!! 8f29ff4f-086d-4295-829c-16a492ac22fe
+                            c4eb206756b39d0867a03049d646b665: ref!! a4989e5a-df15-4228-bcd7-594f2ea72299
+                            57fe4044108c85d8c56ab49057f77078: ref!! 5d6d45b7-d89d-45f4-b88b-c7909c9d96c5
+        -   Folder: null
+            Entity:
+                Id: e77e56fa-0db1-4a50-9919-d3376f4c8a16
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: a3b36832-e42f-4043-88ff-773bb2c46b36
+                        Position: {X: 1.5, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 2f82b5d0-0f2b-4e10-a5fa-3aa7ebec6994
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Folder: null
+            Entity:
+                Id: edbde4fb-4eac-463a-9126-20b64e6dd85e
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: e44139cb-7e9c-48c9-8865-ac4e9336deb2
+                        Position: {X: -0.5, Y: 3.0, Z: 6.3941417}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 5.0, Y: 0.5, Z: 5.0}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: edf1b981-7098-4d6f-8b43-e876ff66d9a3
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials:
+                            7bb3c15ca6261e6bf941fd1aa8cf62aa~0: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
+        -   Folder: null
+            Entity:
+                Id: f02b7287-9f6f-41c2-805f-7ce22c1bee90
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: d2cb0f2a-4ef9-4f58-a475-646fa8e63f61
+                        Position: {X: -2.4999998, Y: 3.0, Z: 4.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: 7d9e12fa-1cbf-4608-ad79-0fa97a54ce6e
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}
+        -   Entity:
+                Id: f9861652-d36a-4cef-9ace-3e230bccfd9e
+                Name: Camera
+                Components:
+                    e950afd364643534001d46c5038c7f57: !TransformComponent
+                        Id: 895abd3f-27af-40dd-a9e7-0d3cc7739b6a
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            4c7ea4f76cfc04ab963dcf526cec50bd: ref!! 955fa274-de8e-45ba-a022-799afce30dea
+        -   Folder: null
+            Entity:
+                Id: fa876c91-fc51-494c-876d-3080990a3b6c
+                Name: Cube
+                Components:
+                    9f2114a3d5e9713979de50d6e02a006e: !TransformComponent
+                        Id: 41662c75-d851-45f5-80e9-129d1da6f4e6
+                        Position: {X: 1.5, Y: 3.0, Z: 8.5}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.5, Y: 6.0, Z: 0.5}
+                        Children: {}
+                    ca1c61745c783c6abe28fee0afe77e7b: !ModelComponent
+                        Id: f85b1f34-8a6d-444e-9e73-6254557584b5
+                        Model: a8466e7d-09b3-42f3-b1af-a8bc16cf547d:Cube
+                        Materials: {}

@@ -1,0 +1,44 @@
+!PrefabAsset
+Id: 86efff62-f8b8-47cc-8262-04ab60d4b18d
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+Hierarchy:
+    RootParts:
+        - ref!! 99f3479b-e72c-45a1-ba41-17e79ebc5d5f
+    Parts:
+        -   Entity:
+                Id: 99f3479b-e72c-45a1-ba41-17e79ebc5d5f
+                Name: Cube
+                Components:
+                    77488cc2fe54023378c36d95e0fb0379: !TransformComponent
+                        Id: 89a5a0ab-a6e2-4c64-b581-aa7b895c42eb
+                        Position: {X: 0.0, Y: -2.3841858E-07, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 2.0, Y: 0.25, Z: 2.0}
+                        Children: {}
+                    24ce3bf269b6da02b353d6ed00fef428: !ModelComponent
+                        Id: f187fddf-d902-4f46-8a28-852582cc145b
+                        Model: 4f797ac8-2eb4-48e2-939c-7c6da5764c3e:Prefabs/MovingPlatform/Cube
+                        Materials: {}
+                    cfa2b70bcd6939fa366b9138ded2b4cf: !RigidbodyComponent
+                        Id: 9b8efa8b-65b4-4913-9a20-30a0301a407b
+                        CanSleep: false
+                        Restitution: 0.0
+                        Friction: 0.5
+                        RollingFriction: 0.0
+                        CcdMotionThreshold: 0.0
+                        CcdSweptSphereRadius: 0.0
+                        IsTrigger: false
+                        IsKinematic: true
+                        Mass: 1.0
+                        LinearDamping: 0.0
+                        AngularDamping: 0.0
+                        OverrideGravity: false
+                        Gravity: {X: 0.0, Y: 0.0, Z: 0.0}
+                        NodeName: null
+                        ColliderShapes:
+                            4f19fe7e5414e39f0f72846795c79400: !BoxColliderShapeDesc
+                                Is2D: false
+                                Size: {X: 1.0, Y: 1.0, Z: 1.0}
+                                LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
+                                LocalRotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}

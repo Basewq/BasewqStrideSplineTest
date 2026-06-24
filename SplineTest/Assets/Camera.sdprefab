@@ -1,0 +1,50 @@
+!PrefabAsset
+Id: cb026551-9c62-4058-9896-d2d3f36539fa
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+Hierarchy:
+    RootParts:
+        - ref!! 08472225-3859-4500-adbc-a22796f88494
+    Parts:
+        -   Entity:
+                Id: 08472225-3859-4500-adbc-a22796f88494
+                Name: Camera
+                Components:
+                    f29994c5681a8c2d045f5c0f5bd4ded9: !TransformComponent
+                        Id: 33fdb084-c351-4948-996e-7ec89b43819a
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 5.710166E-08, Y: 0.95851386, Z: 0.28504583, W: -1.6981067E-08}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    05167499ad9121ce9e96b1b4c5444b0a: !CameraComponent
+                        Id: acbb14a1-1636-4bfd-9c5a-c027b4d4e5ec
+                        Name: null
+                        Projection: Perspective
+                        Slot: d0753af4-09b0-47ce-9cfc-def518c940ff
+                    13c784dc3527224fd0f7dc445499473d: !UIComponent
+                        Id: 931da0ff-e8dd-48cd-9b4a-141140c1d90a
+                        Page: 72db55a9-0b76-4c3c-918b-afaf40334293:UI/MainPage
+                        Resolution: {X: 1280.0, Y: 720.0, Z: 1000.0}
+                        Size: {X: 1.28, Y: 0.72, Z: 1.0}
+                    ee0c014ab223f17f3503cd630f77f399: !SplineTools.BasicCameraController,SplineTest
+                        Id: 18385149-9bf5-49fa-99ff-33d7cf6ab896
+                        Gamepad: false
+                        KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
+                        TouchMovementSpeed: {X: 0.7, Y: 0.7, Z: 0.3}
+                        SpeedFactor: 5.0
+                        KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
+                        MouseRotationSpeed: {X: 1.0, Y: 1.0}
+                        TouchRotationSpeed: {X: 1.0, Y: 0.7}
+                    ad128bc66dad332dd16c8d312ee050b3: !SplineTools.SwitchScene,SplineTest
+                        Id: 24f76560-0f73-496a-b17d-32bc3e6c3494
+                        Scenes:
+                            c5800989324242552c79a79c023b21d9: 25542675-edbb-436c-97aa-ee45d9f5b004:Scenes/1.MainScene
+                            2ffe2ccfd77f2a4211bf1184c609a16a: 13836056-32b5-43b5-8f33-a772afc5291a:Scenes/2.SplineByCode
+                            a5e99e94542079249676bcf9b9fe73c5: d6c6e743-2d04-4ceb-a66f-6e43ed9241fd:Scenes/3.SplineClosestPoint
+                            fe573d561e8d3e880c6a2834f7460a01: f2a651a3-c947-4709-b97c-65e0ac1dd399:Scenes/4.SplineTraverser
+                            76050d92d9a15b40836baffc47ddfc88: 7b5a7073-7dba-4190-8e98-b5554860c195:Scenes/5.SplineTraverserByCode
+                            83aea174e763f98a391df33dfd5a62a0: 4688a67a-2aec-4fc3-816c-c5a52355f096:Scenes/6.SplineTraverserEvents
+                            4b4c7429b3ea228c536b09a186c581c5: 6e8bdc37-82de-4aab-aca0-8ae82d197ce4:Scenes/7.SplineTraverserCamera
+                            a68c3accc4557497e0b88b83dbafc98a: 881a00ce-94a4-4ee3-ab22-6b64a2321e60:Scenes/20.SplineStressTesting
+                            92751329c3a3b1c8b741d77c2930a99b: 2b452418-3f9d-4c71-8fac-f3090c5e53cd:Scenes/21.SplineTraverserStressTest
+                        ShowMenu: true

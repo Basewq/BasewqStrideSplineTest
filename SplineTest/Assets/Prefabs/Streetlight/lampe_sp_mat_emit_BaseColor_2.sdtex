@@ -1,0 +1,8 @@
+!Texture
+Id: 38d4cf38-f082-47c1-a106-30c84c42c3a7
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../../../../../../Blender/Assets/Exterieur/Lamps/exports/lamp_sp.fbm/lampe_sp_mat_emit_BaseColor.jpg
+Type: !ColorTextureType
+    ColorKeyColor: {R: 255, G: 0, B: 255, A: 255}
+    PremultiplyAlpha: false

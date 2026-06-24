@@ -1,0 +1,7 @@
+!Texture
+Id: ec2b7165-262a-431b-bb4a-1e6768d23a4b
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../Resources/Materials/Futuristic/pilotage-stretcher-900-mm-architextures.jpg
+Type: !ColorTextureType
+    ColorKeyColor: {R: 255, G: 0, B: 255, A: 255}

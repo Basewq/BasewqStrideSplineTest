@@ -1,0 +1,7 @@
+!Texture
+Id: 345c1a54-dbdf-400a-9d5b-5c3d08768c5e
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../Resources/Materials/Futuristic/flagstone-rubble-1948-mm-architextures.jpg
+Type: !ColorTextureType
+    ColorKeyColor: {R: 255, G: 0, B: 255, A: 255}

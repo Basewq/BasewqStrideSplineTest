@@ -1,0 +1,35 @@
+!Model
+Id: 69f5d18d-6719-413b-9bfb-e7034055361b
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../../Resources/plane.obj
+Skeleton: null
+PivotPosition: {X: 0.0, Y: 0.0, Z: 0.0}
+Materials:
+    5b46729e6ddaaf04a3bdefc3954e6827:
+        Name: default
+        MaterialInstance:
+            Material: ffbdc515-9103-4940-96d2-446903f8a895:Prefabs/Plane/default
+    c4b032da813afdb88c03196f47c8fa62:
+        Name: Mat
+        MaterialInstance:
+            Material: c0ee9834-89d3-4ae5-990b-b52fe056c79e:Prefabs/Plane/Mat
+    8ef161d11439ce46ed67eed14cfed957:
+        Name: Mat.2
+        MaterialInstance:
+            Material: 641368ad-cc93-42c1-b3b1-c06decba0fb7:Prefabs/Plane/Mat.2
+    604e9556cc99368cb1e81d92b015abde:
+        Name: Mat.1
+        MaterialInstance:
+            Material: 162cd92c-c2f2-457b-83fb-379473bd1aa9:Prefabs/Plane/Mat.1
+    7e5cb19c57064f5c164669e1f29c307a:
+        Name: window.1
+        MaterialInstance:
+            Material: 856763a9-e9b1-4674-89f0-709bb69e9582:Prefabs/Plane/window.1
+    caab43d389239dafdc3f7b5eca5df871:
+        Name: window
+        MaterialInstance:
+            Material: a27a70f0-c4b8-4453-95ce-1c5ec799d12f:Prefabs/Plane/window
+Modifiers: {}
+~SourceHashes:
+    27281ef6b87ee69b82559bde9daf6865~../../../Resources/plane.obj: 1b12b24f8fd6aaf2eab2763ca23a2136

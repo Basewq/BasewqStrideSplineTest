@@ -1,0 +1,222 @@
+!SceneAsset
+Id: 2b452418-3f9d-4c71-8fac-f3090c5e53cd
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+ChildrenIds: []
+Offset: {X: 0.0, Y: 0.0, Z: 0.0}
+Hierarchy:
+    RootParts:
+        - ref!! b2043fb6-e390-4a00-bcf7-d32e8d379663
+        - ref!! a636f8ca-0583-45d6-b653-5dc97e37dee8
+        - ref!! 31d2a752-0874-4449-a0c8-d2de42f8ae0d
+        - ref!! bec9f147-e361-49a7-9907-629ea4a9a790
+        - ref!! aaa470c6-5d60-4258-80d9-c332d6fa7fdb
+        - ref!! a42d1ba2-7aad-4132-815e-07c81f669826
+    Parts:
+        -   Entity:
+                Id: 2b84e6d4-7b91-4cea-9bf1-df8e5046a323
+                Name: StreetLight_holmhansen
+                Components:
+                    7ae58587ded46138c1c0d17e60bfb11a: !TransformComponent
+                        Id: bf9a5fe9-d8d2-451c-8aab-05d3fcd49490
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: -0.0, Y: -0.70710677, Z: 0.0, W: 0.70710677}
+                        Scale: {X: 0.23430581, Y: 0.23430581, Z: 0.23430581}
+                        Children: {}
+                    62fb3d568af89b53e76cf80a18162d10: !ModelComponent
+                        Id: ebfe1585-714f-4636-8365-ba686a6758a4
+                        Model: 96693a0a-d44d-4007-a21c-5d57d8cd16b7:Prefabs/Streetlight/StreetLight_holmhansen
+                        Materials:
+                            07e286ca06c87885efa805a71eed59bb~0: 09daf103-75c8-4782-ac1d-cfdfa29d551c:Prefabs/Streetlight/mat_beam_holder
+                            f34a7b1beb3f6deec2306f5d4c033c05~1: bd4d5970-3414-4b99-b87b-522d8e2c5571:Prefabs/Streetlight/mat_lamp
+                            a522fc4af576bc8ba7a16acbec85a35d~2: a9559ccd-1621-4e5b-b637-f51b98f30713:Prefabs/Streetlight/mat_ring
+                            0ab0f18f3633695b4ee37d8c0cf528c3~3: 8f72564c-4c48-45f2-87c5-cb36f4b6ef18:Prefabs/Streetlight/mat_emit
+                            8f6098e8694c529f5002d04a66e5646e~4: 8c38ff37-3422-49e1-ade1-c836ceebb40a:Prefabs/Streetlight/mat_beam_ver
+                            2f1797f56269dbfc74820672dd24060a~5: d543eaf5-8c33-40f8-b27a-5e1a5d714077:Prefabs/Streetlight/mat_beam_hor
+                            70234be0960e3437bd2cbc4b9c1aad2c~6: b74d8e77-d503-49bb-8672-db79f5b52528:Prefabs/Streetlight/mat_lamp_holder
+            Base:
+                BasePartAsset: 459c96ff-90c0-4265-8310-1e568a1c4832:Prefabs/Streetlight/StreetLight
+                BasePartId: af9aa1ab-06e8-42a7-96b7-84162f14e8aa
+                InstanceId: c646285e-1a16-4af9-aeac-7c7205693f7a
+        -   Entity:
+                Id: 31d2a752-0874-4449-a0c8-d2de42f8ae0d
+                Name: Ground
+                Components:
+                    55a9aa5abde162ce0ef68f2227e8e025: !TransformComponent
+                        Id: b450ed5e-4312-43ed-b012-fe6196c64767
+                        Position: {X: 0.0, Y: -0.51822805, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 20.0, Y: 1.0, Z: 20.0}
+                        Children: {}
+                    3b7dfa1b125c179fd3a6f28da739ba63: !ModelComponent
+                        Id: dcdba9f5-5e1c-486c-9bf1-2fd225a44839
+                        Model: 136576a0-e08f-4b73-aef1-03df8e422709:Ground
+                        Materials: {}
+                    368602981b598ae21a8ed4e68f48ac5a: !SplineTools.GameProfiler,SplineTools
+                        Id: 53dedade-fb2b-4d90-9d58-2159bf98d1ad
+                        Enabled: true
+                        TextColor: {R: 0, G: 0, B: 0, A: 255}
+                        RefreshTime: 100.0
+                        SortingMode: ByTime
+                        FilteringMode: Fps
+                        ResultPage: 1
+        -   Entity:
+                Id: 9b15a313-e2d5-47ce-bc25-02dd84c8fe43
+                Name: plane
+                Components:
+                    9eb87e5b91d99fa12c0c604039a7ea3d: !TransformComponent
+                        Id: 69cd48a1-2bb0-4f21-81d8-4b6596323528
+                        Position*: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale*: {X: 0.002, Y: 0.002, Z: 0.002}
+                        Children: {}
+                    e36e9e8d628e9fd8f981468927d99190: !ModelComponent
+                        Id: 7c13a4f3-50dd-4a11-aa88-72afe085b960
+                        Model: 69f5d18d-6719-413b-9bfb-e7034055361b:Prefabs/Plane/plane
+                        Materials: {}
+            Base:
+                BasePartAsset: 12d04c4b-b724-4c97-807b-92ffe980f03f:Prefabs/Plane/PlanePrefab
+                BasePartId: 8c50f3e8-e5fe-492b-b049-955acef166b6
+                InstanceId: 3634e560-f54b-4687-814a-22c91952e94e
+        -   Entity:
+                Id: a2f08a02-3cdd-4c93-9f67-3caaaaed599b
+                Name: Camera
+                Components:
+                    f29994c5681a8c2d045f5c0f5bd4ded9: !TransformComponent
+                        Id: a6215693-4075-44d4-aa6a-b4a44f6bc104
+                        Position*: {X: 26.524244, Y: 34.572323, Z: -4.101574}
+                        Rotation*: {X: 4.6393684E-08, Y: 0.7787688, Z: 0.62731105, W: -3.7370874E-08}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    05167499ad9121ce9e96b1b4c5444b0a: !CameraComponent
+                        Id: 6b7fbce6-341e-4551-888d-5377f89c34df
+                        Name: null
+                        Projection: Perspective
+                        Slot: 74df2f5f-7b3c-4819-8415-58dfc3199aea
+                    13c784dc3527224fd0f7dc445499473d: !UIComponent
+                        Id: cc72cb0e-3ff6-4a3d-9345-5b578bab29f0
+                        Page: 72db55a9-0b76-4c3c-918b-afaf40334293:UI/MainPage
+                        Resolution: {X: 1280.0, Y: 720.0, Z: 1000.0}
+                        Size: {X: 1.28, Y: 0.72, Z: 1.0}
+                    ee0c014ab223f17f3503cd630f77f399: !SplineTools.BasicCameraController,SplineTools
+                        Id: 81b7e188-e402-4131-83e6-f9c48bc8d53b
+                        Gamepad: false
+                        KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
+                        TouchMovementSpeed: {X: 0.7, Y: 0.7, Z: 0.3}
+                        SpeedFactor: 5.0
+                        KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
+                        MouseRotationSpeed: {X: 1.0, Y: 1.0}
+                        TouchRotationSpeed: {X: 1.0, Y: 0.7}
+                    ad128bc66dad332dd16c8d312ee050b3: !SplineTools.SwitchScene,SplineTools
+                        Id: 41ab2768-4047-4e19-b879-2cf8cb84f712
+                        Scenes:
+                            c5800989324242552c79a79c023b21d9: 25542675-edbb-436c-97aa-ee45d9f5b004:Scenes/1.MainScene
+                            2ffe2ccfd77f2a4211bf1184c609a16a: 13836056-32b5-43b5-8f33-a772afc5291a:Scenes/2.SplineByCode
+                            a5e99e94542079249676bcf9b9fe73c5: d6c6e743-2d04-4ceb-a66f-6e43ed9241fd:Scenes/3.SplineClosestPoint
+                            fe573d561e8d3e880c6a2834f7460a01: f2a651a3-c947-4709-b97c-65e0ac1dd399:Scenes/4.SplineTraverser
+                            76050d92d9a15b40836baffc47ddfc88: 7b5a7073-7dba-4190-8e98-b5554860c195:Scenes/5.SplineTraverserByCode
+                            83aea174e763f98a391df33dfd5a62a0: 4688a67a-2aec-4fc3-816c-c5a52355f096:Scenes/6.SplineTraverserEvents
+                            4b4c7429b3ea228c536b09a186c581c5: 6e8bdc37-82de-4aab-aca0-8ae82d197ce4:Scenes/7.SplineTraverserCamera
+                            a68c3accc4557497e0b88b83dbafc98a: 881a00ce-94a4-4ee3-ab22-6b64a2321e60:Scenes/20.SplineStressTesting
+                            92751329c3a3b1c8b741d77c2930a99b: 2b452418-3f9d-4c71-8fac-f3090c5e53cd:Scenes/21.SplineTraverserStressTest
+                        ShowMenu: true
+            Base:
+                BasePartAsset: cb026551-9c62-4058-9896-d2d3f36539fa:Camera
+                BasePartId: 08472225-3859-4500-adbc-a22796f88494
+                InstanceId: 73670b6f-517f-4b81-8fef-2de7b7462ddb
+        -   Entity:
+                Id: a42d1ba2-7aad-4132-815e-07c81f669826
+                Name: StreetLight
+                Components:
+                    b1d00a59e946c1dc75b16db49c1a5071: !TransformComponent
+                        Id: 6dab37a5-102b-489e-a4a7-5c338758f0ba
+                        Position: {X: 46.62785, Y: 0.0, Z: 10.920704}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            90ffdfcf2dbefbbd63ab588cffc282c6: ref!! bf9a5fe9-d8d2-451c-8aab-05d3fcd49490
+        -   Entity:
+                Id: a636f8ca-0583-45d6-b653-5dc97e37dee8
+                Name: Directional light
+                Components:
+                    2735ba6df4c5b50f232760f354230d8c: !TransformComponent
+                        Id: 99abd6c6-dc78-48c3-8ca3-5de071d483be
+                        Position: {X: -22.047579, Y: -1.5983908, Z: -17.825735}
+                        Rotation: {X: 0.1326482, Y: -0.91133666, Z: -0.3089041, W: -0.2375882}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    d2d1d0606bd5517b9bb780f5c7356a67: !LightComponent
+                        Id: 60291829-e717-46f9-ad85-e1232f58b796
+                        Type: !LightDirectional
+                            Color: !ColorRgbProvider
+                                Value: {R: 1.0, G: 1.0, B: 1.0}
+                            Shadow:
+                                Enabled: true
+                                Filter: !LightShadowMapFilterTypePcf
+                                    FilterSize: Filter5x5
+                                Size: Large
+                                DepthRange: {}
+                                PartitionMode: !LightDirectionalShadowMap.PartitionLogarithmic {}
+                                ComputeTransmittance: false
+                                BiasParameters: {}
+                        Intensity: 20.0
+        -   Entity:
+                Id: aaa470c6-5d60-4258-80d9-c332d6fa7fdb
+                Name: PlanePrefab
+                Components:
+                    db16306e8a659302f97ed89b990e2e72: !TransformComponent
+                        Id: 92414a73-2ed6-4255-96d7-9ae33a402c72
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            cdc0e77d94e1eb7f690ac7a540374c5d: ref!! 69cd48a1-2bb0-4f21-81d8-4b6596323528
+        -   Entity:
+                Id: b2043fb6-e390-4a00-bcf7-d32e8d379663
+                Name: Camera
+                Components:
+                    841ecd05e53d3b5aa0e68cfb8ccadcae: !TransformComponent
+                        Id: 980baca1-e001-4906-b6de-76cbf6609b1d
+                        Position: {X: -2.7823563, Y: -7.979999, Z: 1.9273406}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            f81f7590486f34d226a8cf37bee2d260: ref!! a6215693-4075-44d4-aa6a-b4a44f6bc104
+        -   Entity:
+                Id: bec9f147-e361-49a7-9907-629ea4a9a790
+                Name: SplineGenerator
+                Components:
+                    3048e49ff5a16ef987b325d524fcfaf9: !TransformComponent
+                        Id: a22ed36a-b207-47ef-9cf4-7d0a2af55687
+                        Position: {X: 0.0, Y: 0.0, Z: 2.9336262}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    09be169be47c889dd7bfc170407ed6f9: !ModelComponent
+                        Id: d776c2e5-290a-42fe-9b61-af8c6c3afcce
+                        Enabled: false
+                        Model: fbd48d95-45c7-4c3a-b544-e236a6244a51:Sphere
+                        Materials:
+                            b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
+                    7d5ed8016205f847153402f04b4a79d0: !SplineTools.SplineTraverserGenerator,SplineTools
+                        Id: efa8af44-0176-46eb-8417-88315cc4ab56
+                        Priority: 10
+                        SplinesPerformanceTest: null
+                        EntityToClone: ref!! aaa470c6-5d60-4258-80d9-c332d6fa7fdb
+                        Speed: 4.0
+                    4dcd8a7a8ee4f8089f3d1c0582a267ad: !SplineTools.SplinesPerformanceTest,SplineTools
+                        Id: c293d879-b5c2-482a-987c-c56d711c485f
+                        splineAmount: 10
+                        splineNodesPerSpline: 10
+                        splineSegmentCount: 20
+                        splineGenerationArea: {X: 10.0, Y: 1.0, Z: 100.0}
+                        TangentOffet: {X: 5.0, Y: 2.0, Z: 0.0}
+                        UseStructuredSpline: true
+                        StructureOffset: 5.0
+                        splineMaterials:
+                            ad314a3b0cf4648f407bd19b8813e28a: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
+                            62f207d6fc0ad369a2aaa4eb0d3c5291: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
+                            09de3db902e392dbd32a5700c71a580e: df5d783c-17ea-4ba6-a8b1-cceb63ad2a00:Materials/Yellow
+                            c7d7ba314f5742b464f81a3a1691bb22: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
+                        splineEntities: null
+                        splineComponents: null

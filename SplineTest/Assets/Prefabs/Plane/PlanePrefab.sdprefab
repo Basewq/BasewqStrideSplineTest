@@ -1,0 +1,22 @@
+!PrefabAsset
+Id: 12d04c4b-b724-4c97-807b-92ffe980f03f
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+Hierarchy:
+    RootParts:
+        - ref!! 8c50f3e8-e5fe-492b-b049-955acef166b6
+    Parts:
+        -   Entity:
+                Id: 8c50f3e8-e5fe-492b-b049-955acef166b6
+                Name: plane
+                Components:
+                    9eb87e5b91d99fa12c0c604039a7ea3d: !TransformComponent
+                        Id: 49b42cb9-d98b-4eae-9af1-12d35084d1c1
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.01, Y: 0.01, Z: 0.01}
+                        Children: {}
+                    e36e9e8d628e9fd8f981468927d99190: !ModelComponent
+                        Id: b0289da5-ceca-497e-8e52-d71932f02ce9
+                        Model: 69f5d18d-6719-413b-9bfb-e7034055361b:Prefabs/Plane/plane
+                        Materials: {}

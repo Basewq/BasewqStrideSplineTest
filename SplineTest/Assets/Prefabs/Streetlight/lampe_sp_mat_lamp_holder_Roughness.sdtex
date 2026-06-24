@@ -1,0 +1,8 @@
+!Texture
+Id: d7e02002-456c-4eb3-bfbe-4680ab94cde8
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../../Resources/Streetlight/StreetLight_holmhansen.fbm/lampe_sp_mat_lamp_holder_Roughness.jpg
+Type: !ColorTextureType
+    ColorKeyColor: {R: 255, G: 0, B: 255, A: 255}
+    PremultiplyAlpha: false

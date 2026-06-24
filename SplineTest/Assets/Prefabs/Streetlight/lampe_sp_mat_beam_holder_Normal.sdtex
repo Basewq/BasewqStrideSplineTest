@@ -1,0 +1,8 @@
+!Texture
+Id: 3aace68c-7df5-4037-9c35-d941604707ee
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../../Resources/Streetlight/StreetLight_holmhansen.fbm/lampe_sp_mat_beam_holder_Normal.jpg
+Type: !ColorTextureType
+    ColorKeyColor: {R: 255, G: 0, B: 255, A: 255}
+    PremultiplyAlpha: false

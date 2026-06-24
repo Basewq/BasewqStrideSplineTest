@@ -1,0 +1,45 @@
+!PrefabAsset
+Id: 989f836f-f09f-402b-b75e-3c966c2a1531
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+Hierarchy:
+    RootParts:
+        - ref!! 17fb8a39-b5ba-4539-8453-719336f22f39
+    Parts:
+        -   Entity:
+                Id: 17fb8a39-b5ba-4539-8453-719336f22f39
+                Name: Crate
+                Components:
+                    77488cc2fe54023378c36d95e0fb0379: !TransformComponent
+                        Id: 6703ce95-2456-40a6-9fb3-aef6638aebc0
+                        Position: {X: 0.0, Y: 0.2365655, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 0.396606, Y: 0.396606, Z: 0.396606}
+                        Children: {}
+                    24ce3bf269b6da02b353d6ed00fef428: !ModelComponent
+                        Id: 1bfc3c12-6096-424e-b1f0-aabc0836d989
+                        Model: 647edf5d-6ee1-4133-b6b5-d1ae1cb7bf29:Prefabs/Crate/Cube
+                        Materials:
+                            f247bb1e1b5e5fd2b9a1ec9f31081fdb~0: df5d783c-17ea-4ba6-a8b1-cceb63ad2a00:Materials/Yellow
+                    cfa2b70bcd6939fa366b9138ded2b4cf: !RigidbodyComponent
+                        Id: 2011aab3-5a3e-462d-8f86-c6456589f18f
+                        CanSleep: false
+                        Restitution: 0.0
+                        Friction: 0.5
+                        RollingFriction: 0.0
+                        CcdMotionThreshold: 0.0
+                        CcdSweptSphereRadius: 0.0
+                        IsTrigger: false
+                        IsKinematic: false
+                        Mass: 10.0
+                        LinearDamping: 0.0
+                        AngularDamping: 0.0
+                        OverrideGravity: false
+                        Gravity: {X: 0.0, Y: 0.0, Z: 0.0}
+                        NodeName: null
+                        ColliderShapes:
+                            1f0546b439f01d48824dc65cb5bccdf5: !BoxColliderShapeDesc
+                                Is2D: false
+                                Size: {X: 1.0, Y: 1.0, Z: 1.0}
+                                LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
+                                LocalRotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}

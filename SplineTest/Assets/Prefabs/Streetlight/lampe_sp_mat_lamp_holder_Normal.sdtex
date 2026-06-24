@@ -1,0 +1,8 @@
+!Texture
+Id: f8c246c6-ab28-4c92-a572-80181dc6d11f
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../../Resources/Streetlight/StreetLight_holmhansen.fbm/lampe_sp_mat_lamp_holder_Normal.jpg
+Type: !ColorTextureType
+    ColorKeyColor: {R: 255, G: 0, B: 255, A: 255}
+    PremultiplyAlpha: false

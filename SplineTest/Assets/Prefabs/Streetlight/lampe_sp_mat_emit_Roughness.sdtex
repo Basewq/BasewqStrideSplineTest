@@ -1,0 +1,8 @@
+!Texture
+Id: efcb4f5d-90ef-4889-bc5a-4ed4da0d9e79
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../../Resources/Streetlight/StreetLight_holmhansen.fbm/lampe_sp_mat_emit_Roughness.jpg
+Type: !ColorTextureType
+    ColorKeyColor: {R: 255, G: 0, B: 255, A: 255}
+    PremultiplyAlpha: false
