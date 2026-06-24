@@ -1,6 +1,6 @@
 using Stride.Core;
 
-namespace SplineTest.Splines.Components;
+namespace Stride.Engine.Splines.Components;
 
 [DataContract]
 public class EditSplineControl

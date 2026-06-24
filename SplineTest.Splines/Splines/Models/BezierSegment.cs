@@ -40,25 +40,26 @@ public struct BezierSegment
         P3 = p3;
     }
 
-    public BezierSegment(in SplineNode node1, in SplineNode node2)
+    public BezierSegment(in SplineControlPoint controlPoint1, in SplineControlPoint controlPoint2)
     {
-        P0 = node1.Position;
-        P1 = node1.TangentOutPosition;
-        P2 = node2.TangentInPosition;
-        P3 = node2.Position;
+        P0 = controlPoint1.Position;
+        P1 = controlPoint1.TangentOutPosition;
+        P2 = controlPoint2.TangentInPosition;
+        P3 = controlPoint2.Position;
     }
 
     public readonly Vector3 GetPosition(float t)
     {
-        var tPower2 = t * t;
-        var tPower3 = t * t * t;
-        var oneMinusT = 1 - t;
-        var oneMinusTPower2 = oneMinusT * oneMinusT;
-        var oneMinusTPower3 = oneMinusT * oneMinusT * oneMinusT;
-        var x = (oneMinusTPower3 * P0.X) + (3 * oneMinusTPower2 * t * P1.X) + (3 * oneMinusT * tPower2 * P2.X + tPower3 * P3.X);
-        var y = (oneMinusTPower3 * P0.Y) + (3 * oneMinusTPower2 * t * P1.Y) + (3 * oneMinusT * tPower2 * P2.Y + tPower3 * P3.Y);
-        var z = (oneMinusTPower3 * P0.Z) + (3 * oneMinusTPower2 * t * P1.Z) + (3 * oneMinusT * tPower2 * P2.Z + tPower3 * P3.Z);
-        return new Vector3(x, y, z);
+        float tPower2 = t * t;
+        float tPower3 = t * t * t;
+        float oneMinusT = 1f - t;
+        float oneMinusTPower2 = oneMinusT * oneMinusT;
+        float oneMinusTPower3 = oneMinusT * oneMinusT * oneMinusT;
+        var result = (oneMinusTPower3 * P0)
+            + (3f * oneMinusTPower2 * t * P1)
+            + (3f * oneMinusT * tPower2 * P2)
+            + (tPower3 * P3);
+        return result;
     }
 
     public readonly void SamplePositions(List<Vector3> splinePositionToTraverse)

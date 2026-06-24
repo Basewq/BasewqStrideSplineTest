@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://Stride.com)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using Stride.Rendering;
@@ -12,10 +12,10 @@ public class SplineRenderSettings
 
     private bool showSegments;
     private bool showBoundingBox;
-    private bool showNodes;
+    private bool showControlPoints;
     private Material segmentsMaterial;
     private Material boundingBoxMaterial;
-    private Material nodesMaterial;
+    private Material controlPointsMaterial;
 
     public delegate void SplineRenderSettingsChangedHandler();
 
@@ -42,27 +42,27 @@ public class SplineRenderSettings
     }
 
     /// <summary>
-    /// Display Spline nodes
+    /// Display spline control points
     /// </summary>
-    [Display(23, "Show nodes")]
-    public bool ShowNodes
+    [Display(23, "Show control points")]
+    public bool ShowControlPoints
     {
-        get => showNodes;
-        set => SetField(ref showNodes, value);
+        get => showControlPoints;
+        set => SetField(ref showControlPoints, value);
     }
 
     /// <summary>
-    /// The material used by the spline nodes mesh
+    /// The material used by the spline control points mesh
     /// </summary>
-    [Display(26, "Nodes material")]
-    public Material NodesMaterial
+    [Display(26, "Control points material")]
+    public Material ControlPointsMaterial
     {
-        get => nodesMaterial;
-        set => SetField(ref nodesMaterial, value);
+        get => controlPointsMaterial;
+        set => SetField(ref controlPointsMaterial, value);
     }
 
     /// <summary>
-    /// Display the bounding boxes of each node and the entire spline
+    /// Display the bounding boxes of each control point and the entire spline
     /// </summary>
     [Display(30, "Show bounding box")]
     public bool ShowBoundingBox
@@ -82,7 +82,7 @@ public class SplineRenderSettings
     }
 
     /// <summary>
-    /// The render group used to when displaying the spline segments, nodes and bounding boxes.
+    /// The render group used to when displaying the spline segments, control points and bounding boxes.
     /// </summary>
     public RenderGroup RenderGroup { get; set; } = RenderGroup.Group4;
 

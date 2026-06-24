@@ -12,10 +12,15 @@ public readonly struct SplineClosestPositionInfo
     /// </summary>
     public readonly Vector3 Position { get; init; }
 
-    public readonly int SplineNodeAIndex { get; init; }
-    public readonly int SplineNodeBIndex { get; init; }
+    public readonly int SplineControlPointAIndex { get; init; }
+    public readonly int SplineControlPointBIndex { get; init; }
     /// <summary>
-    /// T value in range [0...1] between <see cref="SplineNodeAIndex"/> and <see cref="SplineNodeBIndex"/>.
+    /// T value in range [0...1] between <see cref="SplineControlPointAIndex"/> and <see cref="SplineControlPointBIndex"/>.
     /// </summary>
     public readonly float LocalT { get; init; }
+
+    /// <summary>
+    /// The distance value in range [0...<see cref="Spline.GetTotalDistance"/>] on the entire spline.
+    /// </summary>
+    public readonly float SplineDistance { get; init; }
 }

@@ -2,9 +2,9 @@
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using SplineTest.GameStudioExt.StrideEditorExt;
-using SplineTest.Splines.Components;
+using Stride.Engine.Splines.Components;
 using Stride.Assets.Presentation.AssetEditors.Gizmos;
-using Stride.Assets.Presentation.AssetEditors.Gizmos.Spline;
+using Stride.Assets.Presentation.AssetEditors.Gizmos.Splines;
 using Stride.Core;
 using Stride.Core.Annotations;
 using Stride.Core.Mathematics;
@@ -26,13 +26,13 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
     private Scene editorScene;
     private IEditorGameEntitySelectionService entitySelectionService;
 
-    private TranslationGizmo nodeTangentTransformGizmo;
+    private TranslationGizmo tangentTransformGizmo;
 
     public SplineComponent ActiveSplineComponent { get; private set; }
-    private int activeNodeIndex = -1;
-    private SplineNodeEditingSelectionType activeNodeEditingSelectionType;
-    private Entity activeNodeTangentAnchorEntity = null;
-    private readonly List<Entity> activeNodeTangentAnchorEntityList = [];   // Only used for nodeTangentTransformGizmo.ModifiedEntities
+    private int activeControlPointIndex = -1;
+    private SplineControlPointEditingSelectionType activeControlPointEditingSelectionType;
+    private Entity activeTangentAnchorEntity = null;
+    private readonly List<Entity> activeTangentAnchorEntityList = [];   // Only used for tangentTransformGizmo.ModifiedEntities
     private bool refreshAnchorPosition = false;
 
     private bool isSplineChangedUpdateRequired = false;
@@ -47,18 +47,18 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
         game = (EntityHierarchyEditorGame)editorGame;
         editorScene = game.EditorScene;
         entitySelectionService = game.EditorServices.Get<IEditorGameEntitySelectionService>();
-        entitySelectionService.SelectionUpdated += OnEntitySelectionService_SelectionUpdated;
+        entitySelectionService?.SelectionUpdated += OnEntitySelectionService_SelectionUpdated;
 
-        activeNodeTangentAnchorEntity = new Entity("Edit Node Tangent Anchor");     // Entity to be moved by the TranslationGizmo
-        activeNodeTangentAnchorEntityList.Add(activeNodeTangentAnchorEntity);
-        activeNodeTangentAnchorEntity.Scene = editorScene;
+        activeTangentAnchorEntity = new Entity("Edit Control Point Tangent Anchor");     // Entity to be moved by the TranslationGizmo
+        activeTangentAnchorEntityList.Add(activeTangentAnchorEntity);
+        activeTangentAnchorEntity.Scene = editorScene;
 
-        nodeTangentTransformGizmo = new TranslationGizmo();
-        nodeTangentTransformGizmo.Initialize(game.Services, editorScene);
-        nodeTangentTransformGizmo.IsEnabled = false;    // Must disable AFTER Initialize
-        nodeTangentTransformGizmo.AnchorEntity = activeNodeTangentAnchorEntity;
-        nodeTangentTransformGizmo.TransformationEnded += OnTransformGizmo_TransformationEnded;
-        nodeTangentTransformGizmo.ModifiedEntities = activeNodeTangentAnchorEntityList;
+        tangentTransformGizmo = new TranslationGizmo();
+        tangentTransformGizmo.Initialize(game.Services, editorScene);
+        tangentTransformGizmo.IsEnabled = false;    // Must disable AFTER Initialize
+        tangentTransformGizmo.AnchorEntity = activeTangentAnchorEntity;
+        tangentTransformGizmo.TransformationEnded += OnTransformGizmo_TransformationEnded;
+        tangentTransformGizmo.ModifiedEntities = activeTangentAnchorEntityList;
 
         game.Script.AddTask(OnGameUpdate, priority: 1000);
 
@@ -71,7 +71,7 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
         if (activeSplineEntity is not null
             && !e.NewSelection.Contains(activeSplineEntity))
         {
-            DeactivateEditNodeTangent();
+            DeactivateEditTangent();
         }
         else if (e.NewSelection.Count == 1)
         {
@@ -81,9 +81,9 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
             {
                 if (activeSplineEntity is not null)
                 {
-                    DeactivateEditNodeTangent();
+                    DeactivateEditTangent();
                 }
-                ActivateSplineNodeEditing(splineComp, nodeIndex: -1, editingSelectionType: SplineNodeEditingSelectionType.None);
+                ActivateSplineControlPointEditing(splineComp, controlPointIndex: -1, editingSelectionType: SplineControlPointEditingSelectionType.None);
             }
         }
     }
@@ -96,8 +96,8 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
             {
                 var splineEntityId = ActiveSplineComponent.Entity.Id;
 
-                var node = ActiveSplineComponent.Spline[activeNodeIndex];
-                strideEditorService.UpdateAssetComponentArrayDataByEntityId<SplineComponent>(splineEntityId, nameof(SplineComponent.Spline), "SplineNodes", node, activeNodeIndex);
+                var controlPoint = ActiveSplineComponent.Spline[activeControlPointIndex];
+                strideEditorService.UpdateAssetComponentArrayDataByEntityId<SplineComponent>(splineEntityId, nameof(SplineComponent.Spline), nameof(Engine.Splines.Models.Spline.ControlPoints), controlPoint, activeControlPointIndex);
             }
         });
     }
@@ -106,7 +106,7 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
     {
         if (ActiveSplineComponent is not null)
         {
-            DeactivateEditNodeTangent();
+            DeactivateEditTangent();
         }
         entitySelectionService?.SelectionUpdated -= OnEntitySelectionService_SelectionUpdated;
         return base.DisposeAsync();
@@ -124,11 +124,11 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
 
                 if (isSplineChangedUpdateRequired)
                 {
-                    if (activeNodeIndex >= ActiveSplineComponent.Spline.Count)
+                    if (activeControlPointIndex >= ActiveSplineComponent.Spline.Count)
                     {
-                        DeactivateEditNodeTangent(deselectSpline: false);
+                        DeactivateEditTangent(deselectSpline: false);
                     }
-                    else if (activeNodeIndex >= 0)
+                    else if (activeControlPointIndex >= 0)
                     {
                         refreshAnchorPosition = true;   // Refresh changes in the next update
                     }
@@ -136,64 +136,62 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
                     isSplineChangedUpdateRequired = false;
                 }
 
-                if (nodeTangentTransformGizmo.IsEnabled && activeNodeIndex < ActiveSplineComponent.Spline.Count)
+                if (tangentTransformGizmo.IsEnabled && activeControlPointIndex < ActiveSplineComponent.Spline.Count)
                 {
                     var splinePosition = ActiveSplineComponent.Entity.Transform.WorldMatrix.TranslationVector;
 
-                    var node = ActiveSplineComponent.Spline[activeNodeIndex];
+                    var controlPoint = ActiveSplineComponent.Spline[activeControlPointIndex];
                     if (refreshAnchorPosition)
                     {
-                        activeNodeTangentAnchorEntity.Transform.Position = splinePosition;
-                        if (activeNodeEditingSelectionType == SplineNodeEditingSelectionType.SplineNode)
+                        activeTangentAnchorEntity.Transform.Position = splinePosition;
+                        if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.ControlPoint)
                         {
-                            activeNodeTangentAnchorEntity.Transform.Position += node.Position;
+                            activeTangentAnchorEntity.Transform.Position += controlPoint.Position;
                         }
-                        else if (activeNodeEditingSelectionType == SplineNodeEditingSelectionType.TangentIn)
+                        else if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.TangentIn)
                         {
-                            activeNodeTangentAnchorEntity.Transform.Position += node.TangentInPosition;
+                            activeTangentAnchorEntity.Transform.Position += controlPoint.TangentInPosition;
                         }
-                        else if (activeNodeEditingSelectionType == SplineNodeEditingSelectionType.TangentOut)
+                        else if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.TangentOut)
                         {
-                            activeNodeTangentAnchorEntity.Transform.Position += node.TangentOutPosition;
+                            activeTangentAnchorEntity.Transform.Position += controlPoint.TangentOutPosition;
                         }
                         refreshAnchorPosition = false;
                     }
 
-                    await nodeTangentTransformGizmo.Update();
+                    await tangentTransformGizmo.Update();
 
-                    var anchorEntityPos = activeNodeTangentAnchorEntity.Transform.Position;
+                    var anchorEntityPos = activeTangentAnchorEntity.Transform.Position;
                     var anchorLocalPos = anchorEntityPos - splinePosition;
-                    if (activeNodeEditingSelectionType == SplineNodeEditingSelectionType.SplineNode)
+                    var controlPointRotationInverse = Quaternion.Invert(controlPoint.Rotation);
+                    if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.ControlPoint)
                     {
-                        if (node.Position != anchorLocalPos)
+                        if (controlPoint.Position != anchorLocalPos)
                         {
-                            var posOffset = anchorLocalPos - node.Position;
-                            node.Position = anchorLocalPos;
-                            node.TangentInPosition += posOffset;
-                            node.TangentOutPosition += posOffset;
-                            ActiveSplineComponent.Spline[activeNodeIndex] = node;
+                            controlPoint.Position = anchorLocalPos;
+                            ActiveSplineComponent.Spline[activeControlPointIndex] = controlPoint;
                         }
                     }
-                    else if (activeNodeEditingSelectionType == SplineNodeEditingSelectionType.TangentIn)
+                    else if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.TangentIn)
                     {
-                        if (node.TangentInPosition != anchorLocalPos)
+                        if (controlPoint.TangentInPosition != anchorLocalPos)
                         {
-                            node.TangentInPosition = anchorLocalPos;
+                            var posOffset = anchorLocalPos - controlPoint.Position;
+                            controlPoint.TangentIn = controlPointRotationInverse * posOffset;
                             // Mirror the other handle
-                            var nodeToTangentHandlePos = anchorLocalPos - node.Position;
-                            node.TangentOutPosition = node.Position - nodeToTangentHandlePos;
-                            ActiveSplineComponent.Spline[activeNodeIndex] = node;
+                            controlPoint.TangentOut = -controlPoint.TangentIn;
+                            ActiveSplineComponent.Spline[activeControlPointIndex] = controlPoint;
                         }
                     }
-                    else if (activeNodeEditingSelectionType == SplineNodeEditingSelectionType.TangentOut)
+                    else if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.TangentOut)
                     {
-                        if (node.TangentOutPosition != anchorLocalPos)
+                        if (controlPoint.TangentOutPosition != anchorLocalPos)
                         {
-                            node.TangentOutPosition = anchorLocalPos;
+                            var posOffset = anchorLocalPos - controlPoint.Position;
+                            controlPoint.TangentOut = controlPointRotationInverse * posOffset;
                             // Mirror the other handle
-                            var nodeToTangentHandlePos = anchorLocalPos - node.Position;
-                            node.TangentInPosition = node.Position - nodeToTangentHandlePos;
-                            ActiveSplineComponent.Spline[activeNodeIndex] = node;
+                            controlPoint.TangentIn = -controlPoint.TangentOut;
+                            ActiveSplineComponent.Spline[activeControlPointIndex] = controlPoint;
                         }
                     }
                 }
@@ -203,53 +201,53 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
         }
     }
 
-    private void DeactivateEditNodeTangent(bool deselectSpline = true)
+    private void DeactivateEditTangent(bool deselectSpline = true)
     {
         if (deselectSpline)
         {
-            ActiveSplineComponent.SplineNodeChanged -= OnSplineChanged;
+            ActiveSplineComponent.ControlPointsChanged -= OnSplineChanged;
             ActiveSplineComponent.RenderSettingsChanged -= OnSplineRenderSettingsChanged;
             ActiveSplineComponent = null;
         }
-        activeNodeIndex = -1;
-        activeNodeEditingSelectionType = SplineNodeEditingSelectionType.None;
-        activeNodeTangentAnchorEntity.Scene = null;
-        nodeTangentTransformGizmo.IsEnabled = false;
+        activeControlPointIndex = -1;
+        activeControlPointEditingSelectionType = SplineControlPointEditingSelectionType.None;
+        activeTangentAnchorEntity.Scene = null;
+        tangentTransformGizmo.IsEnabled = false;
     }
 
     private EditorGameEntityTransformService transformService;
-    internal void ActivateSplineNodeEditing(SplineComponent splineComponent, int nodeIndex, SplineNodeEditingSelectionType editingSelectionType)
+    internal void ActivateSplineControlPointEditing(SplineComponent splineComponent, int controlPointIndex, SplineControlPointEditingSelectionType editingSelectionType)
     {
         bool hasChangedActiveSpline = ActiveSplineComponent != splineComponent;
         ActiveSplineComponent = splineComponent;
         if (hasChangedActiveSpline)
         {
-            ActiveSplineComponent.SplineNodeChanged += OnSplineChanged;
+            ActiveSplineComponent.ControlPointsChanged += OnSplineChanged;
             ActiveSplineComponent.RenderSettingsChanged += OnSplineRenderSettingsChanged;
         }
 
-        activeNodeIndex = nodeIndex;
-        activeNodeEditingSelectionType = editingSelectionType;
+        activeControlPointIndex = controlPointIndex;
+        activeControlPointEditingSelectionType = editingSelectionType;
 
-        if (editingSelectionType != SplineNodeEditingSelectionType.None)
+        if (editingSelectionType != SplineControlPointEditingSelectionType.None)
         {
-            nodeTangentTransformGizmo.IsEnabled = true;
+            tangentTransformGizmo.IsEnabled = true;
 
             var splinePosition = ActiveSplineComponent.Entity.Transform.WorldMatrix.TranslationVector;
-            activeNodeTangentAnchorEntity.Transform.Position = splinePosition;
+            activeTangentAnchorEntity.Transform.Position = splinePosition;
 
-            var node = ActiveSplineComponent.Spline[activeNodeIndex];
-            if (activeNodeEditingSelectionType == SplineNodeEditingSelectionType.SplineNode)
+            var controlPoint = ActiveSplineComponent.Spline[activeControlPointIndex];
+            if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.ControlPoint)
             {
-                activeNodeTangentAnchorEntity.Transform.Position += node.Position;
+                activeTangentAnchorEntity.Transform.Position += controlPoint.Position;
             }
-            else if (activeNodeEditingSelectionType == SplineNodeEditingSelectionType.TangentIn)
+            else if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.TangentIn)
             {
-                activeNodeTangentAnchorEntity.Transform.Position += node.TangentInPosition;
+                activeTangentAnchorEntity.Transform.Position += controlPoint.TangentInPosition;
             }
-            else if (activeNodeEditingSelectionType == SplineNodeEditingSelectionType.TangentOut)
+            else if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.TangentOut)
             {
-                activeNodeTangentAnchorEntity.Transform.Position += node.TangentOutPosition;
+                activeTangentAnchorEntity.Transform.Position += controlPoint.TangentOutPosition;
             }
 
             transformService ??= game.EditorServices.Get<EditorGameEntityTransformService>();
@@ -270,21 +268,21 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
         // ?
     }
 
-    public void AddSplineNode(Vector3 splineNodePosition)
+    public void AddControlPoint(Vector3 controlPointPosition)
     {
         strideEditorService.Invoke(() =>
         {
-            using (strideEditorService.CreateUndoRedoTransaction("Add Spline Node"))
+            using (strideEditorService.CreateUndoRedoTransaction("Add Spline Control Point"))
             {
                 var splineEntityId = ActiveSplineComponent.Entity.Id;
 
-                var node = new Engine.Splines.Models.SplineNode
+                var controlPoint = new Engine.Splines.Models.SplineControlPoint
                 {
-                    Position = splineNodePosition,
-                    TangentInPosition = splineNodePosition,
-                    TangentOutPosition = splineNodePosition,
+                    Position = controlPointPosition,
+                    TangentIn = Vector3.Zero,
+                    TangentOut = Vector3.Zero,
                 };
-                strideEditorService.AddAssetComponentArrayDataByEntityId<SplineComponent>(splineEntityId, nameof(SplineComponent.Spline), "SplineNodes", node);
+                strideEditorService.AddAssetComponentArrayDataByEntityId<SplineComponent>(splineEntityId, nameof(SplineComponent.Spline), "ControlPoints", controlPoint);
             }
         });
     }

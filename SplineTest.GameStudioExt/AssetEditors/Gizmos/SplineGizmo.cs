@@ -1,6 +1,9 @@
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net)
+// Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
+
 using SplineTest.GameStudioExt.AssetEditors.Gizmos;
 using SplineTest.GameStudioExt.StrideEditorExt;
-using SplineTest.Splines.Components;
+using Stride.Engine.Splines.Components;
 using Stride.Assets.Presentation.AssetEditors.EntityHierarchyEditor.Game;
 using Stride.Assets.Presentation.AssetEditors.GameEditor.Game;
 using Stride.Core;
@@ -14,7 +17,7 @@ using Stride.Graphics.GeometricPrimitives;
 using Stride.Input;
 using Stride.Rendering;
 
-namespace Stride.Assets.Presentation.AssetEditors.Gizmos.Spline;
+namespace Stride.Assets.Presentation.AssetEditors.Gizmos.Splines;
 
 [GizmoComponent(typeof(SplineComponent), isMainGizmo: true)]
 public class SplineGizmo : BillboardingGizmo<SplineComponent>
@@ -33,10 +36,10 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
     private bool isSplineChangedUpdateRequired = false;
 
     private bool prevUpdateWasActiveSpline = false;
-    private readonly List<SplineNodeGizmo> nodeGizmos = [];
+    private readonly List<SplineControlPointGizmo> controlPointGizmos = [];
 
-    private SplineNodeGizmo mouseHoverNodeGizmo = null;
-    private int mouseHoverNodeIndex = -1;
+    private SplineControlPointGizmo mouseHoverControlPointGizmo = null;
+    private int mouseHoverControlPointIndex = -1;
 
     private Material boundingBoxMaterial;
     private Material segmentLineMaterial;
@@ -44,11 +47,11 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
     private Entity splineVisualizerBoundingBoxEntity;
     private ModelComponent splineVisualizerBoundingBoxModelComponent;
     private readonly List<SplineVisualizerSegmentEntityData> splineVisualizerSegmentEntityDataList = [];
-    private readonly List<SplinePlacement> splinePlacements = [];
+    private readonly List<SplineSample> splineSamples = [];
 
     private readonly List<IDisposable> disposables = [];
 
-    internal ISpline<SplineNode> Spline => Component.Spline;
+    internal Spline Spline => Component.Spline;
 
     /// <summary>
     /// Gets the gizmo default scale in ratio of screen height ( 1 => full screen vertically )
@@ -72,22 +75,22 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
         editorMouseService = StrideEditorMouseService.GetOrCreate(Game.Services);
 
         Component.SplinePropertyChanged += OnSplineChanged;
-        Component.SplineNodeChanged += OnSplineChanged;
+        Component.ControlPointsChanged += OnSplineChanged;
         OnSplineChanged(Component);
     }
 
     protected override void Destroy()
     {
-        for (int i = 0; i < nodeGizmos.Count; i++)
+        for (int i = 0; i < controlPointGizmos.Count; i++)
         {
-            var nodeGizmo = nodeGizmos[i];
-            nodeGizmo.IsEnabled = false;
-            nodeGizmo.GizmoRootEntity?.SetParent(null);
-            nodeGizmo.Dispose();
+            var controlPointGizmo = controlPointGizmos[i];
+            controlPointGizmo.IsEnabled = false;
+            controlPointGizmo.GizmoRootEntity?.SetParent(null);
+            controlPointGizmo.Dispose();
         }
-        nodeGizmos.Clear();
+        controlPointGizmos.Clear();
         Component.SplinePropertyChanged -= OnSplineChanged;
-        Component.SplineNodeChanged -= OnSplineChanged;
+        Component.ControlPointsChanged -= OnSplineChanged;
 
         foreach (var data in splineVisualizerSegmentEntityDataList)
         {
@@ -111,41 +114,41 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
         isSplineChangedUpdateRequired = true;   // Enqueue change on next update
     }
 
-    private void UpdateSplineNodes()
+    private void UpdateSplineControlPoints()
     {
-        if (nodeGizmos.Count < Component.Spline.Count)
+        if (controlPointGizmos.Count < Component.Spline.Count)
         {
             // Populate new gizmos
-            int nodeStartIndex = nodeGizmos.Count;
-            int addNodeCount = Component.Spline.Count - nodeStartIndex;
-            for (int i = 0; i < addNodeCount; i++)
+            int controlPointStartIndex = controlPointGizmos.Count;
+            int addControlPointCount = Component.Spline.Count - controlPointStartIndex;
+            for (int i = 0; i < addControlPointCount; i++)
             {
-                var nodeGizmo = new SplineNodeGizmo(nodeStartIndex + i, Component);
-                nodeGizmo.Initialize(Services, EditorScene);
-                nodeGizmos.Add(nodeGizmo);
-                nodeGizmo.IsEnabled = Component == splineEditorGizmoService.ActiveSplineComponent;
-                if (nodeGizmo.IsEnabled)
+                var controlPointGizmo = new SplineControlPointGizmo(controlPointStartIndex + i, Component);
+                controlPointGizmo.Initialize(Services, EditorScene);
+                controlPointGizmos.Add(controlPointGizmo);
+                controlPointGizmo.IsEnabled = Component == splineEditorGizmoService.ActiveSplineComponent;
+                if (controlPointGizmo.IsEnabled)
                 {
-                    nodeGizmo.GizmoRootEntity?.SetParent(GizmoRootEntity);
+                    controlPointGizmo.GizmoRootEntity?.SetParent(GizmoRootEntity);
                 }
             }
         }
-        else if (nodeGizmos.Count > Component.Spline.Count)
+        else if (controlPointGizmos.Count > Component.Spline.Count)
         {
             // Remove excess gizmos
-            int nodeEndIndex = Component.Spline.Count;
-            for (int i = nodeGizmos.Count - 1; i >= nodeEndIndex; i--)
+            int controlPointEndIndex = Component.Spline.Count;
+            for (int i = controlPointGizmos.Count - 1; i >= controlPointEndIndex; i--)
             {
-                var nodeGizmo = nodeGizmos[i];
-                nodeGizmo.IsEnabled = false;
-                nodeGizmo.GizmoRootEntity?.SetParent(null);
-                nodeGizmo.Dispose();
-                if (mouseHoverNodeGizmo == nodeGizmo)
+                var controlPointGizmo = controlPointGizmos[i];
+                controlPointGizmo.IsEnabled = false;
+                controlPointGizmo.GizmoRootEntity?.SetParent(null);
+                controlPointGizmo.Dispose();
+                if (mouseHoverControlPointGizmo == controlPointGizmo)
                 {
-                    mouseHoverNodeGizmo = null;
+                    mouseHoverControlPointGizmo = null;
                 }
 
-                nodeGizmos.RemoveAt(i);
+                controlPointGizmos.RemoveAt(i);
             }
         }
         RegenerateSplineVisualizer();
@@ -176,11 +179,11 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
             splineVisualizerBoundingBoxEntity.SetParent(splineVisualizerRootEntity);
         }
 
-        splinePlacements.Clear();
-        Component.Spline.CollectSplinePlacements(splinePlacements);
+        splineSamples.Clear();
+        Component.Spline.CollectSplineSamples(splineSamples);
 
         // Bounding box
-        splineVisualizerBoundingBoxModelComponent.Enabled = splinePlacements.Count > 1;
+        splineVisualizerBoundingBoxModelComponent.Enabled = splineSamples.Count > 1;
         if (splineVisualizerBoundingBoxModelComponent.Enabled)
         {
             var boundingBox = Component.Spline.CalculateBoundingBox();
@@ -189,7 +192,12 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
             splineVisualizerBoundingBoxEntity.Transform.Position = boundingBox.Center;
         }
 
-        int splineSegmentCount = splinePlacements.Count - 1;
+        if (splineSamples.Count == 0)
+        {
+            return;
+        }
+
+        int splineSegmentCount = splineSamples.Count - 1;
         if (Component.Spline.IsClosedLoop)
         {
             splineSegmentCount++;
@@ -256,10 +264,10 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
         {
             return true;
         }
-        for (int i = 0; i < nodeGizmos.Count; i++)
+        for (int i = 0; i < controlPointGizmos.Count; i++)
         {
-            var nodeGizmo = nodeGizmos[i];
-            if (nodeGizmo.HandlesComponentId(pickedComponentId, out selection))
+            var controlPointGizmo = controlPointGizmos[i];
+            if (controlPointGizmo.HandlesComponentId(pickedComponentId, out selection))
             {
                 return true;
             }
@@ -270,14 +278,14 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
     public override void Update()
     {
         base.Update();
-        if (ContentEntity == null || GizmoRootEntity == null)
+        if (ContentEntity is null || GizmoRootEntity is null)
         {
             return;
         }
 
         if (isSplineChangedUpdateRequired)
         {
-            UpdateSplineNodes();
+            UpdateSplineControlPoints();
             isSplineChangedUpdateRequired = false;
         }
 
@@ -285,34 +293,34 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
         {
             if (!prevUpdateWasActiveSpline)
             {
-                // Enable node gizmos
-                for (int i = 0; i < nodeGizmos.Count; i++)
+                // Enable control point gizmos
+                for (int i = 0; i < controlPointGizmos.Count; i++)
                 {
-                    var nodeGizmo = nodeGizmos[i];
-                    nodeGizmo.IsEnabled = true;
-                    if (nodeGizmo.IsEnabled)
+                    var controlPointGizmo = controlPointGizmos[i];
+                    controlPointGizmo.IsEnabled = true;
+                    if (controlPointGizmo.IsEnabled)
                     {
-                        nodeGizmo.GizmoRootEntity?.SetParent(GizmoRootEntity);
+                        controlPointGizmo.GizmoRootEntity?.SetParent(GizmoRootEntity);
                     }
                 }
             }
             UpdateMouseAction();
 
-            for (int i = 0; i < nodeGizmos.Count; i++)
+            for (int i = 0; i < controlPointGizmos.Count; i++)
             {
-                var nodeGizmo = nodeGizmos[i];
-                nodeGizmo.Update();
+                var controlPointGizmo = controlPointGizmos[i];
+                controlPointGizmo.Update();
             }
             prevUpdateWasActiveSpline = true;
         }
         else if (prevUpdateWasActiveSpline)
         {
-            // Disable node gizmos
-            for (int i = 0; i < nodeGizmos.Count; i++)
+            // Disable control point gizmos
+            for (int i = 0; i < controlPointGizmos.Count; i++)
             {
-                var nodeGizmo = nodeGizmos[i];
-                nodeGizmo.IsEnabled = false;
-                nodeGizmo.GizmoRootEntity?.SetParent(null);
+                var controlPointGizmo = controlPointGizmos[i];
+                controlPointGizmo.IsEnabled = false;
+                controlPointGizmo.GizmoRootEntity?.SetParent(null);
             }
             prevUpdateWasActiveSpline = false;
         }
@@ -331,49 +339,41 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
         bool isCtrlKeyDown = Input.IsKeyDown(Keys.LeftCtrl) || Input.IsKeyDown(Keys.RightCtrl);
         if (!Input.IsMouseButtonDown(MouseButton.Left))
         {
-            //gizmoService ??= Game.EditorServices.Get<IEditorGameComponentGizmoService>();
-
-            SplineNodeGizmo raycastHitNodeGizmo = null;
-            int raycastHitNodeIndex = -1;
-            var raycastHitNodeEditingSelectionType = SplineNodeEditingSelectionType.None;
-            //if (gizmoService.GetContentEntityUnderMouse() == ContentEntity)
+            SplineControlPointGizmo raycastHitControlPointGizmo = null;
+            int raycastHitControlPointIndex = -1;
+            var raycastHitControlPointEditingSelectionType = SplineControlPointEditingSelectionType.None;
+            if (TryGetMouseRay(out var mouseRay))
             {
-                if (!TryGetMouseRay(out var mouseRay))
-                {
-                    editorMouseService.SetIsControllingMouse(false, owner: this);
-                    return;
-                }
-
-                var raycastFilterFlags = SplineNodeRaycastFilterFlags.All;
+                var raycastFilterFlags = SplineControlPointRaycastFilterFlags.All;
                 if (isAltKeyDown)
                 {
-                    raycastFilterFlags = SplineNodeRaycastFilterFlags.SplineNode;
+                    raycastFilterFlags = SplineControlPointRaycastFilterFlags.ControlPoint;
                 }
                 else if (isCtrlKeyDown)
                 {
-                    raycastFilterFlags = SplineNodeRaycastFilterFlags.Tangents;
+                    raycastFilterFlags = SplineControlPointRaycastFilterFlags.Tangents;
                 }
-                bool raycastOnNodeOnly = isAltKeyDown;
+                bool raycastOnControlPointOnly = isAltKeyDown;
                 float minHitDistance = float.PositiveInfinity;
-                for (int i = 0; i < nodeGizmos.Count; i++)
+                for (int i = 0; i < controlPointGizmos.Count; i++)
                 {
-                    var nodeGizmo = nodeGizmos[i];
-                    if (nodeGizmo.TryRaycastOnHandle(mouseRay, raycastFilterFlags, ref minHitDistance, ref raycastHitNodeEditingSelectionType))
+                    var controlPointGizmo = controlPointGizmos[i];
+                    if (controlPointGizmo.TryRaycastOnHandle(mouseRay, raycastFilterFlags, ref minHitDistance, ref raycastHitControlPointEditingSelectionType))
                     {
-                        raycastHitNodeGizmo = nodeGizmo;
-                        raycastHitNodeIndex = i;
+                        raycastHitControlPointGizmo = controlPointGizmo;
+                        raycastHitControlPointIndex = i;
                     }
                 }
             }
 
-            if (mouseHoverNodeGizmo != raycastHitNodeGizmo)
+            if (mouseHoverControlPointGizmo != raycastHitControlPointGizmo)
             {
-                mouseHoverNodeGizmo?.EditingSelectionType = SplineNodeEditingSelectionType.None;
+                mouseHoverControlPointGizmo?.EditingSelectionType = SplineControlPointEditingSelectionType.None;
 
-                mouseHoverNodeGizmo = raycastHitNodeGizmo;
-                mouseHoverNodeIndex = raycastHitNodeIndex;
+                mouseHoverControlPointGizmo = raycastHitControlPointGizmo;
+                mouseHoverControlPointIndex = raycastHitControlPointIndex;
 
-                mouseHoverNodeGizmo?.EditingSelectionType = raycastHitNodeEditingSelectionType;
+                mouseHoverControlPointGizmo?.EditingSelectionType = raycastHitControlPointEditingSelectionType;
             }
         }
 
@@ -392,25 +392,25 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
                     Plane plane;
                     if (Spline.Count == 0)
                     {
-                        // No existing nodes, so just raycast on XZ plane where height is the same as the spline
+                        // No existing control points, so just raycast on XZ plane where height is the same as the spline
                         plane = new Plane(Vector3.UnitY, d: -Component.Entity.Transform.Position.Y);
                     }
                     else
                     {
-                        // Raycast on XZ plane where height is the same as the last node's height
-                        var node = Spline[Spline.Count - 1];
-                        plane = new Plane(Vector3.UnitY, d: -node.Position.Y);
+                        // Raycast on XZ plane where height is the same as the last control point's height
+                        var controlPoint = Spline[Spline.Count - 1];
+                        plane = new Plane(Vector3.UnitY, d: -controlPoint.Position.Y);
                     }
                     if (CollisionHelper.RayIntersectsPlane(in mouseRay, in plane, out Vector3 hitPoint))
                     {
-                        splineEditorGizmoService.AddSplineNode(hitPoint);
+                        splineEditorGizmoService.AddControlPoint(hitPoint);
                     }
                     isControllingMouse = true;
                 }
             }
-            else if (mouseHoverNodeGizmo is not null)
+            else if (mouseHoverControlPointGizmo is not null)
             {
-                splineEditorGizmoService.ActivateSplineNodeEditing(Component, mouseHoverNodeIndex, mouseHoverNodeGizmo.EditingSelectionType);
+                splineEditorGizmoService.ActivateSplineControlPointEditing(Component, mouseHoverControlPointIndex, mouseHoverControlPointGizmo.EditingSelectionType);
                 isControllingMouse = true;
             }
         }
@@ -448,7 +448,7 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
         {
             var data = splineVisualizerSegmentEntityDataList[i];
             // Make line point in the correct direction and rescale the overall mesh
-            var segmentStartPos = splinePlacements[i].Position;
+            var segmentStartPos = splineSamples[i].Position;
             var nextSegmentPos = GetNextSegmentPosition(i);
             var segmentToNextSegment = nextSegmentPos - segmentStartPos;
             Quaternion lineRotation;
@@ -470,11 +470,11 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
         Vector3 GetNextSegmentPosition(int segmentIndex)
         {
             int nextSegmentIndex = segmentIndex + 1;
-            if (nextSegmentIndex >= splinePlacements.Count)
+            if (nextSegmentIndex >= splineSamples.Count)
             {
                 nextSegmentIndex = 0;   // Loop back
             }
-            var nextSegmentPos = splinePlacements[nextSegmentIndex].Position;
+            var nextSegmentPos = splineSamples[nextSegmentIndex].Position;
             return nextSegmentPos;
         }
     }

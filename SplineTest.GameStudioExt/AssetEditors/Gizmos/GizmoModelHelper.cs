@@ -1,8 +1,11 @@
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net)
+// Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
+
 using Stride.Core.Mathematics;
 using Stride.Graphics;
 using Stride.Graphics.GeometricPrimitives;
 
-namespace Stride.Assets.Presentation.AssetEditors.Gizmos.Spline;
+namespace Stride.Assets.Presentation.AssetEditors.Gizmos.Splines;
 
 public static class GizmoModelHelper
 {

@@ -5,9 +5,9 @@ using System.Collections.Specialized;
 
 namespace Stride.Engine.Splines.Models;
 
-public struct SplineNodeCollectionChangedEventArgs
+public struct SplineControlPointsChangedEventArgs
 {
-    public SplineNodeCollectionChangedEventArgs(NotifyCollectionChangedAction action, bool collectionChanged = true)
+    public SplineControlPointsChangedEventArgs(NotifyCollectionChangedAction action, bool collectionChanged = true)
     {
         Action = action;
         Item = default;
@@ -16,7 +16,7 @@ public struct SplineNodeCollectionChangedEventArgs
         CollectionChanged = collectionChanged;
     }
 
-    public SplineNodeCollectionChangedEventArgs(NotifyCollectionChangedAction action, SplineNode item, SplineNode oldItem, int index = -1, bool collectionChanged = true)
+    public SplineControlPointsChangedEventArgs(NotifyCollectionChangedAction action, SplineControlPoint item, SplineControlPoint oldItem, int index = -1, bool collectionChanged = true)
     {
         Action = action;
         Item = item;
@@ -34,12 +34,12 @@ public struct SplineNodeCollectionChangedEventArgs
     /// <summary>
     /// Gets the added or removed item (if dictionary, value only).
     /// </summary>
-    public SplineNode Item { get; private set; }
+    public SplineControlPoint Item { get; private set; }
 
     /// <summary>
     /// Gets the previous value. Only valid if <see cref="Action"/> is <see cref="NotifyCollectionChangedAction.Add"/> and <see cref="NotifyCollectionChangedAction.Remove"/>
     /// </summary>
-    public SplineNode OldItem { get; private set; }
+    public SplineControlPoint OldItem { get; private set; }
 
     /// <summary>
     /// Gets the index in the collection (if applicable).

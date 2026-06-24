@@ -1,9 +1,12 @@
-using SplineTest.Splines.Processors;
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net)
+// Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
+
+using Stride.Engine.Splines.Processors;
 using Stride.Core;
 using Stride.Engine.Design;
 using Stride.Engine.Splines.Models;
 
-namespace SplineTest.Splines.Components;
+namespace Stride.Engine.Splines.Components;
 
 [DataContract]
 [ComponentCategory("Splines")]
@@ -18,10 +21,10 @@ public class SplineComponent : EntityComponent
     public event SplinePropertyChangedHandler SplinePropertyChanged;
 
     /// <summary>
-    /// Event triggered when the spline node has changed.
+    /// Event triggered when the spline control point has changed.
     /// </summary>
-    public delegate void SplineNodeChangedHandler(SplineComponent splineComponent);
-    public event SplineNodeChangedHandler SplineNodeChanged;
+    public delegate void ControlPointsChangedHandler(SplineComponent splineComponent);
+    public event ControlPointsChangedHandler ControlPointsChanged;
     /// <summary>
     /// Event triggered when the spline has become dirty.
     /// </summary>
@@ -41,10 +44,10 @@ public class SplineComponent : EntityComponent
         internal set
         {
             spline?.SplinePropertyChanged -= OnSplinePropertyChanged;
-            spline?.NodeCollectionChanged -= OnSplineNodeCollectionChanged;
+            spline?.ControlPointsChanged -= OnSplineControlPointsChanged;
             spline = value;
             spline?.SplinePropertyChanged += OnSplinePropertyChanged;
-            spline?.NodeCollectionChanged += OnSplineNodeCollectionChanged;
+            spline?.ControlPointsChanged += OnSplineControlPointsChanged;
         }
     }
 
@@ -53,9 +56,9 @@ public class SplineComponent : EntityComponent
         SplinePropertyChanged?.Invoke(this);
     }
 
-    private void OnSplineNodeCollectionChanged(object sender, ref SplineNodeCollectionChangedEventArgs e)
+    private void OnSplineControlPointsChanged(object sender, ref SplineControlPointsChangedEventArgs e)
     {
-        SplineNodeChanged?.Invoke(this);
+        ControlPointsChanged?.Invoke(this);
     }
 
     private SplineRenderSettings renderSettings;

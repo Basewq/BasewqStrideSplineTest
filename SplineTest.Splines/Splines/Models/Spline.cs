@@ -11,26 +11,26 @@ namespace Stride.Engine.Splines.Models;
 
 public delegate void SplinePropertyChangedEventHandler(object sender);
 
-public delegate void SplineNodeEventHandler<TEventArgs>(object sender, ref TEventArgs e);
+public delegate void SplineControlPointEventHandler<TEventArgs>(object sender, ref TEventArgs e);
 
 [DataContract]
 [Display(Expand = ExpandRule.Once)]
 public class Spline
 {
-    private readonly List<BezierSegment> splineSegments = [];   // The start pos of the segment is the same as the node on the same index in SplineNodes list.
+    private readonly List<BezierSegment> splineSegments = [];   // The start pos of the segment is the same as the control point on the same index in ControlPoints list.
     private readonly List<SegmentTToPositionTable> segmentTToPositionLookupTable = [];
     private bool isRebuildLookupTableRequired;
 
     public event SplinePropertyChangedEventHandler SplinePropertyChanged;
-    public event SplineNodeEventHandler<SplineNodeCollectionChangedEventArgs> NodeCollectionChanged;
+    public event SplineControlPointEventHandler<SplineControlPointsChangedEventArgs> ControlPointsChanged;
 
     private bool isClosedLoop;
     /// <summary>
-    /// Gets or sets a value indicating whether the last spline node connects back to the first spline node to form a loop.
+    /// Gets or sets a value indicating whether the last spline control point connects back to the first spline control point to form a loop.
     /// Default is <c>false</c>.
     /// </summary>
     /// <remarks>
-    /// This is only applicable where there are at least two spline nodes.
+    /// This is only applicable where there are at least two spline control points.
     /// </remarks>
     public bool IsClosedLoop
     {
@@ -42,82 +42,80 @@ public class Spline
         }
     }
 
-    private TrackingCollection<SplineNode> splineNodes;
+    private TrackingCollection<SplineControlPoint> controlPoints;
     [DataMember]
     [Display(Expand = ExpandRule.Once)]
-    internal TrackingCollection<SplineNode> SplineNodes
+    internal TrackingCollection<SplineControlPoint> ControlPoints
     {
-        get => splineNodes;
+        get => controlPoints;
         set
         {
-            splineNodes?.CollectionChanged -= OnSplineNodes_CollectionChanged;
-            splineNodes = value;
-            splineNodes?.CollectionChanged += OnSplineNodes_CollectionChanged;
+            controlPoints?.CollectionChanged -= OnSplineControlPoints_CollectionChanged;
+            controlPoints = value;
+            controlPoints?.CollectionChanged += OnSplineControlPoints_CollectionChanged;
         }
     }
 
-    private void OnSplineNodes_CollectionChanged(object sender, TrackingCollectionChangedEventArgs e)
+    private void OnSplineControlPoints_CollectionChanged(object sender, TrackingCollectionChangedEventArgs e)
     {
         isRebuildLookupTableRequired = true;
-        SplineNode newItem = (SplineNode?)e.Item  ?? default;
-        SplineNode oldItem = (SplineNode?)e.OldItem ?? default;
-        var eventArgs = new SplineNodeCollectionChangedEventArgs(e.Action, newItem, oldItem, index: e.Index, e.CollectionChanged);
-        NodeCollectionChanged?.Invoke(this, ref eventArgs);
+        SplineControlPoint newItem = (SplineControlPoint?)e.Item  ?? default;
+        SplineControlPoint oldItem = (SplineControlPoint?)e.OldItem ?? default;
+        var eventArgs = new SplineControlPointsChangedEventArgs(e.Action, newItem, oldItem, index: e.Index, e.CollectionChanged);
+        ControlPointsChanged?.Invoke(this, ref eventArgs);
     }
 
     [DataMemberIgnore]
-    public SplineNode this[int index]
+    public SplineControlPoint this[int index]
     {
-        get => SplineNodes[index];
+        get => ControlPoints[index];
         set
         {
-            bool hasChanged = SplineNodes[index] != value;
+            bool hasChanged = ControlPoints[index] != value;
             isRebuildLookupTableRequired = isRebuildLookupTableRequired || hasChanged;
-            SplineNodes[index] = value;
+            ControlPoints[index] = value;
         }
     }
 
     /// <summary>
-    /// Gets the number of nodes in this spline.
+    /// Gets the number of control points in this spline.
     /// </summary>
-    public int Count => SplineNodes.Count;
-
-    ////public bool IsReadOnly => false;
+    public int Count => ControlPoints.Count;
 
     public Spline()
     {
-        SplineNodes = [];
+        ControlPoints = [];
     }
 
     public void Add(Vector3 position)
     {
-        var newNode = new SplineNode
+        var newControlPoint = new SplineControlPoint
         {
             Position = position,
-            TangentInPosition = position,
-            TangentOutPosition = position
+            TangentIn = Vector3.Zero,
+            TangentOut = Vector3.Zero
         };
-        Add(newNode);
+        Add(newControlPoint);
     }
 
-    public void Add(SplineNode node)
+    public void Add(SplineControlPoint controlPoint)
     {
         isRebuildLookupTableRequired = true;
-        int newNodeIndex = SplineNodes.Count;
-        SplineNodes.Add(node);
+        int newControlPointsIndex = ControlPoints.Count;
+        ControlPoints.Add(controlPoint);
     }
 
-    public bool Remove(SplineNode item)
+    public bool Remove(SplineControlPoint item)
     {
-        int index = SplineNodes.IndexOf(item);
+        int index = ControlPoints.IndexOf(item);
         if (index < 0)
         {
             return false;
         }
 
         isRebuildLookupTableRequired = true;
-        var node = SplineNodes[index];
-        SplineNodes.RemoveAt(index);
+        var controlPoint = ControlPoints[index];
+        ControlPoints.RemoveAt(index);
 
         return true;
     }
@@ -125,18 +123,18 @@ public class Spline
     public void RemoveAt(int index)
     {
         isRebuildLookupTableRequired = true;
-        var node = SplineNodes[index];
-        SplineNodes.RemoveAt(index);
+        var controlPoint = ControlPoints[index];
+        ControlPoints.RemoveAt(index);
     }
 
-    public bool Contains(SplineNode item) => SplineNodes.Contains(item);
+    public bool Contains(SplineControlPoint item) => ControlPoints.Contains(item);
 
-    public void CopyTo(SplineNode[] array, int arrayIndex) => SplineNodes.CopyTo(array, arrayIndex);
+    public void CopyTo(SplineControlPoint[] array, int arrayIndex) => ControlPoints.CopyTo(array, arrayIndex);
 
     public void Clear()
     {
         isRebuildLookupTableRequired = true;
-        SplineNodes.Clear();
+        ControlPoints.Clear();
     }
 
     /// <summary>
@@ -154,13 +152,14 @@ public class Spline
     /// <param name="position">Position in the spline's local space.</param>
     public SplineClosestPositionInfo GetClosestPointOnSpline(Vector3 position)
     {
-        if (SplineNodes.Count == 0)
+        if (ControlPoints.Count == 0)
         {
             throw new InvalidOperationException("Spline is empty.");
         }
         BuildLookupTable();
 
-        int minNodeIndex = -1;
+        int minSegmentIndex = -1;
+        int minControlPointsIndex = -1;
         Vector3 minPointOnSpline = Vector3.Zero;
         float minPointLocalT = 0;
         float minDistSqrd = float.MaxValue;
@@ -176,21 +175,28 @@ public class Spline
             float distSqrd = Vector3.DistanceSquared(pointOnLine, position);
             if (minDistSqrd > distSqrd)
             {
+                minSegmentIndex = i;
                 minDistSqrd = distSqrd;
-                minNodeIndex = tableValue1.NodeIndex;
+                minControlPointsIndex = tableValue1.ControlPointsIndex;
                 minPointOnSpline = pointOnLine;
-                minPointLocalT = tableValue1.NodeLocalT + lineT;
+                minPointLocalT = tableValue1.ControlPointLocalT + lineT;
             }
         }
 
-        int nodeAIndex = minNodeIndex;
-        int nodeBIndex = IsClosedLoop ? (nodeAIndex + 1) % Count : MathUtil.Clamp(nodeAIndex, min: 0, max: Count - 1);
+        ref var segmentTableValue1 = ref segmentTToPositionLookupTableSpan[minSegmentIndex];
+        ref var segmentTableValue2 = ref segmentTToPositionLookupTableSpan[minSegmentIndex + 1];
+        float curSplineDistance =  MathUtil.Lerp(from: segmentTableValue1.TotalSplineDistance, to: segmentTableValue1.TotalSplineDistance, amount: minPointLocalT);
+        float splineTotalDistance = GetTotalDistance();
+
+        int controlPointAIndex = minControlPointsIndex;
+        int controlPointBIndex = IsClosedLoop ? (controlPointAIndex + 1) % Count : MathUtil.Clamp(controlPointAIndex, min: 0, max: Count - 1);
         var closestPosInfo = new SplineClosestPositionInfo
         {
             Position = minPointOnSpline,
-            SplineNodeAIndex = nodeAIndex,
-            SplineNodeBIndex = nodeBIndex,
+            SplineControlPointAIndex = controlPointAIndex,
+            SplineControlPointBIndex = controlPointBIndex,
             LocalT = minPointLocalT,
+            SplineDistance = Math.Clamp(curSplineDistance, min: 0, max: splineTotalDistance)
         };
         return closestPosInfo;
     }
@@ -206,20 +212,20 @@ public class Spline
         return closetPoint;
     }
 
-    public void CollectSplinePlacements(List<SplinePlacement> splinePlacements)
+    public void CollectSplineSamples(List<SplineSample> splineSamples)
     {
         BuildLookupTable();
-        splinePlacements.EnsureCapacity(segmentTToPositionLookupTable.Count);
+        splineSamples.EnsureCapacity(segmentTToPositionLookupTable.Count);
         var segmentTToPositionLookupTableSpan = CollectionsMarshal.AsSpan(segmentTToPositionLookupTable);
         for (int i = 0; i < segmentTToPositionLookupTableSpan.Length; i++)
         {
             ref var tableValue = ref segmentTToPositionLookupTableSpan[i];
-            var placement = new SplinePlacement
+            var placement = new SplineSample
             {
                 Position = tableValue.Position,
-                Rotation = CalculateRotation(tableValue.NodeIndex, tableValue.NodeLocalT),
+                Rotation = CalculateRotation(tableValue.ControlPointsIndex, tableValue.ControlPointLocalT),
             };
-            splinePlacements.Add(placement);
+            splineSamples.Add(placement);
         }
     }
 
@@ -241,7 +247,7 @@ public class Spline
         return new BoundingBox(min, max);
     }
 
-    public SplinePlacement GetPlacementFromSplineDistance(float splineDistance)
+    public SplineSample GetPlacementFromSplineDistance(float splineDistance)
     {
         BuildLookupTable();
         float totalDistance = GetTotalDistance();
@@ -252,7 +258,7 @@ public class Spline
 
         if (IsClosedLoop)
         {
-            while (splineDistance > totalDistance)
+            while (splineDistance >= totalDistance)
             {
                 splineDistance -= totalDistance;
             }
@@ -281,43 +287,162 @@ public class Spline
         {
             // For a closed loop spline, the last table value is the same as the first value,
             // so subtract one from segmentTToPositionLookupTable.Count when we use modulo to skip it.
-            tableValueEndIndex = (tableValueStartIndex + 1) % (segmentTToPositionLookupTableSpan.Length - 1);
+            tableValueEndIndex = (tableValueStartIndex + 1) % segmentTToPositionLookupTableSpan.Length;
         }
         else
         {
-            tableValueEndIndex = Math.Min(tableValueStartIndex + 1, segmentTToPositionLookupTableSpan.Length);
+            tableValueEndIndex = Math.Min(tableValueStartIndex + 1, segmentTToPositionLookupTableSpan.Length - 1);
         }
 
         ref var tableValue1 = ref segmentTToPositionLookupTableSpan[tableValueStartIndex];
         ref var tableValue2 = ref segmentTToPositionLookupTableSpan[tableValueEndIndex];
+        //System.Diagnostics.Debug.Write($"\tControlPoint: {tableValue1.ControlPointsIndex} - {tableValue2.ControlPointsIndex}\t");
 
         if (tableValueStartIndex == tableValueEndIndex)
         {
             // Lies exactly on a table value
-            float tValue = tableValue1.NodeLocalT;
-            return new SplinePlacement
+            float tValue = tableValue1.ControlPointLocalT;
+            return new SplineSample
             {
                 Position = tableValue1.Position,
-                Rotation = CalculateRotation(tableValue1.NodeIndex, tValue)
+                Rotation = this[tableValue1.ControlPointsIndex].Rotation
             };
         }
         else
         {
             float tValue = MathUtil.InverseLerp(tableValue1.TotalSplineDistance, tableValue2.TotalSplineDistance, splineDistance);
             tValue = MathUtil.Clamp(tValue, 0, 1);
-            return new SplinePlacement
+            return new SplineSample
             {
                 Position = Vector3.Lerp(tableValue1.Position, tableValue2.Position, tValue),
-                Rotation = CalculateRotation(tableValue1.NodeIndex, tValue)
+                Rotation = CalculateRotation(tableValue1.ControlPointsIndex, tValue)
             };
         }
     }
 
-    private Quaternion CalculateRotation(int nodeStartIndex, float tValue)
+    private Quaternion CalculateRotation(int controlPointStartIndex, float tValue)
     {
-        var node1 = this[nodeStartIndex];
-        var node2 = this[(nodeStartIndex + 1) % Count];
-        return Quaternion.Slerp(node1.Rotation, node2.Rotation, tValue);
+        var controlPoint1 = this[controlPointStartIndex];
+        var controlPoint2 = this[(controlPointStartIndex + 1) % Count];
+        return Quaternion.Slerp(controlPoint1.Rotation, controlPoint2.Rotation, tValue);
+    }
+
+    public void CollectEncounteredControlPoints(List<SplineControlPoint> controlPointsEncountered, float startSplineDistance, float endSplineDistance)
+    {
+        BuildLookupTable();
+        float totalDistance = GetTotalDistance();
+        if (totalDistance <= 0 || segmentTToPositionLookupTable.Count <= 1)
+        {
+            return;
+        }
+
+        bool isMovingForward = endSplineDistance > startSplineDistance;
+        float splineDistance = startSplineDistance;
+        int lastEncountedControlPointsIndex = -1;
+        if (isMovingForward)
+        {
+            // Find initial segment this spline sits on
+            int segmentStartIndex = 0;
+            var segmentTToPositionLookupTableSpan = CollectionsMarshal.AsSpan(segmentTToPositionLookupTable);
+            for (int i = 0; i < segmentTToPositionLookupTableSpan.Length; i++)
+            {
+                if (startSplineDistance < segmentTToPositionLookupTableSpan[i].TotalSplineDistance)
+                {
+                    segmentStartIndex = i;
+                    lastEncountedControlPointsIndex = segmentTToPositionLookupTableSpan[i].ControlPointsIndex;
+                    break;
+                }
+            }
+
+            // Collect all control points we passed
+            float curEndSplineDistance = endSplineDistance;
+            while (true)
+            {
+                // Find end segment this spline sits on
+                for (int i = segmentStartIndex; i < segmentTToPositionLookupTableSpan.Length; i++)
+                {
+                    int segmentStartControlPointsIndex = segmentTToPositionLookupTableSpan[i].ControlPointsIndex;
+                    if (lastEncountedControlPointsIndex == segmentStartControlPointsIndex)
+                    {
+                        continue;
+                    }
+                    if (curEndSplineDistance > segmentTToPositionLookupTableSpan[i].TotalSplineDistance)
+                    {
+                        break;
+                    }
+                    controlPointsEncountered.Add(this[segmentStartControlPointsIndex]);
+                }
+
+                if (IsClosedLoop)
+                {
+                    if (curEndSplineDistance > totalDistance)
+                    {
+                        curEndSplineDistance -= totalDistance;
+                        segmentStartIndex = 0;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+        }
+        else
+        {
+            // Find initial segment this spline sits on
+            int segmentStartIndex = 0;
+            var segmentTToPositionLookupTableSpan = CollectionsMarshal.AsSpan(segmentTToPositionLookupTable);
+            for (int i = segmentTToPositionLookupTableSpan.Length - 1; i >= 0; i--)
+            {
+                if (startSplineDistance <= segmentTToPositionLookupTableSpan[i].TotalSplineDistance)
+                {
+                    segmentStartIndex = i;
+                    lastEncountedControlPointsIndex = segmentTToPositionLookupTableSpan[i].ControlPointsIndex + 1;
+                    break;
+                }
+            }
+
+            // Collect all control points we passed
+            float curEndSplineDistance = endSplineDistance;
+            while (true)
+            {
+                // Find end segment this spline sits on
+                for (int i = segmentStartIndex; i >= 0; i--)
+                {
+                    int segmentEndControlPointsIndex = segmentTToPositionLookupTableSpan[i].ControlPointsIndex + 1;
+                    if (lastEncountedControlPointsIndex == segmentEndControlPointsIndex)
+                    {
+                        continue;
+                    }
+                    if (curEndSplineDistance > segmentTToPositionLookupTableSpan[i].TotalSplineDistance)
+                    {
+                        break;
+                    }
+                    controlPointsEncountered.Add(this[segmentEndControlPointsIndex]);
+                }
+
+                if (IsClosedLoop)
+                {
+                    if (curEndSplineDistance < 0)
+                    {
+                        curEndSplineDistance += totalDistance;
+                        segmentStartIndex = segmentTToPositionLookupTableSpan.Length - 1;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+        }
     }
 
     private void BuildLookupTable()
@@ -330,25 +455,25 @@ public class Spline
         splineSegments.Clear();
         segmentTToPositionLookupTable.Clear();
 
-        var totalNodeCount = SplineNodes.Count;
-        if (totalNodeCount > 1)
+        var totalControlPointCount = ControlPoints.Count;
+        if (totalControlPointCount > 1)
         {
-            splineSegments.EnsureCapacity(IsClosedLoop ? totalNodeCount : totalNodeCount - 1);
-            for (int i = 0; i < totalNodeCount - 1; i++)
+            splineSegments.EnsureCapacity(IsClosedLoop ? totalControlPointCount : totalControlPointCount - 1);
+            for (int i = 0; i < totalControlPointCount - 1; i++)
             {
-                var currentSplineNode = this[i];
-                var nextSplineNode = this[i + 1];
+                var currentControlPoint = this[i];
+                var nextControlPoint = this[i + 1];
 
-                var segment = new BezierSegment(currentSplineNode, nextSplineNode);
+                var segment = new BezierSegment(currentControlPoint, nextControlPoint);
                 splineSegments.Add(segment);
-
             }
             if (IsClosedLoop)
             {
-                var currentSplineNode = this[totalNodeCount - 1];
-                var nextSplineNode = this[0];
+                // Add additional segment (forming the final control point back to first control point)
+                var currentControlPoint = this[totalControlPointCount - 1];
+                var nextControlPoint = this[0];
 
-                var segment = new BezierSegment(currentSplineNode, nextSplineNode);
+                var segment = new BezierSegment(currentControlPoint, nextControlPoint);
                 splineSegments.Add(segment);
             }
 
@@ -356,19 +481,20 @@ public class Spline
             const int SampleSizePerSegment = 10;
             float dt = 1f / SampleSizePerSegment;
             var splineSegmentsSpan = CollectionsMarshal.AsSpan(splineSegments);
-            segmentTToPositionLookupTable.EnsureCapacity(totalNodeCount * SampleSizePerSegment);
+            segmentTToPositionLookupTable.EnsureCapacity(totalControlPointCount * SampleSizePerSegment);
             float totalCurveDistance = 0;
             var previousPos = splineSegmentsSpan[0].P0;
-            for (int nodeIndex = 0; nodeIndex < splineSegments.Count; nodeIndex++)
+            for (int segmentIndex = 0; segmentIndex < splineSegments.Count; segmentIndex++)
             {
-                ref var segment = ref splineSegmentsSpan[nodeIndex];
+                ref var segment = ref splineSegmentsSpan[segmentIndex];
                 totalCurveDistance += (segment.P0 - previousPos).Length();
                 previousPos = segment.P0;
+                int controlPointIndex = segmentIndex;   // Same index
                 // First position is always just the initial value of the segment
                 segmentTToPositionLookupTable.Add(new SegmentTToPositionTable
                 {
-                    NodeIndex = nodeIndex,
-                    NodeLocalT = 0,
+                    ControlPointsIndex = controlPointIndex,
+                    ControlPointLocalT = 0,
                     TotalSplineDistance = totalCurveDistance,
                     Position = segment.StartPosition
                 });
@@ -381,8 +507,8 @@ public class Spline
                     previousPos = currentPos;
                     segmentTToPositionLookupTable.Add(new SegmentTToPositionTable
                     {
-                        NodeIndex = nodeIndex,
-                        NodeLocalT = currentT,
+                        ControlPointsIndex = controlPointIndex,
+                        ControlPointLocalT = currentT,
                         TotalSplineDistance = totalCurveDistance,
                         Position = currentPos
                     });
@@ -394,8 +520,8 @@ public class Spline
             totalCurveDistance += (finalPos - previousPos).Length();
             segmentTToPositionLookupTable.Add(new SegmentTToPositionTable
             {
-                NodeIndex = splineSegments.Count - 1,
-                NodeLocalT = 1,
+                ControlPointsIndex = controlPoints.Count - 1,
+                ControlPointLocalT = 1,
                 TotalSplineDistance = totalCurveDistance,
                 Position = finalPos
             });
@@ -404,9 +530,9 @@ public class Spline
         isRebuildLookupTableRequired = false;
     }
 
-    public Enumerator GetEnumerator() => new Enumerator(splineNodes);
+    public Enumerator GetEnumerator() => new Enumerator(controlPoints);
 
-    //IEnumerator<SplineNode> IEnumerable<SplineNode>.GetEnumerator() => GetEnumerator();
+    //IEnumerator<SplineControlPoint> IEnumerable<SplineControlPoint>.GetEnumerator() => GetEnumerator();
 
     //IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -419,13 +545,13 @@ public class Spline
     private struct SegmentTToPositionTable
     {
         /// <summary>
-        /// The starting node this belongs to.
+        /// The starting control point this belongs to.
         /// </summary>
-        public int NodeIndex;
+        public int ControlPointsIndex;
         /// <summary>
-        /// Value 0 to 1 from NodeIndex to (NodeIndex + 1)
+        /// Value 0 to 1 from ControlPointsIndex to (ControlPointsIndex + 1)
         /// </summary>
-        public float NodeLocalT;
+        public float ControlPointLocalT;
         /// <summary>
         /// Travel distance on the spline to this position.
         /// </summary>
@@ -436,15 +562,15 @@ public class Spline
         public Vector3 Position;
     }
 
-    public struct Enumerator : IEnumerator<SplineNode>
+    public struct Enumerator : IEnumerator<SplineControlPoint>
     {
-        private readonly TrackingCollection<SplineNode> splineNodes;
-        private TrackingCollection<SplineNode>.Enumerator enumerator;
+        private readonly TrackingCollection<SplineControlPoint> splineControlPoints;
+        private TrackingCollection<SplineControlPoint>.Enumerator enumerator;
 
-        public Enumerator(TrackingCollection<SplineNode> splineNodes)
+        public Enumerator(TrackingCollection<SplineControlPoint> splineControlPoints)
         {
-            this.splineNodes = splineNodes;
-            enumerator = splineNodes.GetEnumerator();
+            this.splineControlPoints = splineControlPoints;
+            enumerator = splineControlPoints.GetEnumerator();
         }
 
         public void Dispose()
@@ -456,10 +582,10 @@ public class Spline
 
         public void Reset()
         {
-            enumerator = splineNodes.GetEnumerator();
+            enumerator = splineControlPoints.GetEnumerator();
         }
 
-        public readonly SplineNode Current => enumerator.Current;
+        public readonly SplineControlPoint Current => enumerator.Current;
 
         readonly object IEnumerator.Current => Current;
     }

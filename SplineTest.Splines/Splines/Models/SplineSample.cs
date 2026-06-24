@@ -5,7 +5,7 @@ using Stride.Core.Mathematics;
 
 namespace Stride.Engine.Splines.Models;
 
-public struct SplinePlacement
+public struct SplineSample
 {
     /// <summary>
     /// Local position relative to the spline.
@@ -16,7 +16,7 @@ public struct SplinePlacement
     /// </summary>
     public Quaternion Rotation;
 
-    public SplinePlacement(Vector3 position, Quaternion rotation)
+    public SplineSample(Vector3 position, Quaternion rotation)
     {
         Position = position;
         Rotation = rotation;

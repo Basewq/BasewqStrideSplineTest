@@ -27,7 +27,7 @@ Hierarchy:
                         Name: null
                         Projection: Perspective
                         Slot: d0753af4-09b0-47ce-9cfc-def518c940ff
-                    a1da82e2807c55604e99bbc780f09fb2: !SplineTest.BasicCameraController,SplineTest
+                    a1da82e2807c55604e99bbc780f09fb2: !SplineTools.BasicCameraController,SplineTest
                         Id: a485075c-c1c3-4a0a-a614-f651a2fde74e
                         Gamepad: false
                         KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}

@@ -14,4 +14,7 @@ OutputGroupDirectories: {}
 ExplicitFolders: []
 Bundles: []
 TemplateFolders: []
-RootAssets: []
+RootAssets:
+    - 1be3340c-b797-4557-bff7-d9be92dfdb42:StrideUIDesigns
+    - 72db55a9-0b76-4c3c-918b-afaf40334293:UI/MainPage
+AssetAssemblies: []
