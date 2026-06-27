@@ -8,13 +8,8 @@ Attributes:
         GlossinessMap: !ComputeFloat
             Value: 0.9
     Diffuse: !MaterialDiffuseMapFeature
-        DiffuseMap: !ComputeTextureColor
-            Texture: 52d15a47-9d83-4348-8094-09f5052c33cd:Skybox texture
-            FallbackValue:
-                Value: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
-            Scale: {X: 1.0, Y: 1.0}
-            Offset: {X: 0.0, Y: 0.0}
-            Swizzle: null
+        DiffuseMap: !ComputeColor
+            Value: {R: 0.0, G: 0.6256251, B: 0.89375, A: 1.0}
     DiffuseModel: !MaterialDiffuseLambertModelFeature {}
     Specular: !MaterialMetalnessMapFeature
         Enabled: false

@@ -2,8 +2,6 @@
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using SplineTest.GameStudioExt.AssetEditors.Gizmos;
-using SplineTest.GameStudioExt.StrideEditorExt;
-using Stride.Engine.Splines.Components;
 using Stride.Assets.Presentation.AssetEditors.EntityHierarchyEditor.Game;
 using Stride.Assets.Presentation.AssetEditors.GameEditor.Game;
 using Stride.Core;
@@ -11,6 +9,7 @@ using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Engine.Gizmos;
 using Stride.Engine.Processors;
+using Stride.Engine.Splines.Components;
 using Stride.Engine.Splines.Models;
 using Stride.Extensions;
 using Stride.Graphics.GeometricPrimitives;

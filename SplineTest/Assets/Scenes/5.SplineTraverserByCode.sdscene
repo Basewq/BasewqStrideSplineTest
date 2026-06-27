@@ -43,12 +43,12 @@ Hierarchy:
                         Children: {}
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: 09cb95d6-e16f-4ca5-8448-76b897948270
-                        Model: fbd48d95-45c7-4c3a-b544-e236a6244a51:Sphere
+                        Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
-                    0a9411ecfb0f770936e23a40e2ca36d7: !SplineTools.SplineTraverserByCode,SplineTools
+                    0a9411ecfb0f770936e23a40e2ca36d7: !SplineTools.SplineTraverserByCode,SplineTest
                         Id: f8a94ac6-782a-4ba6-ba3b-0f4e7695087e
-                        splineComponent: ref!! 54c3bdf9-f73f-4e5f-8d6b-303676fbaed1
+                        SplineComponent: ref!! 09cebf4a-4336-4333-ae83-71463c59420d
                         Speed: 0.5
         -   Entity:
                 Id: 56ccd4f7-032c-4529-8ba6-6f17610ff8fa
@@ -73,7 +73,7 @@ Hierarchy:
                         Children: {}
                     3b7dfa1b125c179fd3a6f28da739ba63: !ModelComponent
                         Id: aecbe657-9736-4979-abc5-4d36ad393b5e
-                        Model: 136576a0-e08f-4b73-aef1-03df8e422709:Ground
+                        Model: 6c5770f1-e8ec-483f-aa9d-35049e4c3e56:Ground
                         Materials: {}
         -   Entity:
                 Id: 873f25ea-d01a-44c0-aeea-f2d01c03bb01
@@ -108,13 +108,13 @@ Hierarchy:
                         Id: 092556af-160e-4041-b70b-139308385198
                         Name: null
                         Projection: Perspective
-                        Slot: 74df2f5f-7b3c-4819-8415-58dfc3199aea
+                        Slot: d0753af4-09b0-47ce-9cfc-def518c940ff
                     13c784dc3527224fd0f7dc445499473d: !UIComponent
                         Id: 574a2fd2-2580-494b-b92a-7f5af5347eab
                         Page: 72db55a9-0b76-4c3c-918b-afaf40334293:UI/MainPage
                         Resolution: {X: 1280.0, Y: 720.0, Z: 1000.0}
                         Size: {X: 1.28, Y: 0.72, Z: 1.0}
-                    ee0c014ab223f17f3503cd630f77f399: !SplineTools.BasicCameraController,SplineTools
+                    ee0c014ab223f17f3503cd630f77f399: !SplineTools.BasicCameraController,SplineTest
                         Id: ac729612-0b72-4003-9621-a1ac680f69fb
                         Gamepad: false
                         KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
@@ -123,7 +123,7 @@ Hierarchy:
                         KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
                         MouseRotationSpeed: {X: 1.0, Y: 1.0}
                         TouchRotationSpeed: {X: 1.0, Y: 0.7}
-                    ad128bc66dad332dd16c8d312ee050b3: !SplineTools.SwitchScene,SplineTools
+                    ad128bc66dad332dd16c8d312ee050b3: !SplineTools.SwitchScene,SplineTest
                         Id: 39eafb55-6ab1-4a80-9015-6576c93e3e51
                         Scenes:
                             c5800989324242552c79a79c023b21d9: 25542675-edbb-436c-97aa-ee45d9f5b004:Scenes/1.MainScene
@@ -207,7 +207,29 @@ Hierarchy:
                         RenderSettings:
                             ShowSegments: true
                             SegmentsMaterial: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
-                            ShowNodes: true
-                            NodesMaterial: cd6fe2c7-b2ef-4c0e-a5e7-45abaf69c9c8:Materials/Blue
+                            ShowControlPoints: true
+                            ControlPointsMaterial: cd6fe2c7-b2ef-4c0e-a5e7-45abaf69c9c8:Materials/Blue
                             ShowBoundingBox: true
                             BoundingBoxMaterial: df5d783c-17ea-4ba6-a8b1-cceb63ad2a00:Materials/Yellow
+                    42c798544f732569c690749555e17917: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
+                        Id: 09cebf4a-4336-4333-ae83-71463c59420d
+                        Control:
+                            EditSplineState: Disabled
+                        Spline:
+                            IsClosedLoop: true
+                            ControlPoints:
+                                a9f29a823770dab9df44e5e65ec41bd0:
+                                    Position: {X: 0.8732637, Y: 0.0, Z: -1.2202845}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 1.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -1.0, Y: 0.0, Z: 0.0}
+                                ba02c24cba2413102644e30825d628be:
+                                    Position: {X: -0.07490442, Y: 0.453193, Z: -0.061197758}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: -1.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: 1.0}
+                                bf659d91bbd0890671cb55a2fd10e0be:
+                                    Position: {X: 1.2325743, Y: 0.0, Z: 2.0893862}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: -1.0, Y: 0.0, Z: -0.5}
+                                    TangentOut: {X: 1.0, Y: 0.0, Z: 0.0}

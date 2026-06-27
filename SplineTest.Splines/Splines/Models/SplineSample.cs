@@ -15,10 +15,15 @@ public struct SplineSample
     /// Local rotation relative to the spline.
     /// </summary>
     public Quaternion Rotation;
+    /// <summary>
+    /// Normalized tangent vector relative to the spline.
+    /// </summary>
+    public Vector3 Tangent;
 
-    public SplineSample(Vector3 position, Quaternion rotation)
+    public SplineSample(Vector3 position, Quaternion rotation, Vector3 tangent)
     {
         Position = position;
         Rotation = rotation;
+        Tangent = tangent;
     }
 }

@@ -1,4 +1,4 @@
-﻿using Stride.Core.Mathematics;
+using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Engine.Splines.Components;
 using Stride.Input;
@@ -9,8 +9,8 @@ namespace SplineTools
     public class ClosestPointDemo : SyncScript
     {
         public float MoveSpeed = 4.0f;
-        public SplineComponent spline;
-        public Entity closestPointOrb;
+        public SplineComponent SplineComponent;
+        public Entity ClosestPointOrb;
 
         public override void Start()
         {
@@ -22,24 +22,26 @@ namespace SplineTools
             Vector3 dir;
             UpdateKeyboardInput(out deltaTime, out dir);
 
-            if (dir.Length() != 0)
+            if (SplineComponent?.Spline is not null
+                && dir.LengthSquared() > 0)
             {
                 //Update movement
                 dir = Vector3.Normalize(dir);
                 Entity.Transform.Position += dir * MoveSpeed * deltaTime;
 
                 //Show closest point on spline
-                var closestPositionInfo = spline.GetClosestPointOnSpline(Entity.Transform.WorldMatrix.TranslationVector);
-                closestPointOrb.Transform.UseTRS = false;
-                closestPointOrb.Transform.WorldMatrix.TranslationVector = closestPositionInfo.Position;
-                closestPointOrb.Transform.UpdateLocalFromWorld();
+                var closestPositionInfo = SplineComponent.Spline.GetClosestPointOnSpline(Entity.Transform.WorldMatrix.TranslationVector);
+                ClosestPointOrb.Transform.UseTRS = false;
+                ClosestPointOrb.Transform.WorldMatrix.TranslationVector = closestPositionInfo.Position;
+                ClosestPointOrb.Transform.UpdateLocalFromWorld();
             }
         }
 
         private void UpdateKeyboardInput(out float deltaTime, out Vector3 dir)
         {
-            DebugText.Print($"Use WASD to move the sphere around.", new Int2(600, 20));
-            DebugText.Print($"The red sphere indicates closest point on the spline", new Int2(600, 40));
+            const int HelpTextStartX = 800;
+            DebugText.Print($"Use WASD to move the sphere around.", new Int2(HelpTextStartX, 20));
+            DebugText.Print($"The red sphere indicates closest point on the spline", new Int2(HelpTextStartX, 40));
 
             deltaTime = (float)Game.UpdateTime.Elapsed.TotalSeconds;
             dir = new();

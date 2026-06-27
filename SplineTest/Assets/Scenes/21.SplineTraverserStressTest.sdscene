@@ -50,12 +50,12 @@ Hierarchy:
                         Children: {}
                     3b7dfa1b125c179fd3a6f28da739ba63: !ModelComponent
                         Id: dcdba9f5-5e1c-486c-9bf1-2fd225a44839
-                        Model: 136576a0-e08f-4b73-aef1-03df8e422709:Ground
+                        Model: 6c5770f1-e8ec-483f-aa9d-35049e4c3e56:Ground
                         Materials: {}
-                    368602981b598ae21a8ed4e68f48ac5a: !SplineTools.GameProfiler,SplineTools
+                    368602981b598ae21a8ed4e68f48ac5a: !SplineTools.GameProfiler,SplineTest
                         Id: 53dedade-fb2b-4d90-9d58-2159bf98d1ad
                         Enabled: true
-                        TextColor: {R: 0, G: 0, B: 0, A: 255}
+                        TextColor: {R: 144, G: 238, B: 144, A: 255}
                         RefreshTime: 100.0
                         SortingMode: ByTime
                         FilteringMode: Fps
@@ -92,13 +92,13 @@ Hierarchy:
                         Id: 6b7fbce6-341e-4551-888d-5377f89c34df
                         Name: null
                         Projection: Perspective
-                        Slot: 74df2f5f-7b3c-4819-8415-58dfc3199aea
+                        Slot: d0753af4-09b0-47ce-9cfc-def518c940ff
                     13c784dc3527224fd0f7dc445499473d: !UIComponent
                         Id: cc72cb0e-3ff6-4a3d-9345-5b578bab29f0
                         Page: 72db55a9-0b76-4c3c-918b-afaf40334293:UI/MainPage
                         Resolution: {X: 1280.0, Y: 720.0, Z: 1000.0}
                         Size: {X: 1.28, Y: 0.72, Z: 1.0}
-                    ee0c014ab223f17f3503cd630f77f399: !SplineTools.BasicCameraController,SplineTools
+                    ee0c014ab223f17f3503cd630f77f399: !SplineTools.BasicCameraController,SplineTest
                         Id: 81b7e188-e402-4131-83e6-f9c48bc8d53b
                         Gamepad: false
                         KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
@@ -107,7 +107,7 @@ Hierarchy:
                         KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
                         MouseRotationSpeed: {X: 1.0, Y: 1.0}
                         TouchRotationSpeed: {X: 1.0, Y: 0.7}
-                    ad128bc66dad332dd16c8d312ee050b3: !SplineTools.SwitchScene,SplineTools
+                    ad128bc66dad332dd16c8d312ee050b3: !SplineTools.SwitchScene,SplineTest
                         Id: 41ab2768-4047-4e19-b879-2cf8cb84f712
                         Scenes:
                             c5800989324242552c79a79c023b21d9: 25542675-edbb-436c-97aa-ee45d9f5b004:Scenes/1.MainScene
@@ -195,28 +195,26 @@ Hierarchy:
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: d776c2e5-290a-42fe-9b61-af8c6c3afcce
                         Enabled: false
-                        Model: fbd48d95-45c7-4c3a-b544-e236a6244a51:Sphere
+                        Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
-                    7d5ed8016205f847153402f04b4a79d0: !SplineTools.SplineTraverserGenerator,SplineTools
+                    7d5ed8016205f847153402f04b4a79d0: !SplineTools.SplineTraverserGenerator,SplineTest
                         Id: efa8af44-0176-46eb-8417-88315cc4ab56
                         Priority: 10
-                        SplinesPerformanceTest: null
+                        SplinesPerformanceTest: ref!! c293d879-b5c2-482a-987c-c56d711c485f
                         EntityToClone: ref!! aaa470c6-5d60-4258-80d9-c332d6fa7fdb
                         Speed: 4.0
-                    4dcd8a7a8ee4f8089f3d1c0582a267ad: !SplineTools.SplinesPerformanceTest,SplineTools
+                    4dcd8a7a8ee4f8089f3d1c0582a267ad: !SplineTools.SplinesPerformanceTest,SplineTest
                         Id: c293d879-b5c2-482a-987c-c56d711c485f
-                        splineAmount: 10
-                        splineNodesPerSpline: 10
-                        splineSegmentCount: 20
-                        splineGenerationArea: {X: 10.0, Y: 1.0, Z: 100.0}
+                        SplineAmount: 10
+                        SplineControlPointsPerSpline: 10
+                        SplineSegmentCount: 20
+                        SplineGenerationArea: {X: 10.0, Y: 1.0, Z: 100.0}
                         TangentOffet: {X: 5.0, Y: 2.0, Z: 0.0}
                         UseStructuredSpline: true
                         StructureOffset: 5.0
-                        splineMaterials:
+                        SplineMaterials:
                             ad314a3b0cf4648f407bd19b8813e28a: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
                             62f207d6fc0ad369a2aaa4eb0d3c5291: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
                             09de3db902e392dbd32a5700c71a580e: df5d783c-17ea-4ba6-a8b1-cceb63ad2a00:Materials/Yellow
                             c7d7ba314f5742b464f81a3a1691bb22: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
-                        splineEntities: null
-                        splineComponents: null

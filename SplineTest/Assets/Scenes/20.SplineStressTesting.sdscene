@@ -50,13 +50,13 @@ Hierarchy:
                         Id: a0f2d066-1339-4a5b-81ad-b46039ccd492
                         Name: null
                         Projection: Perspective
-                        Slot: 74df2f5f-7b3c-4819-8415-58dfc3199aea
+                        Slot: d0753af4-09b0-47ce-9cfc-def518c940ff
                     13c784dc3527224fd0f7dc445499473d: !UIComponent
                         Id: 616352c0-216a-4c85-af9c-6ed89bcdbef0
                         Page: 72db55a9-0b76-4c3c-918b-afaf40334293:UI/MainPage
                         Resolution: {X: 1280.0, Y: 720.0, Z: 1000.0}
                         Size: {X: 1.28, Y: 0.72, Z: 1.0}
-                    ee0c014ab223f17f3503cd630f77f399: !SplineTools.BasicCameraController,SplineTools
+                    ee0c014ab223f17f3503cd630f77f399: !SplineTools.BasicCameraController,SplineTest
                         Id: b948f3cb-a05b-4b0b-a374-685c825a9e36
                         Gamepad: false
                         KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
@@ -65,7 +65,7 @@ Hierarchy:
                         KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
                         MouseRotationSpeed: {X: 1.0, Y: 1.0}
                         TouchRotationSpeed: {X: 1.0, Y: 0.7}
-                    ad128bc66dad332dd16c8d312ee050b3: !SplineTools.SwitchScene,SplineTools
+                    ad128bc66dad332dd16c8d312ee050b3: !SplineTools.SwitchScene,SplineTest
                         Id: 30f8a9c3-7b0b-4aa8-80bd-ce6b2fbd9cdc
                         Scenes:
                             c5800989324242552c79a79c023b21d9: 25542675-edbb-436c-97aa-ee45d9f5b004:Scenes/1.MainScene
@@ -105,25 +105,23 @@ Hierarchy:
                         Children: {}
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: 54e9aed1-435e-4e8c-ae13-cf07e33e47b3
-                        Model: fbd48d95-45c7-4c3a-b544-e236a6244a51:Sphere
+                        Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
-                    b99cbe71a39c3d6d5c96d539b39b1d7e: !SplineTools.SplinesPerformanceTest,SplineTools
+                    b99cbe71a39c3d6d5c96d539b39b1d7e: !SplineTools.SplinesPerformanceTest,SplineTest
                         Id: 20b2c1df-0059-484b-94bf-a2f0a31d486c
-                        splineAmount: 100
-                        splineNodesPerSpline: 10
-                        splineSegmentCount: 100
-                        splineGenerationArea: {X: 100.0, Y: 20.0, Z: 100.0}
+                        SplineAmount: 100
+                        SplineControlPointsPerSpline: 10
+                        SplineSegmentCount: 100
+                        SplineGenerationArea: {X: 100.0, Y: 20.0, Z: 100.0}
                         TangentOffet: {X: 50.0, Y: 50.0, Z: 50.0}
                         UseStructuredSpline: false
                         StructureOffset: 20.0
-                        splineMaterials:
+                        SplineMaterials:
                             c126297e59325d504d8e64bbbf68d435: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
                             598c6414fee234562f071b604c753ee2: cd6fe2c7-b2ef-4c0e-a5e7-45abaf69c9c8:Materials/Blue
                             71358599213bda16a58e18ef27c1ee32: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
                             55fd0e61fc29691dbf15a3e9df5c11b5: df5d783c-17ea-4ba6-a8b1-cceb63ad2a00:Materials/Yellow
-                        splineEntities: null
-                        splineComponents: null
         -   Entity:
                 Id: c28e5bfc-0656-4565-80df-29bd91cf5483
                 Name: Ground
@@ -136,9 +134,9 @@ Hierarchy:
                         Children: {}
                     3b7dfa1b125c179fd3a6f28da739ba63: !ModelComponent
                         Id: d530e1d3-afcf-4943-8601-27fe4dee1b81
-                        Model: 136576a0-e08f-4b73-aef1-03df8e422709:Ground
+                        Model: 6c5770f1-e8ec-483f-aa9d-35049e4c3e56:Ground
                         Materials: {}
-                    368602981b598ae21a8ed4e68f48ac5a: !SplineTools.GameProfiler,SplineTools
+                    368602981b598ae21a8ed4e68f48ac5a: !SplineTools.GameProfiler,SplineTest
                         Id: 845dcb42-98fc-4629-9ed0-933e179f09a1
                         Enabled: true
                         TextColor: {R: 144, G: 238, B: 144, A: 255}

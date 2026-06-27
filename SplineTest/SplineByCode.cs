@@ -1,6 +1,7 @@
-﻿using Stride.Core.Mathematics;
+using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Engine.Splines.Components;
+using Stride.Engine.Splines.Models;
 using Stride.Input;
 using Stride.Rendering;
 using System;
@@ -9,8 +10,8 @@ namespace SplineTools
 {
     public class SplineByCode : SyncScript
     {
-        public Material splineMaterial;
-        public Material boundingBoxMaterial;
+        public Material SplineMaterial;
+        public Material BoundingBoxMaterial;
         private SplineComponent splineComponent;
         private Random random;
         private bool toggleLoop = true;
@@ -24,7 +25,7 @@ namespace SplineTools
 
         private void GenerateSpline()
         {
-            var nodePositions = new Vector3[]
+            var controlPointPositions = new Vector3[]
             {
                 new (Random(-4, 4), 1, 0),
                 new (0, 2, Random(-2, 2)),
@@ -41,34 +42,39 @@ namespace SplineTools
                 new (Random(-4, 1), Random(-2, 2), Random(0,  3))  //Node 3 - in
             };
 
-            splineComponent = new SplineComponent
-            {
-                Loop = toggleLoop
-            };
+            splineComponent = new SplineComponent();
+            splineComponent.Spline.IsClosedLoop = toggleLoop;
             Entity.Add(splineComponent);
 
-            for (var i = 0; i < nodePositions.Length; i++)
+            for (var i = 0; i < controlPointPositions.Length; i++)
             {
-                var nodeEntity = new Entity("node"+i,nodePositions[i]);
-                var nodeComponent = new SplineNodeComponent(50, tangents[i * 2], tangents[i * 2 + 1]);
-                nodeEntity.Add(nodeComponent);
+                splineComponent.Spline.Add(new SplineControlPoint
+                {
+                    Position = controlPointPositions[i],
+                    TangentIn = tangents[i * 2],
+                    TangentOut = tangents[i * 2 + 1],
+                });
+                //var controlPointEntity = new Entity("controlPoint"+i,controlPointPositions[i]);
+                //var controlPointComponent = new SplineNodeComponent(50, tangents[i * 2], tangents[i * 2 + 1]);
+                //controlPointEntity.Add(controlPointComponent);
 
-                Entity.AddChild(nodeEntity);
-                splineComponent.Nodes.Add(nodeComponent);
+                //Entity.AddChild(controlPointEntity);
+                //SplineComponent.Nodes.Add(controlPointComponent);
             }
 
             // We use spline render settings if we want to view our spline in the game
             splineComponent.RenderSettings.ShowSegments = true;
             splineComponent.RenderSettings.ShowBoundingBox = toggleBoundingBox;
-            splineComponent.RenderSettings.SegmentsMaterial = splineMaterial;
-            splineComponent.RenderSettings.BoundingBoxMaterial = boundingBoxMaterial;
+            splineComponent.RenderSettings.SegmentsMaterial = SplineMaterial;
+            splineComponent.RenderSettings.BoundingBoxMaterial = BoundingBoxMaterial;
         }
 
         public override void Update()
         {
-            DebugText.Print($"Press Space to create spline", new Int2(600, 20));
-            DebugText.Print($"Press L to toggle spline 'looping'", new Int2(600, 40));
-            DebugText.Print($"Press B to toggle spline 'Boundingbox render'", new Int2(600, 60));
+            const int HelpTextStartX = 800;
+            DebugText.Print($"Press Space to create spline", new Int2(HelpTextStartX, 20));
+            DebugText.Print($"Press L to toggle spline 'looping'", new Int2(HelpTextStartX, 40));
+            DebugText.Print($"Press B to toggle spline 'Boundingbox render'", new Int2(HelpTextStartX, 60));
 
             //Generate a new spline by pressing space
             if (Input.IsKeyPressed(Keys.Space))
@@ -80,7 +86,7 @@ namespace SplineTools
             //Press L to toggle Looping of the spline
             if (Input.IsKeyPressed(Keys.L))
             {
-                splineComponent.Loop = toggleLoop = !toggleLoop;
+                splineComponent.Spline.IsClosedLoop = toggleLoop = !toggleLoop;
             }
 
             //Press B to toggle Bounding box of the spline

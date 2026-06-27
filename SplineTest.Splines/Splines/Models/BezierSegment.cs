@@ -55,11 +55,23 @@ public struct BezierSegment
         float oneMinusT = 1f - t;
         float oneMinusTPower2 = oneMinusT * oneMinusT;
         float oneMinusTPower3 = oneMinusT * oneMinusT * oneMinusT;
-        var result = (oneMinusTPower3 * P0)
+        var position = (oneMinusTPower3 * P0)
             + (3f * oneMinusTPower2 * t * P1)
             + (3f * oneMinusT * tPower2 * P2)
             + (tPower3 * P3);
-        return result;
+        return position;
+    }
+
+    public readonly Vector3 GetTangent(float t)
+    {
+        float tPower2 = t * t;
+        float oneMinusT = 1f - t;
+        float oneMinusTPower2 = oneMinusT * oneMinusT;
+        var tangent = (3f * oneMinusTPower2 * (P1 - P0))
+            + (6f * oneMinusT * t * (P2 - P1))
+            + (3f * tPower2 * (P3 - P2));
+        tangent.Normalize();
+        return tangent;
     }
 
     public readonly void SamplePositions(List<Vector3> splinePositionToTraverse)

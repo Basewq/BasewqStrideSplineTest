@@ -1,4 +1,4 @@
-﻿using Stride.Core.Mathematics;
+using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Engine.Splines.Components;
 using Stride.Input;
@@ -8,21 +8,21 @@ namespace SplineTools
 {
     public class SplineTraverserByCode : SyncScript
     {
-        public SplineComponent splineComponent;
+        public SplineComponent SplineComponent;
         public float Speed = 0.5f;
 
         private SplineTraverserComponent splineTraverserComponent;
 
         public override void Start()
         {
-            if (splineComponent == null)
+            if (SplineComponent is null)
             {
-                throw new NullReferenceException("splineComponent is empty");
+                throw new NullReferenceException("SplineComponent is empty");
             }
 
             splineTraverserComponent = new SplineTraverserComponent();
-            splineTraverserComponent.SplineTraverser.Entity = Entity;
-            splineTraverserComponent.SplineComponent = splineComponent;
+            //splineTraverserComponent.SplineTraverser.Entity = Entity;
+            splineTraverserComponent.SplineComponent = SplineComponent;
             splineTraverserComponent.Speed = Speed;
             splineTraverserComponent.IsRotating = true;
             splineTraverserComponent.IsMoving = true;
@@ -31,8 +31,9 @@ namespace SplineTools
 
         public override void Update()
         {
-            DebugText.Print($"Press space to toggle movement. Moving:{splineTraverserComponent.IsMoving}", new Int2(600, 20));
-            DebugText.Print($"Use mouse wheel to adjust speed {splineTraverserComponent.SplineTraverser.Speed:0.00}", new Int2(600, 40));
+            const int HelpTextStartX = 800;
+            DebugText.Print($"Press space to toggle movement. Moving:{splineTraverserComponent.IsMoving}", new Int2(HelpTextStartX, 20));
+            DebugText.Print($"Use mouse wheel to adjust speed {splineTraverserComponent.SplineTraverser.Speed:0.00}", new Int2(HelpTextStartX, 40));
 
             if (Input.IsKeyPressed(Keys.Space))
             {

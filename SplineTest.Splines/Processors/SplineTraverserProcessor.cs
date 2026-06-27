@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
+using Stride.Core.Mathematics;
 using Stride.Engine.Splines.Components;
 using Stride.Engine.Splines.HierarchyTransformOperations;
 using Stride.Engine.Splines.Models;
@@ -40,7 +41,7 @@ public class SplineTraverserProcessor : EntityProcessor<SplineTraverserComponent
 
     protected override void OnEntityComponentAdding(Entity entity, SplineTraverserComponent component, AssociatedData data)
     {
-        if (component.SplineComponent != null)
+        if (component.SplineComponent is not null)
         {
             component.SplineComponent.Spline.SplinePropertyChanged += data.OnSplinePropertyChangedAction;
             component.SplineComponent.Spline.ControlPointsChanged += data.OnSplineControlPointCollectionChangedAction;
@@ -55,8 +56,8 @@ public class SplineTraverserProcessor : EntityProcessor<SplineTraverserComponent
 
     protected override void OnEntityComponentRemoved(Entity entity, SplineTraverserComponent component, AssociatedData data)
     {
-        component.SplineComponent.Spline.SplinePropertyChanged -= data.OnSplinePropertyChangedAction;
-        component.SplineComponent.Spline.ControlPointsChanged -= data.OnSplineControlPointCollectionChangedAction;
+        component.SplineComponent?.Spline.SplinePropertyChanged -= data.OnSplinePropertyChangedAction;
+        component.SplineComponent?.Spline.ControlPointsChanged -= data.OnSplineControlPointCollectionChangedAction;
         entity.Transform.PostOperations.Remove(data.TransformOperation);
         splineTraverserComponents.Remove(component);
     }
@@ -103,11 +104,11 @@ public class SplineTraverserProcessor : EntityProcessor<SplineTraverserComponent
             float dt = (float)gameTime.Elapsed.TotalSeconds;
             component.SplineTraverser.Update(dt);
             var curSplineSample = component.SplineTraverser.CurrentSplineSample;
-            component.Entity.Transform.Position = curSplineSample.Position;
-            if (component.SplineTraverser.IsRotating)
-            {
-                component.Entity.Transform.Rotation = curSplineSample.Rotation;
-            }
+            //component.Entity.Transform.Position = curSplineSample.Position;
+            //if (component.SplineTraverser.IsRotating)
+            //{
+            //    component.Entity.Transform.Rotation = curSplineSample.Rotation;
+            //}
 
             data.PreviousSplineSample = curSplineSample;
 
@@ -151,7 +152,8 @@ public class SplineTraverserProcessor : EntityProcessor<SplineTraverserComponent
         component.Entity.Transform.Position = curSplineSample.Position;
         if (component.SplineTraverser.IsRotating)
         {
-            component.Entity.Transform.Rotation = curSplineSample.Rotation;
+            var forwardRotation = Quaternion.BetweenDirections(Vector3.UnitZ, curSplineSample.Tangent);
+            component.Entity.Transform.Rotation = curSplineSample.Rotation * forwardRotation;
         }
 
         data.AttachedToSpline = true;

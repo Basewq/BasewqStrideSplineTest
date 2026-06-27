@@ -234,13 +234,13 @@ Hierarchy:
                         Id: 08008626-211b-42f7-afa0-ee882d484c56
                         Name: null
                         Projection: Perspective
-                        Slot: 74df2f5f-7b3c-4819-8415-58dfc3199aea
+                        Slot: d0753af4-09b0-47ce-9cfc-def518c940ff
                     13c784dc3527224fd0f7dc445499473d: !UIComponent
                         Id: 818709e2-2d3b-466d-95b5-0004c3e8ed6a
                         Page: 72db55a9-0b76-4c3c-918b-afaf40334293:UI/MainPage
                         Resolution: {X: 1280.0, Y: 720.0, Z: 1000.0}
                         Size: {X: 1.28, Y: 0.72, Z: 1.0}
-                    ee0c014ab223f17f3503cd630f77f399: !SplineTools.BasicCameraController,SplineTools
+                    ee0c014ab223f17f3503cd630f77f399: !SplineTools.BasicCameraController,SplineTest
                         Id: 159e7fea-edf9-4e06-bbd2-385b9de80809
                         Gamepad: false
                         KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
@@ -249,7 +249,7 @@ Hierarchy:
                         KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
                         MouseRotationSpeed: {X: 1.0, Y: 1.0}
                         TouchRotationSpeed: {X: 1.0, Y: 0.7}
-                    ad128bc66dad332dd16c8d312ee050b3: !SplineTools.SwitchScene,SplineTools
+                    ad128bc66dad332dd16c8d312ee050b3: !SplineTools.SwitchScene,SplineTest
                         Id: 3b6ab943-3089-4d6e-936b-c54a7e34e7d9
                         Scenes:
                             c5800989324242552c79a79c023b21d9: 25542675-edbb-436c-97aa-ee45d9f5b004:Scenes/1.MainScene
@@ -262,7 +262,7 @@ Hierarchy:
                             a68c3accc4557497e0b88b83dbafc98a: 881a00ce-94a4-4ee3-ab22-6b64a2321e60:Scenes/20.SplineStressTesting
                             92751329c3a3b1c8b741d77c2930a99b: 2b452418-3f9d-4c71-8fac-f3090c5e53cd:Scenes/21.SplineTraverserStressTest
                         ShowMenu: true
-                    75803d53350d25f4e32b7961de560093*: !SplineTools.BasicCameraController,SplineTools
+                    75803d53350d25f4e32b7961de560093*: !SplineTools.BasicCameraController,SplineTest
                         Id: b6a1defa-0227-464e-afd4-39a7d1acba87
                         Gamepad: false
                         KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
@@ -884,10 +884,42 @@ Hierarchy:
                         RenderSettings:
                             ShowSegments: true
                             SegmentsMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
-                            ShowNodes: false
-                            NodesMaterial: null
+                            ShowControlPoints: false
+                            ControlPointsMaterial: null
                             ShowBoundingBox: false
                             BoundingBoxMaterial: null
+                    4b9ef57d62318e3d06aacf2eb7ec856e: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
+                        Id: ca0a28e5-0781-471e-989f-8cf9c0f4d51e
+                        Control:
+                            EditSplineState: Disabled
+                        Spline:
+                            IsClosedLoop: true
+                            ControlPoints:
+                                d3abad453d81a3c4aacb77983612a2ab:
+                                    Position: {X: -0.6980336, Y: 0.8207536, Z: 2.15112}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 4.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -6.0, Y: 0.0, Z: 0.0}
+                                9e82e4dd2c86cebb9082e393efcdf582:
+                                    Position: {X: -5.136718, Y: 1.1483831, Z: 5.4437494}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 0.2, Y: 0.0, Z: 2.0}
+                                7ec110d079e1841eb55a6966f295fb1b:
+                                    Position: {X: 3.6333284, Y: 1.22353, Z: 7.79498}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: -2.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: 3.0}
+                                c3241c8d3681b7f2a089edf1ad96ef30:
+                                    Position: {X: -4.8340545, Y: 3.9971855, Z: 8.473149}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: 4.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: -4.0}
+                                31e832acd9e82304b289614eb380dd83:
+                                    Position: {X: 3.93174, Y: 2.711413, Z: 4.489991}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: 3.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: -2.0}
         -   Folder: null
             Entity:
                 Id: 9e8c571f-8b29-451c-832e-88b58d6c9210
@@ -1078,7 +1110,7 @@ Hierarchy:
                             52168f45832f1f0bf8fa53a5fe1ba4f6: ref!! 895abd3f-27af-40dd-a9e7-0d3cc7739b6a
                     96df55baed7f370ee34a0ad537dac00e: !SplineTraverserComponent
                         Id: 5e90302b-109e-40f8-b6d6-897818a55168
-                        SplineComponent: ref!! 1714df4b-0f90-4e5f-b8fb-e7960e97857f
+                        SplineComponent: ref!! ca0a28e5-0781-471e-989f-8cf9c0f4d51e
                         Speed: 2.0
                         IsMoving: true
                         IsRotating: true
@@ -1260,7 +1292,7 @@ Hierarchy:
                         Children: {}
                     3b7dfa1b125c179fd3a6f28da739ba63: !ModelComponent
                         Id: a48522f8-11d5-4748-bde6-41e9eabaa0ec
-                        Model: 136576a0-e08f-4b73-aef1-03df8e422709:Ground
+                        Model: 6c5770f1-e8ec-483f-aa9d-35049e4c3e56:Ground
                         Materials: {}
         -   Folder: null
             Entity:

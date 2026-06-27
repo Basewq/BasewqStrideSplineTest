@@ -116,13 +116,13 @@ Hierarchy:
                         Id: 5f27ec3f-1262-4d3e-bec9-30c3f9ef4f12
                         Name: null
                         Projection: Perspective
-                        Slot: 74df2f5f-7b3c-4819-8415-58dfc3199aea
+                        Slot: d0753af4-09b0-47ce-9cfc-def518c940ff
                     13c784dc3527224fd0f7dc445499473d: !UIComponent
                         Id: 43fe2330-6bd4-4eaf-b6f8-4bbddcb92686
                         Page: 72db55a9-0b76-4c3c-918b-afaf40334293:UI/MainPage
                         Resolution: {X: 1280.0, Y: 720.0, Z: 1000.0}
                         Size: {X: 1.28, Y: 0.72, Z: 1.0}
-                    ee0c014ab223f17f3503cd630f77f399: !SplineTools.BasicCameraController,SplineTools
+                    ee0c014ab223f17f3503cd630f77f399: !SplineTools.BasicCameraController,SplineTest
                         Id: 4a80792c-7fec-4803-9a37-6d636186a924
                         Gamepad: false
                         KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
@@ -131,7 +131,7 @@ Hierarchy:
                         KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
                         MouseRotationSpeed: {X: 1.0, Y: 1.0}
                         TouchRotationSpeed: {X: 1.0, Y: 0.7}
-                    ad128bc66dad332dd16c8d312ee050b3: !SplineTools.SwitchScene,SplineTools
+                    ad128bc66dad332dd16c8d312ee050b3: !SplineTools.SwitchScene,SplineTest
                         Id: 7ce583a8-ae4b-4e05-868f-54e9f991eea3
                         Scenes:
                             c5800989324242552c79a79c023b21d9: 25542675-edbb-436c-97aa-ee45d9f5b004:Scenes/1.MainScene
@@ -185,14 +185,14 @@ Hierarchy:
                         Children: {}
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: f7331dc1-5ccc-4c69-95e0-1d88eb2eaf21
-                        Model: fbd48d95-45c7-4c3a-b544-e236a6244a51:Sphere
+                        Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
                     cbd4a7cdc64e62c1ab286e39e7e81f8f: !SplineTraverserComponent
                         Id: 6b70c9bc-d242-40a8-adac-c3a9bd58bba7
-                        SplineComponent: ref!! 81e0b535-aa12-42c8-a714-e04e12138caf
+                        SplineComponent: ref!! 33579629-bc84-4aa8-abc9-310ad7c6b26d
                         Speed: -0.8
-                        IsMoving: true
+                        IsMoving: false
                         IsRotating: false
         -   Entity:
                 Id: a407ec3a-be95-4170-903d-33c6d2847593
@@ -219,10 +219,37 @@ Hierarchy:
                         RenderSettings:
                             ShowSegments: true
                             SegmentsMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
-                            ShowNodes: false
-                            NodesMaterial: null
+                            ShowControlPoints: false
+                            ControlPointsMaterial: null
                             ShowBoundingBox: false
                             BoundingBoxMaterial: null
+                    fbcece0d406274c0658a354078acb1a7: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
+                        Id: 33579629-bc84-4aa8-abc9-310ad7c6b26d
+                        Control:
+                            EditSplineState: Disabled
+                        Spline:
+                            IsClosedLoop: true
+                            ControlPoints:
+                                3eacfcf4719b1baf7606aef7c3f87f8f:
+                                    Position: {X: 0.49458072, Y: 0.0, Z: -1.1704192}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 1.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -3.0, Y: 0.5, Z: 0.0}
+                                b01eea0fd29a63703b40c8c829f3473d:
+                                    Position: {X: 0.31327638, Y: 0.80716646, Z: 0.59285104}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: -1.0, Y: 0.0, Z: -1.0}
+                                    TangentOut: {X: 1.0, Y: 0.0, Z: 1.0}
+                                26496d158ca5d8a2590e4ccf9db24db8:
+                                    Position: {X: -1.2448148, Y: 0.37111193, Z: 2.105255}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 0.0, Y: 1.0, Z: 0.0}
+                                    TangentOut: {X: 0.0, Y: -1.0, Z: 0.0}
+                                5c4cd4e56bc40b2524d286895153a60a:
+                                    Position: {X: 0.9431991, Y: 0.0, Z: 2.2301557}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 1.0, Y: 0.0, Z: 0.0}
         -   Entity:
                 Id: a8c46d36-0f29-49a8-b558-b520d362f0f2
                 Name: Node3
@@ -274,7 +301,7 @@ Hierarchy:
                             1027f142143773d5bf1276359e043df4: ref!! 5263fa97-368c-4bdd-ab09-f2f3ce596e22
                     837b47418d39222f08df99ee8373ba4a: !SplineTraverserComponent
                         Id: fcc30c76-6e2a-4c08-aa52-a7a43cd9723d
-                        SplineComponent: ref!! 81e0b535-aa12-42c8-a714-e04e12138caf
+                        SplineComponent: ref!! 33579629-bc84-4aa8-abc9-310ad7c6b26d
                         Speed: 1.0
                         IsMoving: true
                         IsRotating: true
@@ -290,14 +317,14 @@ Hierarchy:
                         Children: {}
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: d953ca1c-a6bf-4bf9-b6b9-3693d03cfba0
-                        Model: fbd48d95-45c7-4c3a-b544-e236a6244a51:Sphere
+                        Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
                     52189b5b1aeac4f858deddcb31f00d01: !SplineTraverserComponent
                         Id: 2f0a0e88-f246-42a6-9cee-effcaf97abb3
-                        SplineComponent: ref!! 81e0b535-aa12-42c8-a714-e04e12138caf
+                        SplineComponent: ref!! 33579629-bc84-4aa8-abc9-310ad7c6b26d
                         Speed: 0.5
-                        IsMoving: true
+                        IsMoving: false
                         IsRotating: false
         -   Entity:
                 Id: f4de0b33-627b-488e-ad66-4b8a4e0154ff
@@ -311,5 +338,5 @@ Hierarchy:
                         Children: {}
                     3b7dfa1b125c179fd3a6f28da739ba63: !ModelComponent
                         Id: 7f54beba-ccf7-4e45-b0d5-e678e24d20a4
-                        Model: 136576a0-e08f-4b73-aef1-03df8e422709:Ground
+                        Model: 6c5770f1-e8ec-483f-aa9d-35049e4c3e56:Ground
                         Materials: {}

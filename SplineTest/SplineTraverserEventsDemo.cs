@@ -1,14 +1,15 @@
-﻿using Stride.Engine;
+using Stride.Engine;
 using Stride.Engine.Splines.Components;
 using Stride.Engine.Splines.Models;
 using Stride.Particles.Components;
+using System.Diagnostics;
 
 namespace SplineTools
 {
     public class SplineTraverserEventsDemo : StartupScript
     {
         public Entity SplineEndReachedParticle;
-        public Entity SplineNodeReachedParticle;
+        public Entity SplineControlPointReachedParticle;
         public bool ReverseOnEnd;
         private SplineTraverserComponent traverserComponent;
 
@@ -16,15 +17,16 @@ namespace SplineTools
         {
             traverserComponent = Entity.Get<SplineTraverserComponent>();
 
-            if (traverserComponent != null)
+            if (traverserComponent is not null)
             {
-                traverserComponent.SplineTraverser.OnSplineEndReached += SplineTraverser_OnSplineEndReached;
-                traverserComponent.SplineTraverser.OnSplineNodeReached += SplineTraverser_OnSplineNodeReached;
+                traverserComponent.SplineTraverser.SplineEndReached += SplineTraverser_OnSplineEndReached;
+                traverserComponent.SplineTraverser.SplineControlPointReached += SplineTraverser_OnSplineControlPointReached;
             }
         }
 
-        private void SplineTraverser_OnSplineEndReached(SplineNode splineNode)
+        private void SplineTraverser_OnSplineEndReached(SplineControlPoint controlPoint)
         {
+            Debug.WriteLine($"{Entity.Name} - Spline End Reached: {controlPoint.Position}");
             CloneParticleAndEnabled(SplineEndReachedParticle);
 
             if (ReverseOnEnd)
@@ -34,9 +36,10 @@ namespace SplineTools
             }
         }
 
-        private void SplineTraverser_OnSplineNodeReached(SplineNode splineNode)
+        private void SplineTraverser_OnSplineControlPointReached(int controlPointIndex, SplineControlPoint controlPoint)
         {
-            CloneParticleAndEnabled(SplineNodeReachedParticle);
+            Debug.WriteLine($"{Entity.Name} - Spline Point Reached: {controlPointIndex} - {controlPoint.Position}");
+            CloneParticleAndEnabled(SplineControlPointReachedParticle);
         }
 
         private void CloneParticleAndEnabled(Entity particleEntity)

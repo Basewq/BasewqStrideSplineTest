@@ -2,6 +2,7 @@
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using Stride.Core;
+using Stride.Core.Mathematics;
 using Stride.Engine.Design;
 using Stride.Engine.Splines.Models;
 using Stride.Engine.Splines.Processors;
@@ -109,7 +110,16 @@ public sealed class SplineTraverserComponent : EntityComponent
     internal void Update(TransformComponent transformComponent)
     {
         var splineSample = SplineTraverser.CurrentSplineSample;
-        transformComponent.Position = splineSample.Position;
-        transformComponent.Rotation = splineSample.Rotation;
+        SplineComponent.Entity.Transform.GetWorldTransformation(out var splinePosition, out var splineRotation, out var splineScale);
+        transformComponent.Position = splineSample.Position + splinePosition;
+        if (IsRotating)
+        {
+            System.Diagnostics.Debug.WriteLineIf(false, $"Rot\t{splineSample.Tangent}");
+            var splineWorldRotation = splineRotation * splineSample.Rotation;
+            var splineUp = splineWorldRotation * Vector3.UnitY;
+            var splineWorldTangent = splineWorldRotation * splineSample.Tangent;
+            var forwardRotation = Quaternion.LookRotation(splineSample.Tangent, splineUp);
+            transformComponent.Rotation = forwardRotation;
+        }
     }
 }

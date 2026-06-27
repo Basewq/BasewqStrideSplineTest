@@ -13,6 +13,10 @@ public delegate void SplinePropertyChangedEventHandler(object sender);
 
 public delegate void SplineControlPointEventHandler<TEventArgs>(object sender, ref TEventArgs e);
 
+public readonly record struct IndexedSplineControlPoint(int ControlPointIndex, SplineControlPoint ControlPoint)
+{
+}
+
 [DataContract]
 [Display(Expand = ExpandRule.Once)]
 public class Spline
@@ -177,7 +181,7 @@ public class Spline
             {
                 minSegmentIndex = i;
                 minDistSqrd = distSqrd;
-                minControlPointsIndex = tableValue1.ControlPointsIndex;
+                minControlPointsIndex = tableValue1.ControlPointIndex;
                 minPointOnSpline = pointOnLine;
                 minPointLocalT = tableValue1.ControlPointLocalT + lineT;
             }
@@ -223,7 +227,8 @@ public class Spline
             var placement = new SplineSample
             {
                 Position = tableValue.Position,
-                Rotation = CalculateRotation(tableValue.ControlPointsIndex, tableValue.ControlPointLocalT),
+                Rotation = CalculateRotation(tableValue.ControlPointIndex, tableValue.ControlPointLocalT),
+                Tangent = CalculateTangent(tableValue.ControlPointIndex, tableValue.ControlPointLocalT),
             };
             splineSamples.Add(placement);
         }
@@ -247,7 +252,7 @@ public class Spline
         return new BoundingBox(min, max);
     }
 
-    public SplineSample GetPlacementFromSplineDistance(float splineDistance)
+    public SplineSample SampleFromDistance(float splineDistance)
     {
         BuildLookupTable();
         float totalDistance = GetTotalDistance();
@@ -296,38 +301,98 @@ public class Spline
 
         ref var tableValue1 = ref segmentTToPositionLookupTableSpan[tableValueStartIndex];
         ref var tableValue2 = ref segmentTToPositionLookupTableSpan[tableValueEndIndex];
-        //System.Diagnostics.Debug.Write($"\tControlPoint: {tableValue1.ControlPointsIndex} - {tableValue2.ControlPointsIndex}\t");
+        //System.Diagnostics.Debug.Write($"\tControlPoint: {tableValue1.ControlPointIndex} - {tableValue2.ControlPointIndex}\t");
 
+        float lookupTableTValue;
+        float segmentTValue;
         if (tableValueStartIndex == tableValueEndIndex)
         {
             // Lies exactly on a table value
-            float tValue = tableValue1.ControlPointLocalT;
-            return new SplineSample
-            {
-                Position = tableValue1.Position,
-                Rotation = this[tableValue1.ControlPointsIndex].Rotation
-            };
+            lookupTableTValue = 0;
+            segmentTValue = tableValue1.ControlPointLocalT;
         }
         else
         {
-            float tValue = MathUtil.InverseLerp(tableValue1.TotalSplineDistance, tableValue2.TotalSplineDistance, splineDistance);
-            tValue = MathUtil.Clamp(tValue, 0, 1);
-            return new SplineSample
-            {
-                Position = Vector3.Lerp(tableValue1.Position, tableValue2.Position, tValue),
-                Rotation = CalculateRotation(tableValue1.ControlPointsIndex, tValue)
-            };
+            lookupTableTValue = MathUtil.InverseLerp(tableValue1.TotalSplineDistance, tableValue2.TotalSplineDistance, splineDistance);
+            lookupTableTValue = MathUtil.Clamp(lookupTableTValue, 0, 1);
+            segmentTValue = MathUtil.Lerp(tableValue1.ControlPointLocalT, tableValue2.ControlPointLocalT, lookupTableTValue);
+            //segmentTValue = MathUtil.Clamp(segmentTValue, 0, 1);
         }
+        var sample = new SplineSample
+        {
+            Position = Vector3.Lerp(tableValue1.Position, tableValue2.Position, lookupTableTValue),
+            Rotation = CalculateRotation(tableValue1.ControlPointIndex, segmentTValue),
+            Tangent = CalculateTangent(tableValue1.ControlPointIndex, segmentTValue),
+        };
+        return sample;
     }
 
     private Quaternion CalculateRotation(int controlPointStartIndex, float tValue)
     {
         var controlPoint1 = this[controlPointStartIndex];
-        var controlPoint2 = this[(controlPointStartIndex + 1) % Count];
-        return Quaternion.Slerp(controlPoint1.Rotation, controlPoint2.Rotation, tValue);
+        if (tValue == 0)
+        {
+            return controlPoint1.Rotation;
+        }
+
+        int controlPointEndIndex = controlPointStartIndex + 1;
+        if (IsClosedLoop)
+        {
+            if (controlPointEndIndex >= Count)
+            {
+                controlPointEndIndex -= Count;
+            }
+        }
+        else
+        {
+            controlPointEndIndex = Math.Min(controlPointEndIndex, Count - 1);
+        }
+        var controlPoint2 = this[controlPointEndIndex];
+        if (tValue == 1)
+        {
+            return controlPoint2.Rotation;
+        }
+
+        var rotation = Quaternion.Slerp(controlPoint1.Rotation, controlPoint2.Rotation, tValue);
+        return rotation;
     }
 
-    public void CollectEncounteredControlPoints(List<SplineControlPoint> controlPointsEncountered, float startSplineDistance, float endSplineDistance)
+    private Vector3 CalculateTangent(int controlPointStartIndex, float tValue)
+    {
+        var controlPoint1 = this[controlPointStartIndex];
+        Vector3 tangent;
+        if (tValue == 0)
+        {
+            tangent = Vector3.Normalize(controlPoint1.TangentOut);
+            return tangent;
+        }
+
+        int controlPointEndIndex = controlPointStartIndex + 1;
+        if (IsClosedLoop)
+        {
+            if (controlPointEndIndex >= Count)
+            {
+                controlPointEndIndex -= Count;
+            }
+        }
+        else
+        {
+            controlPointEndIndex = Math.Min(controlPointEndIndex, Count - 1);
+        }
+        var controlPoint2 = this[controlPointEndIndex];
+        if (tValue == 1)
+        {
+            tangent = Vector3.Normalize(-controlPoint2.TangentIn);
+            return tangent;
+        }
+
+        int segmentIndex = controlPointStartIndex;       // Same index
+        tangent = splineSegments[segmentIndex].GetTangent(tValue);
+        System.Diagnostics.Debug.WriteLineIf(true, $"Rot\t{segmentIndex}\t{tValue}\t{tangent}");
+        return tangent;
+    }
+
+    public void CollectEncounteredControlPoints(List<IndexedSplineControlPoint> controlPointsEncountered, float startSplineDistance, float endSplineDistance)
     {
         BuildLookupTable();
         float totalDistance = GetTotalDistance();
@@ -338,110 +403,76 @@ public class Spline
 
         bool isMovingForward = endSplineDistance > startSplineDistance;
         float splineDistance = startSplineDistance;
-        int lastEncountedControlPointsIndex = -1;
-        if (isMovingForward)
+        int lastEncounteredControlPointsIndex = -1;
+        if (!isMovingForward)
         {
-            // Find initial segment this spline sits on
-            int segmentStartIndex = 0;
-            var segmentTToPositionLookupTableSpan = CollectionsMarshal.AsSpan(segmentTToPositionLookupTable);
-            for (int i = 0; i < segmentTToPositionLookupTableSpan.Length; i++)
+            MemoryUtilities.Swap(ref startSplineDistance, ref endSplineDistance);
+            if (endSplineDistance < 0)
             {
-                if (startSplineDistance < segmentTToPositionLookupTableSpan[i].TotalSplineDistance)
-                {
-                    segmentStartIndex = i;
-                    lastEncountedControlPointsIndex = segmentTToPositionLookupTableSpan[i].ControlPointsIndex;
-                    break;
-                }
-            }
-
-            // Collect all control points we passed
-            float curEndSplineDistance = endSplineDistance;
-            while (true)
-            {
-                // Find end segment this spline sits on
-                for (int i = segmentStartIndex; i < segmentTToPositionLookupTableSpan.Length; i++)
-                {
-                    int segmentStartControlPointsIndex = segmentTToPositionLookupTableSpan[i].ControlPointsIndex;
-                    if (lastEncountedControlPointsIndex == segmentStartControlPointsIndex)
-                    {
-                        continue;
-                    }
-                    if (curEndSplineDistance > segmentTToPositionLookupTableSpan[i].TotalSplineDistance)
-                    {
-                        break;
-                    }
-                    controlPointsEncountered.Add(this[segmentStartControlPointsIndex]);
-                }
-
-                if (IsClosedLoop)
-                {
-                    if (curEndSplineDistance > totalDistance)
-                    {
-                        curEndSplineDistance -= totalDistance;
-                        segmentStartIndex = 0;
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-                else
-                {
-                    return;
-                }
+                endSplineDistance += totalDistance;
             }
         }
-        else
-        {
-            // Find initial segment this spline sits on
-            int segmentStartIndex = 0;
-            var segmentTToPositionLookupTableSpan = CollectionsMarshal.AsSpan(segmentTToPositionLookupTable);
-            for (int i = segmentTToPositionLookupTableSpan.Length - 1; i >= 0; i--)
-            {
-                if (startSplineDistance <= segmentTToPositionLookupTableSpan[i].TotalSplineDistance)
-                {
-                    segmentStartIndex = i;
-                    lastEncountedControlPointsIndex = segmentTToPositionLookupTableSpan[i].ControlPointsIndex + 1;
-                    break;
-                }
-            }
 
-            // Collect all control points we passed
-            float curEndSplineDistance = endSplineDistance;
-            while (true)
+        // Find initial segment this spline sits on
+        int segmentStartIndex = 0;
+        var segmentTToPositionLookupTableSpan = CollectionsMarshal.AsSpan(segmentTToPositionLookupTable);
+        for (int i = 0; i < segmentTToPositionLookupTableSpan.Length; i++)
+        {
+            if (startSplineDistance > segmentTToPositionLookupTableSpan[i].TotalSplineDistance)
             {
-                // Find end segment this spline sits on
-                for (int i = segmentStartIndex; i >= 0; i--)
+                continue;
+            }
+            segmentStartIndex = i;
+            lastEncounteredControlPointsIndex = segmentTToPositionLookupTableSpan[i].ControlPointIndex;
+            break;
+        }
+
+        // Collect all control points we passed
+        float curEndSplineDistance = endSplineDistance;
+        while (true)
+        {
+            // Find end segment this spline sits on
+            for (int i = segmentStartIndex; i < segmentTToPositionLookupTableSpan.Length; i++)
+            {
+                int segmentStartControlPointsIndex = segmentTToPositionLookupTableSpan[i].ControlPointIndex;
+                if (lastEncounteredControlPointsIndex == segmentStartControlPointsIndex)
                 {
-                    int segmentEndControlPointsIndex = segmentTToPositionLookupTableSpan[i].ControlPointsIndex + 1;
-                    if (lastEncountedControlPointsIndex == segmentEndControlPointsIndex)
-                    {
-                        continue;
-                    }
-                    if (curEndSplineDistance > segmentTToPositionLookupTableSpan[i].TotalSplineDistance)
+                    if (curEndSplineDistance < segmentTToPositionLookupTableSpan[i].TotalSplineDistance)
                     {
                         break;
                     }
-                    controlPointsEncountered.Add(this[segmentEndControlPointsIndex]);
+                    continue;
                 }
+                var indexedPoint = new IndexedSplineControlPoint(segmentStartControlPointsIndex, this[segmentStartControlPointsIndex]);
+                controlPointsEncountered.Add(indexedPoint);
+                lastEncounteredControlPointsIndex = segmentStartControlPointsIndex;
+                //if (curEndSplineDistance < segmentTToPositionLookupTableSpan[i].TotalSplineDistance)
+                //{
+                //    break;
+                //}
+            }
 
-                if (IsClosedLoop)
+            if (IsClosedLoop)
+            {
+                if (curEndSplineDistance > totalDistance)
                 {
-                    if (curEndSplineDistance < 0)
-                    {
-                        curEndSplineDistance += totalDistance;
-                        segmentStartIndex = segmentTToPositionLookupTableSpan.Length - 1;
-                    }
-                    else
-                    {
-                        return;
-                    }
+                    curEndSplineDistance -= totalDistance;
+                    segmentStartIndex = 0;
                 }
                 else
                 {
-                    return;
+                    break;
                 }
             }
+            else
+            {
+                break;
+            }
+        }
+
+        if (!isMovingForward && controlPointsEncountered.Count > 1)
+        {
+            controlPointsEncountered.Reverse();
         }
     }
 
@@ -493,7 +524,7 @@ public class Spline
                 // First position is always just the initial value of the segment
                 segmentTToPositionLookupTable.Add(new SegmentTToPositionTable
                 {
-                    ControlPointsIndex = controlPointIndex,
+                    ControlPointIndex = controlPointIndex,
                     ControlPointLocalT = 0,
                     TotalSplineDistance = totalCurveDistance,
                     Position = segment.StartPosition
@@ -507,7 +538,7 @@ public class Spline
                     previousPos = currentPos;
                     segmentTToPositionLookupTable.Add(new SegmentTToPositionTable
                     {
-                        ControlPointsIndex = controlPointIndex,
+                        ControlPointIndex = controlPointIndex,
                         ControlPointLocalT = currentT,
                         TotalSplineDistance = totalCurveDistance,
                         Position = currentPos
@@ -520,7 +551,7 @@ public class Spline
             totalCurveDistance += (finalPos - previousPos).Length();
             segmentTToPositionLookupTable.Add(new SegmentTToPositionTable
             {
-                ControlPointsIndex = controlPoints.Count - 1,
+                ControlPointIndex = controlPoints.Count - 1,
                 ControlPointLocalT = 1,
                 TotalSplineDistance = totalCurveDistance,
                 Position = finalPos
@@ -547,9 +578,9 @@ public class Spline
         /// <summary>
         /// The starting control point this belongs to.
         /// </summary>
-        public int ControlPointsIndex;
+        public int ControlPointIndex;
         /// <summary>
-        /// Value 0 to 1 from ControlPointsIndex to (ControlPointsIndex + 1)
+        /// Value 0 to 1 from ControlPointIndex to (ControlPointIndex + 1)
         /// </summary>
         public float ControlPointLocalT;
         /// <summary>
