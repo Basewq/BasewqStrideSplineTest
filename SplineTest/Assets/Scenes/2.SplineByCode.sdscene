@@ -125,3 +125,5 @@ Hierarchy:
                         Id: 42719ba8-bb39-4ae6-a301-df7f559233af
                         SplineMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
                         BoundingBoxMaterial: df5d783c-17ea-4ba6-a8b1-cceb63ad2a00:Materials/Yellow
+                        SplineColor: {R: 3, G: 251, B: 233, A: 255}
+                        BoundingBoxColor: {R: 250, G: 178, B: 0, A: 255}

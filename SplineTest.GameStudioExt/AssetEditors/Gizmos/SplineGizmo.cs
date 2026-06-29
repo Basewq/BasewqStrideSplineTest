@@ -2,30 +2,30 @@
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using SplineTest.GameStudioExt.AssetEditors.Gizmos;
+using SplineTest.GameStudioExt.StrideEditorExt;
+using SplineTest.Rendering;
+using SplineTest.Splines.Rendering.LineVisualizer;
 using Stride.Assets.Presentation.AssetEditors.EntityHierarchyEditor.Game;
 using Stride.Assets.Presentation.AssetEditors.GameEditor.Game;
 using Stride.Core;
 using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Engine.Gizmos;
-using Stride.Engine.Processors;
 using Stride.Engine.Splines.Components;
 using Stride.Engine.Splines.Models;
-using Stride.Extensions;
-using Stride.Graphics.GeometricPrimitives;
+using Stride.Graphics.Meshes;
 using Stride.Input;
 using Stride.Rendering;
+using System.Runtime.InteropServices;
 
 namespace Stride.Assets.Presentation.AssetEditors.Gizmos.Splines;
 
 [GizmoComponent(typeof(SplineComponent), isMainGizmo: true)]
 public class SplineGizmo : BillboardingGizmo<SplineComponent>
 {
-    private const int SegmentLineTessellation = 16;
-    private const float SegmentLineRadius = 0.025f;
     private const float GizmoDefaultSize = 48; // the default size of the gizmo on the screen in pixels.
     private static readonly Color BoundingBoxColor = Color.Orange;
-    private static readonly Color SegmentLineColor = Color.Aqua;
+    private static readonly Color CurveColor = Color.Aqua;
 
     internal const RenderGroup GizmoRenderGroup = DefaultGroup;
 
@@ -33,6 +33,7 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
     private IStrideEditorMouseService editorMouseService;
 
     private bool isSplineChangedUpdateRequired = false;
+    private Vector3 prevGizmoRootPosition = new Vector3(float.MinValue);
 
     private bool prevUpdateWasActiveSpline = false;
     private readonly List<SplineControlPointGizmo> controlPointGizmos = [];
@@ -41,11 +42,9 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
     private int mouseHoverControlPointIndex = -1;
 
     private Material boundingBoxMaterial;
-    private Material segmentLineMaterial;
     private Entity splineVisualizerRootEntity;
     private Entity splineVisualizerBoundingBoxEntity;
     private ModelComponent splineVisualizerBoundingBoxModelComponent;
-    private readonly List<SplineVisualizerSegmentEntityData> splineVisualizerSegmentEntityDataList = [];
     private readonly List<SplineSample> splineSamples = [];
 
     private readonly List<IDisposable> disposables = [];
@@ -68,7 +67,6 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
         base.Initialize(services, editorScene);
 
         boundingBoxMaterial = GizmoEmissiveColorMaterial.Create(GraphicsDevice, BoundingBoxColor, 0.75f);
-        segmentLineMaterial = GizmoEmissiveColorMaterial.Create(GraphicsDevice, SegmentLineColor, 0.75f);
 
         splineEditorGizmoService = Game.EditorServices.Get<EditorGameSplineEditorGizmoService>();
         editorMouseService = StrideEditorMouseService.GetOrCreate(Game.Services);
@@ -90,14 +88,6 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
         controlPointGizmos.Clear();
         Component.SplinePropertyChanged -= OnSplineChanged;
         Component.ControlPointsChanged -= OnSplineChanged;
-
-        foreach (var data in splineVisualizerSegmentEntityDataList)
-        {
-            data.LineModelEntity.SetParent(null);
-            data.LineModelEntity.Scene = null;
-            data.GeometricPrimitive.Dispose();
-        }
-        splineVisualizerSegmentEntityDataList.Clear();
 
         foreach (var disp in disposables)
         {
@@ -161,7 +151,7 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
             splineVisualizerRootEntity.SetParent(GizmoRootEntity);
 
             // Add bounding box entity
-            var boundingBoxMesh = GizmoBoundingBoxMesh.CreateMesh(GraphicsDevice);
+            var boundingBoxMesh = BoundingBoxMesh.CreateMesh(GraphicsDevice);
             disposables.Add(boundingBoxMesh);
             var boundingBoxMeshDraw = boundingBoxMesh.ToMeshDraw();
             splineVisualizerBoundingBoxModelComponent = new ModelComponent
@@ -190,71 +180,6 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
             splineVisualizerBoundingBoxEntity.Transform.Scale = boxLengths;
             splineVisualizerBoundingBoxEntity.Transform.Position = boundingBox.Center;
         }
-
-        if (splineSamples.Count == 0)
-        {
-            return;
-        }
-
-        int splineSegmentCount = splineSamples.Count - 1;
-        if (Component.Spline.IsClosedLoop)
-        {
-            splineSegmentCount++;
-        }
-
-        if (splineVisualizerSegmentEntityDataList.Count < splineSegmentCount)
-        {
-            // Populate new segments
-
-            int segmentStartIndex = splineVisualizerSegmentEntityDataList.Count;
-            int addSegmentCount = splineSegmentCount - segmentStartIndex;
-            for (int i = 0; i < addSegmentCount; i++)
-            {
-                int splineSegmentIndex = segmentStartIndex + i;
-
-                // The line model
-                const float LineLength = 1;     // The line's true length will be changed via the entity's scale
-                var lineMesh = GizmoModelHelper.CreateLine(GraphicsDevice, LineLength, SegmentLineRadius, SegmentLineTessellation);
-                var lineMeshDraw = lineMesh.ToMeshDraw();
-                var lineModelComponent = new ModelComponent
-                {
-                    Enabled = true,
-                    Model = new Model { segmentLineMaterial, new Mesh { Draw = lineMeshDraw } },
-                    RenderGroup = RenderGroup,
-                    IsShadowCaster = false,
-                };
-                var lineModelEntity = new Entity($"SplineSegment_LineModel_{splineSegmentIndex}")
-                {
-                    lineModelComponent
-                };
-                // Don't need to update line position/rotation here, wait until UpdateSplineVisualizerTransformation is called
-
-                // Attach to root visualizer entity
-                lineModelEntity.SetParent(splineVisualizerRootEntity);
-
-                var segmentEntityData = new SplineVisualizerSegmentEntityData
-                {
-                    LineModelEntity = lineModelEntity,
-                    LineModelComponent = lineModelComponent,
-                    GeometricPrimitive = lineMesh,
-                };
-                splineVisualizerSegmentEntityDataList.Add(segmentEntityData);
-            }
-        }
-        else if (splineVisualizerSegmentEntityDataList.Count > splineSegmentCount)
-        {
-            // Remove excess segments
-            int segmentEndIndex = splineSegmentCount;
-            for (int i = splineVisualizerSegmentEntityDataList.Count - 1; i >= segmentEndIndex; i--)
-            {
-                var data = splineVisualizerSegmentEntityDataList[i];
-                data.LineModelEntity.SetParent(null);
-                data.LineModelEntity.Scene = null;
-                data.GeometricPrimitive.Dispose();
-
-                splineVisualizerSegmentEntityDataList.RemoveAt(i);
-            }
-        }
     }
 
     public override bool HandlesComponentId(OpaqueComponentId pickedComponentId, out Entity selection)
@@ -282,11 +207,14 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
             return;
         }
 
+        bool wasSplineChanged = isSplineChangedUpdateRequired;
         if (isSplineChangedUpdateRequired)
         {
             UpdateSplineControlPoints();
             isSplineChangedUpdateRequired = false;
         }
+        wasSplineChanged  = wasSplineChanged  || prevGizmoRootPosition != GizmoRootEntity.Transform.Position;
+        prevGizmoRootPosition = GizmoRootEntity.Transform.Position;
 
         if (Component == splineEditorGizmoService.ActiveSplineComponent)
         {
@@ -324,7 +252,10 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
             prevUpdateWasActiveSpline = false;
         }
 
-        UpdateSplineVisualizerTransformation();
+        if (wasSplineChanged)
+        {
+            UpdateSplineVisualizerTransformation();
+        }
     }
 
     private IEditorGameComponentGizmoService gizmoService;
@@ -437,64 +368,35 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
         return true;
     }
 
+
     private void UpdateSplineVisualizerTransformation()
     {
-        // TODO Only check if camera has moved or segment placements changed
-        cameraService ??= Game.EditorServices.Get<IEditorGameCameraService>();
-        float targetedScale = GetTargetedScale(cameraService);
-
-        for (int i = 0; i < splineVisualizerSegmentEntityDataList.Count; i++)
+        var lineVisualizerComponent = splineVisualizerRootEntity.Get<LineVisualizerComponent>();
+        if (lineVisualizerComponent is null)
         {
-            var data = splineVisualizerSegmentEntityDataList[i];
-            // Make line point in the correct direction and rescale the overall mesh
-            var segmentStartPos = splineSamples[i].Position;
-            var nextSegmentPos = GetNextSegmentPosition(i);
-            var segmentToNextSegment = nextSegmentPos - segmentStartPos;
-            Quaternion lineRotation;
-            if (MathUtil.IsZero(segmentToNextSegment.LengthSquared()))
-            {
-                lineRotation = Quaternion.Identity;
-            }
-            else
-            {
-                var upVec = Vector3.UnitY;  // TODO?
-                lineRotation = Quaternion.LookRotation(forward: Vector3.Normalize(segmentToNextSegment), upVec);
-            }
-            data.LineModelEntity.Transform.Position = segmentStartPos;
-            data.LineModelEntity.Transform.Rotation = lineRotation;
-            float lineLength = segmentToNextSegment.Length();
-            data.LineModelEntity.Transform.Scale = new Vector3(targetedScale, targetedScale, lineLength);
+            lineVisualizerComponent = new LineVisualizerComponent();
+            splineVisualizerRootEntity.Add(lineVisualizerComponent);
+        }
+        else
+        {
+            lineVisualizerComponent.LineSet.Segments.Clear();
         }
 
-        Vector3 GetNextSegmentPosition(int segmentIndex)
+        var splineSampleSpan = CollectionsMarshal.AsSpan(splineSamples);
+        for (int i = 0; i < splineSampleSpan.Length - 1; i++)
         {
-            int nextSegmentIndex = segmentIndex + 1;
-            if (nextSegmentIndex >= splineSamples.Count)
+            var lineStartPos = splineSampleSpan[i].Position;
+            var lineNextPos = splineSampleSpan[i + 1].Position;
+
+            var instData = new LineSegment
             {
-                nextSegmentIndex = 0;   // Loop back
-            }
-            var nextSegmentPos = splineSamples[nextSegmentIndex].Position;
-            return nextSegmentPos;
+                StartPosition = lineStartPos,
+                EndPosition = lineNextPos,
+                StartColor = CurveColor.ToColor4(),
+                EndColor = CurveColor.ToColor4(),
+                LineThicknessPx = 3
+            };
+            lineVisualizerComponent.LineSet.Segments.Add(instData);
         }
-    }
-
-    private float GetTargetedScale(IEditorGameCameraService cameraService)
-    {
-        var splineEntity = Component.Entity;
-        if (splineEntity is not null
-            && cameraService.Component.Projection == CameraProjectionMode.Perspective)
-        {
-            var distanceToSelectedEntity = MathF.Abs(Vector3.TransformCoordinate(splineEntity.Transform.WorldMatrix.TranslationVector, cameraService.ViewMatrix).Z);
-            return SizeFactor * DefaultScale * 2f * MathF.Tan(MathUtil.DegreesToRadians(cameraService.VerticalFieldOfView / 2)) * distanceToSelectedEntity;
-        }
-
-        return SizeFactor * DefaultScale * cameraService.Component.OrthographicSize;
-    }
-
-    private struct SplineVisualizerSegmentEntityData
-    {
-        public Entity LineModelEntity;
-        public ModelComponent LineModelComponent;
-        public GeometricPrimitive GeometricPrimitive;
     }
 }

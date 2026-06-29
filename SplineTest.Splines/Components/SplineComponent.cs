@@ -11,7 +11,7 @@ namespace Stride.Engine.Splines.Components;
 [DataContract]
 [ComponentCategory("Splines")]
 [Display(name: "Spline", Expand = ExpandRule.Once)]
-[DefaultEntityComponentProcessor(typeof(SplineEditorProcessor), ExecutionMode = ExecutionMode.Editor)]
+[DefaultEntityComponentProcessor(typeof(SplineProcessor), ExecutionMode = ExecutionMode.Runtime)]
 public class SplineComponent : EntityComponent
 {
     /// <summary>
@@ -25,15 +25,8 @@ public class SplineComponent : EntityComponent
     /// </summary>
     public delegate void ControlPointsChangedHandler(SplineComponent splineComponent);
     public event ControlPointsChangedHandler ControlPointsChanged;
-    /// <summary>
-    /// Event triggered when the spline has become dirty.
-    /// </summary>
-    public delegate void SplineRenderSettingsChangedHandler(SplineComponent splineComponent);
-    public event SplineRenderSettingsChangedHandler RenderSettingsChanged;
 
-    [DataMember(1)]
-    [Display("Editor control", Expand = ExpandRule.Once)]
-    public EditSplineControl Control = new();
+    internal bool HasDebugRenderSettingsChanged = true;
 
     private Spline spline;
     [DataMember(10)]
@@ -61,30 +54,31 @@ public class SplineComponent : EntityComponent
         ControlPointsChanged?.Invoke(this);
     }
 
-    private SplineRenderSettings renderSettings;
+    private SplineDebugRenderSettings debugRenderSettings;
     /// <summary>
     /// A spline renderer is used to visualise the spline.
     /// </summary>
-    [Display(50, "Spline renderer")]
-    public SplineRenderSettings RenderSettings
+    [DataMember(50)]
+    [Display(50, "Debug renderer")]
+    public SplineDebugRenderSettings DebugRenderSettings
     {
-        get => renderSettings;
+        get => debugRenderSettings;
         internal set
         {
-            renderSettings?.RenderSettingsChanged -= OnRenderSettingsChanged;
-            renderSettings = value;
-            renderSettings?.RenderSettingsChanged += OnRenderSettingsChanged;
+            debugRenderSettings?.RenderSettingsChanged -= OnRenderSettingsChanged;
+            debugRenderSettings = value;
+            debugRenderSettings?.RenderSettingsChanged += OnRenderSettingsChanged;
         }
     }
 
-    private void OnRenderSettingsChanged()
+    private void OnRenderSettingsChanged(SplineDebugRenderSettings renderSettings)
     {
-        RenderSettingsChanged?.Invoke(this);
+        HasDebugRenderSettingsChanged = true;
     }
 
     public SplineComponent()
     {
         Spline = new();
-        RenderSettings = new();
+        DebugRenderSettings = new();
     }
 }

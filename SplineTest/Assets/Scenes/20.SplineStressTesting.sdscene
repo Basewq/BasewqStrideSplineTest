@@ -112,7 +112,7 @@ Hierarchy:
                         Id: 20b2c1df-0059-484b-94bf-a2f0a31d486c
                         SplineAmount: 100
                         SplineControlPointsPerSpline: 10
-                        SplineSegmentCount: 100
+                        SplineCurveCount: 100
                         SplineGenerationArea: {X: 100.0, Y: 20.0, Z: 100.0}
                         TangentOffet: {X: 50.0, Y: 50.0, Z: 50.0}
                         UseStructuredSpline: false
@@ -122,6 +122,11 @@ Hierarchy:
                             598c6414fee234562f071b604c753ee2: cd6fe2c7-b2ef-4c0e-a5e7-45abaf69c9c8:Materials/Blue
                             71358599213bda16a58e18ef27c1ee32: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
                             55fd0e61fc29691dbf15a3e9df5c11b5: df5d783c-17ea-4ba6-a8b1-cceb63ad2a00:Materials/Yellow
+                        SplineColors:
+                            ac284f1168003493e9411030016f9ff9: {R: 44, G: 255, B: 3, A: 255}
+                            cad7f0254d57fe183c699a8a17e5465a: {R: 2, G: 9, B: 255, A: 255}
+                            1e4f5ac475f59e9e37fc6ca53686ba90: {R: 255, G: 0, B: 0, A: 255}
+                            abb5486890fdf1a6c6f550c9c627d5ac: {R: 250, G: 178, B: 0, A: 255}
         -   Entity:
                 Id: c28e5bfc-0656-4565-80df-29bd91cf5483
                 Name: Ground

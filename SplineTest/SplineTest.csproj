@@ -18,4 +18,14 @@
   <ItemGroup>
     <ProjectReference Include="..\SplineTest.Splines\SplineTest.Splines.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Update="Effects\LineInstancingShared.sdsl">
+      <Generator>StrideShaderKeyGenerator</Generator>
+    </AdditionalFiles>
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Update="Effects\MaterialLineDiffuseShader.sdsl">
+      <Generator>StrideShaderKeyGenerator</Generator>
+    </AdditionalFiles>
+  </ItemGroup>
 </Project>

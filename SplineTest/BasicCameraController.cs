@@ -134,7 +134,7 @@ public class BasicCameraController : SyncScript
                 // Increase speed when pressing shift
                 if (Input.IsKeyDown(Keys.LeftShift) || Input.IsKeyDown(Keys.RightShift))
                 {
-                    speed *= SpeedFactor;
+                    speed *= SpeedFactor * 5;
                 }
 
                 // If the player pushes down two or more buttons, the direction and ultimately the base speed

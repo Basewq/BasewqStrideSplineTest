@@ -2,15 +2,18 @@
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using SplineTest.GameStudioExt.StrideEditorExt;
-using Stride.Engine.Splines.Components;
+using SplineTest.Splines.Rendering.LineVisualizer;
 using Stride.Assets.Presentation.AssetEditors.Gizmos;
 using Stride.Assets.Presentation.AssetEditors.Gizmos.Splines;
+using Stride.Assets.Presentation.AssetEditors.SceneEditor.Game;
 using Stride.Core;
 using Stride.Core.Annotations;
 using Stride.Core.Mathematics;
 using Stride.Editor.EditorGame.Game;
 using Stride.Engine;
+using Stride.Engine.Splines.Components;
 using Stride.Rendering;
+using Stride.Rendering.Sprites;
 
 namespace Stride.Assets.Presentation.AssetEditors.EntityHierarchyEditor.Game;
 
@@ -46,6 +49,7 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
     {
         game = (EntityHierarchyEditorGame)editorGame;
         editorScene = game.EditorScene;
+
         entitySelectionService = game.EditorServices.Get<IEditorGameEntitySelectionService>();
         entitySelectionService?.SelectionUpdated += OnEntitySelectionService_SelectionUpdated;
 
@@ -110,6 +114,36 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
         }
         entitySelectionService?.SelectionUpdated -= OnEntitySelectionService_SelectionUpdated;
         return base.DisposeAsync();
+    }
+
+    public override void UpdateGraphicsCompositor(EditorServiceGame game)
+    {
+        base.UpdateGraphicsCompositor(game);
+
+        if (game is SceneEditorGame sceneEditorGame)
+        {
+            var gfxComp = sceneEditorGame.EditorSceneSystem?.GraphicsCompositor;
+            var fwdRenderer = (gfxComp.Editor as Stride.Rendering.Compositing.ForwardRenderer);
+            if (gfxComp is not null && fwdRenderer is not null)
+            {
+                if (!gfxComp.RenderFeatures.Any(x => x is LineVisualizerRenderFeature))
+                {
+                    gfxComp.RenderFeatures.Add(new LineVisualizerRenderFeature
+                    {
+                        RenderStageSelectors =
+                        {
+                            new LineVisualizerRenderStageSelector
+                            {
+                                EffectName = "Test",
+                                OpaqueRenderStage = fwdRenderer?.OpaqueRenderStage,
+                                TransparentRenderStage = fwdRenderer?.TransparentRenderStage,
+                                RenderGroup =  RenderGroupMask.All,
+                            },
+                        },
+                    });
+                }
+            }
+        }
     }
 
     private async Task OnGameUpdate()
@@ -206,7 +240,6 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
         if (deselectSpline)
         {
             ActiveSplineComponent.ControlPointsChanged -= OnSplineChanged;
-            ActiveSplineComponent.RenderSettingsChanged -= OnSplineRenderSettingsChanged;
             ActiveSplineComponent = null;
         }
         activeControlPointIndex = -1;
@@ -223,7 +256,6 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
         if (hasChangedActiveSpline)
         {
             ActiveSplineComponent.ControlPointsChanged += OnSplineChanged;
-            ActiveSplineComponent.RenderSettingsChanged += OnSplineRenderSettingsChanged;
         }
 
         activeControlPointIndex = controlPointIndex;
@@ -261,11 +293,6 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
     private void OnSplineChanged(SplineComponent splineComponent)
     {
         isSplineChangedUpdateRequired = true;
-    }
-
-    private void OnSplineRenderSettingsChanged(SplineComponent splineComponent)
-    {
-        // ?
     }
 
     public void AddControlPoint(Vector3 controlPointPosition)

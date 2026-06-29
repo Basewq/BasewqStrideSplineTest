@@ -890,8 +890,6 @@ Hierarchy:
                             BoundingBoxMaterial: null
                     4b9ef57d62318e3d06aacf2eb7ec856e: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: ca0a28e5-0781-471e-989f-8cf9c0f4d51e
-                        Control:
-                            EditSplineState: Disabled
                         Spline:
                             IsClosedLoop: true
                             ControlPoints:
@@ -920,6 +918,14 @@ Hierarchy:
                                     Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                                     TangentIn: {X: 0.0, Y: 0.0, Z: 3.0}
                                     TangentOut: {X: 0.0, Y: 0.0, Z: -2.0}
+                        DebugRenderSettings:
+                            ShowCurves: true
+                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            ShowControlPoints: true
+                            ControlPointColor: {R: 255, G: 255, B: 255, A: 128}
+                            ShowBoundingBox: false
+                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
+                            RenderGroup: Group4
         -   Folder: null
             Entity:
                 Id: 9e8c571f-8b29-451c-832e-88b58d6c9210

@@ -35,10 +35,10 @@ While the entity is selected, the spline editor tool should (mostly) be active.
 > Note a current bug is that clicking within the scene may select another entity or deselect when clicking into an empty space.
 
 Editor controls within the scene:
-- Selecting a node or tangent handle: standard left click.
-- If node & tangents are overlapping: Hold Alt to only select nodes, hold Ctrl to only select tangent handles.
-- To append new nodes, hold Shift then left click in the scene.
-- To delete a node, you must use the component properties sidebar to remove from the list.
+- Selecting a control point or tangent handle: standard left click.
+- If control point & tangents are overlapping: Hold Alt to only select control points, hold Ctrl to only select tangent handles.
+- To append new control points, hold Shift then left click in the scene.
+- To delete a control point, you must use the component properties sidebar to remove from the list.
 
 ---
 ### Points of Interest
@@ -46,8 +46,8 @@ Editor controls within the scene:
 - `SplineTest.GameStudioExt`
   - [EditorModule.cs](SplineTest.GameStudioExt/EditorModule.cs): Registers editor services within `Game.GameStarted` event.
   - [EditorGameSplineEditorGizmoService.cs](SplineTest.GameStudioExt/AssetEditors/EntityHierarchyEditor/Game/EditorGameSplineEditorGizmoService.cs): Main coordinator of which gizmos are active when modifying a spline, and commits the data changes back to the asset when the user has finished their action.
-  - [SplineGizmo.cs](SplineTest.GameStudioExt/AssetEditors/Gizmos/SplineGizmo.cs): Handles the visual of the spline, coordinates which gizmo is active when editing a node.
-  - [SplineNodeGizmo.cs](SplineTest.GameStudioExt/AssetEditors/Gizmos/SplineNodeGizmo.cs): Handles the visual of node points and tangent handles when editing the node.
+  - [SplineGizmo.cs](SplineTest.GameStudioExt/AssetEditors/Gizmos/SplineGizmo.cs): Handles the visual of the spline, coordinates which gizmo is active when editing a control point.
+  - [SplineControlPointGizmo.cs](SplineTest.GameStudioExt/AssetEditors/Gizmos/SplineControlPointGizmo.cs): Handles the visual of control point points and tangent handles when editing the control point.
 - `SplineTest.Splines`
   - [SplineComponent.cs](SplineTest.Splines/Components/SplineComponent.cs): The spline properties as it appears in the editor.
   - [Spline.cs](SplineTest.Splines/Splines/Models/Spline.cs): The actual implementation of the spline. Can be used independently.

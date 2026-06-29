@@ -15,13 +15,14 @@ public class SplinesPerformanceTest : SyncScript
 {
     public int SplineAmount = 1000;
     public int SplineControlPointsPerSpline = 1000;
-    public int SplineSegmentCount = 100;
+    public int SplineCurveCount = 100;
     public Vector3 SplineGenerationArea = new(1000, 200, 1000);
     public Vector3 TangentOffet = new(2, 2, 2);
     public bool UseStructuredSpline = false;
     public float StructureOffset = 20.0f;
 
     public List<Material> SplineMaterials = new List<Material>();
+    public List<Color> SplineColors = new List<Color>();
     private SplineComponent splineComponent;
     private Random random;
     [DataMemberIgnore]
@@ -96,7 +97,7 @@ public class SplinesPerformanceTest : SyncScript
                 TangentOut = tangents[i * 2 + 1],
             });
             //var controlPointEntity = new Entity("controlPoint" + i, controlPointPositions[i]);
-            //var controlPointComponent = new SplineNodeComponent(SplineSegmentCount, tangents[i * 2], tangents[i * 2 + 1]);
+            //var controlPointComponent = new SplineNodeComponent(SplineCurveCount, tangents[i * 2], tangents[i * 2 + 1]);
             //controlPointEntity.Add(controlPointComponent);
             //
             //splineEntity.AddChild(controlPointEntity);
@@ -104,21 +105,20 @@ public class SplinesPerformanceTest : SyncScript
         }
 
         // We use a spline renderer if we want to view our spline in the game
-        var materialIndex = iteration % SplineMaterials.Count;
-        var material = SplineMaterials[materialIndex];
-        splineComponent.RenderSettings.ShowBoundingBox = true;
-        splineComponent.RenderSettings.ShowSegments = true;
-        splineComponent.RenderSettings.BoundingBoxMaterial = material;
-        splineComponent.RenderSettings.SegmentsMaterial = material;
+        var materialIndex = iteration % SplineColors.Count;
+        var color = SplineColors[materialIndex];
+        splineComponent.DebugRenderSettings.ShowBoundingBox = true;
+        splineComponent.DebugRenderSettings.ShowCurves = true;
+        splineComponent.DebugRenderSettings.BoundingBoxColor = color;
+        splineComponent.DebugRenderSettings.CurveColor = color;
     }
 
     public override void Update()
     {
         const int HelpTextStartX = 800;
         DebugText.Print($"Press C to clean splines", new Int2(HelpTextStartX, 20));
-        DebugText.Print($"Press G to generate {SplineAmount} splines ", new Int2(HelpTextStartX, 40));
-        DebugText.Print($"Press B to toggle bounding box ",
-            new Int2(HelpTextStartX, 80));
+        DebugText.Print($"Press G to generate {SplineAmount} splines", new Int2(HelpTextStartX, 40));
+        DebugText.Print($"Press B to toggle bounding box", new Int2(HelpTextStartX, 80));
 
         //Clean existing splines
         if (Input.IsKeyPressed(Keys.C))
@@ -141,10 +141,10 @@ public class SplinesPerformanceTest : SyncScript
 
     private void ToggleBoundingBox()
     {
-        var bb = SplineComponents[0].RenderSettings.ShowBoundingBox;
+        var bb = SplineComponents[0].DebugRenderSettings.ShowBoundingBox;
         for (var i = 0; i < SplineAmount; i++)
         {
-            SplineComponents[i].RenderSettings.ShowBoundingBox = !bb;
+            SplineComponents[i].DebugRenderSettings.ShowBoundingBox = !bb;
         }
     }
 

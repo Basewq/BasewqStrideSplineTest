@@ -111,18 +111,6 @@ public class SplineTraverserProcessor : EntityProcessor<SplineTraverserComponent
             //}
 
             data.PreviousSplineSample = curSplineSample;
-
-
-            ////float dt = (float)gameTime.Elapsed.TotalSeconds;
-            ////UpdatePosition(component, dt);
-            ////UpdateRotation(component, dt);
-
-            //////Avoid square root check. Using LengthSquared
-            ////var distanceSquared = (component.Entity.Transform.WorldMatrix.TranslationVector - component.SplineTraverser.targetBezierPoint.Position).LengthSquared();
-            ////if (distanceSquared < component.SplineTraverser.thresholdDistance * component.SplineTraverser.thresholdDistance)
-            ////{
-            ////    SetNextTarget(component);
-            ////}
         }
     }
 
@@ -144,7 +132,6 @@ public class SplineTraverserProcessor : EntityProcessor<SplineTraverserComponent
             return;
         }
 
-
         var currentPositionOfTraverser = component.Entity.Transform.WorldMatrix.TranslationVector;
         component.SplineTraverser.SnapPositionToSpline(currentPositionOfTraverser);
 
@@ -157,136 +144,5 @@ public class SplineTraverserProcessor : EntityProcessor<SplineTraverserComponent
         }
 
         data.AttachedToSpline = true;
-
-        ////var spline = component.SplineComponent.Spline;
-        ////var splinePositionInfo = spline.GetClosestPointOnSpline(currentPositionOfTraverser);
-        ////bool isMovingForward = component.Speed >= 0;
-
-        ////component.SplineTraverser.targetSplineControlPointIndex = isMovingForward ? splinePositionInfo.SplineControlPointBIndex : splinePositionInfo.SplineControlPointAIndex;
-
-        ////component.SplineTraverser.originSplineControlPoint = spline[isMovingForward ?  splinePositionInfo.SplineControlPointAIndex : splinePositionInfo.SplineControlPointBIndex];
-        ////component.SplineTraverser.targetSplineControlPoint = spline[isMovingForward ? splinePositionInfo.SplineControlPointBIndex : splinePositionInfo.SplineControlPointAIndex];
-
-        ////component.SplineTraverser.bezierPointsToTraverse = isMovingForward
-        ////    ? component.SplineTraverser.originSplineControlPoint.GetBezierPoints()
-        ////    : component.SplineTraverser.targetSplineControlPoint.GetBezierPoints();
-
-        ////if (component.SplineTraverser.bezierPointsToTraverse is null)
-        ////{
-        ////    return;
-        ////}
-
-        ////component.SplineTraverser.bezierPointIndex = splinePositionInfo.ClosestBezierPointIndex;
-        ////component.SplineTraverser.originBezierPoint = component.SplineTraverser.bezierPointsToTraverse[component.SplineTraverser.bezierPointIndex];
-        ////component.SplineTraverser.targetBezierPoint = component.SplineTraverser.bezierPointsToTraverse[component.SplineTraverser.bezierPointIndex];
-        ////component.SplineTraverser.AttachedToSpline = true;
-        ////component.SplineTraverser.startRotation = component.Entity.Transform.Rotation;
-        ////SetNextTarget(component);
     }
-
-
-    //private void UpdatePosition(SplineTraverserComponent component, float dt)
-    //{
-    //    var entityWorldPosition = component.Entity.Transform.WorldMatrix.TranslationVector;
-    //    var velocity = component.SplineTraverser.targetBezierPoint.Position - entityWorldPosition;
-    //    if (velocity.LengthSquared() > 0)
-    //    {
-    //        velocity.Normalize();
-    //        velocity *= Math.Abs(component.SplineTraverser.Speed) * dt;
-    //        component.Entity.Transform.Position += velocity;
-    //    }
-
-    //    component.Entity.Transform.UpdateWorldMatrix();
-    //}
-
-    //private void UpdateRotation(SplineTraverserComponent component, float dt)
-    //{
-    //    if (!component.SplineTraverser.IsRotating)
-    //    {
-    //        return;
-    //    }
-
-    //    var entityWorldPosition = component.Entity.Transform.WorldMatrix.TranslationVector;
-    //    var originPosition = component.SplineTraverser.originBezierPoint.Position;
-    //    var targetPosition = component.SplineTraverser.targetBezierPoint.Position;
-
-    //    float totalDistance = Vector3.Distance(originPosition, targetPosition);
-    //    float currentDistance = Vector3.Distance(originPosition, entityWorldPosition);
-
-    //    // divide-by-zero
-    //    if (totalDistance < 1e-6f)
-    //        return;
-
-    //    float rawRatio = currentDistance / totalDistance;
-    //    float clampedRatio = Math.Clamp(rawRatio, 0, 1);
-    //    float easedRatio = clampedRatio * clampedRatio * (3 - 2 * clampedRatio);
-
-
-    //    float rotationStep = Math.Clamp(dt / totalDistance, 0, 1);
-    //    easedRatio = Math.Clamp(easedRatio + rotationStep, 0, 1);
-
-    //    var startRotation = Quaternion.Normalize(component.SplineTraverser.startRotation);
-    //    var targetRotation = Quaternion.Normalize(component.SplineTraverser.targetBezierPoint.Rotation);
-
-    //    component.Entity.Transform.Rotation = Quaternion.Slerp(startRotation, targetRotation, easedRatio);
-    //}
-
-    //private void SetNextTarget(SplineTraverserComponent component)
-    //{
-    //    var traverser = component.SplineTraverser;
-    //    var controlPointsCount = component.SplineComponent.Spline.ControlPoints.Count;
-    //    bool isMovingForward = traverser.Speed >= 0;
-    //    var backwards = !isMovingForward;
-    //    var indexIncrement = isMovingForward ? 1 : -1;
-
-    //    // Is there a next/previous bezier point?
-    //    if ((isMovingForward && traverser.bezierPointIndex + 1 < traverser.bezierPointsToTraverse.Length) || (backwards && traverser.bezierPointIndex - 1 >= 0))
-    //    {
-    //        traverser.originBezierPoint = traverser.bezierPointsToTraverse[traverser.bezierPointIndex];
-
-    //        traverser.bezierPointIndex += indexIncrement;
-    //        traverser.targetBezierPoint = traverser.bezierPointsToTraverse[traverser.bezierPointIndex];
-    //        traverser.startRotation = component.Entity.Transform.Rotation;
-    //    }
-    //    else
-    //    {
-    //        traverser.RaiseSplineControlPointReached(traverser.targetSplineControlPoint);
-
-    //        // Is there a next/previous Spline controlPoint?
-    //        if (component.SplineComponent.Spline.IsClosedLoop || (isMovingForward && traverser.targetSplineControlPointIndex + 1 < controlPointsCount) || (backwards && traverser.targetSplineControlPointIndex - 1 == 0))
-    //        {
-    //            SetNextSplineControlPoint(component, controlPointsCount, isMovingForward, backwards, indexIncrement);
-    //        }
-    //        else
-    //        {
-    //            traverser.isMoving = false;
-    //            traverser.targetSplineControlPointIndex += (indexIncrement * -1); //Inverse the increment
-    //            traverser.targetSplineControlPoint = component.SplineComponent.Spline.ControlPoints[traverser.targetSplineControlPointIndex];
-    //            traverser.RaiseSplineEndReached(traverser.targetSplineControlPoint);
-    //        }
-    //    }
-    //}
-
-    //private void SetNextSplineControlPoint(SplineTraverserComponent component, int controlPointsCount, bool isMovingForward, bool backwards, int indexIncrement)
-    //{
-    //    var traverser = component.SplineTraverser;
-    //    traverser.originSplineControlPoint = traverser.targetSplineControlPoint;
-    //    traverser.targetSplineControlPointIndex += indexIncrement;
-
-    //    if ((isMovingForward && traverser.targetSplineControlPointIndex < controlPointsCount) || (backwards && traverser.targetSplineControlPointIndex >= 0))
-    //    {
-    //        traverser.targetSplineControlPoint = component.SplineComponent.Spline.ControlPoints[traverser.targetSplineControlPointIndex];
-    //    }
-    //    else if (component.SplineComponent.Spline.IsClosedLoop && ((isMovingForward && traverser.targetSplineControlPointIndex == controlPointsCount) || (backwards && traverser.targetSplineControlPointIndex < 0)))
-    //    {
-    //        traverser.RaiseSplineEndReached(traverser.targetSplineControlPoint);
-    //        traverser.targetSplineControlPointIndex = isMovingForward ? 0 : controlPointsCount - 1;
-    //        traverser.targetSplineControlPoint = component.SplineComponent.Spline.ControlPoints[traverser.targetSplineControlPointIndex];
-    //    }
-
-    //    traverser.bezierPointsToTraverse = isMovingForward ? traverser.originSplineControlPoint.GetBezierPoints() : traverser.targetSplineControlPoint.GetBezierPoints();
-    //    traverser.bezierPointIndex = isMovingForward ? traverser.bezierPointIndex = 0 : traverser.bezierPointsToTraverse.Length - 1;
-
-    //    SetNextTarget(component);
-    //}
 }

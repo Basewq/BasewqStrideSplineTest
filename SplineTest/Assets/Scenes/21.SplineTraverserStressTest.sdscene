@@ -208,7 +208,7 @@ Hierarchy:
                         Id: c293d879-b5c2-482a-987c-c56d711c485f
                         SplineAmount: 10
                         SplineControlPointsPerSpline: 10
-                        SplineSegmentCount: 20
+                        SplineCurveCount: 20
                         SplineGenerationArea: {X: 10.0, Y: 1.0, Z: 100.0}
                         TangentOffet: {X: 5.0, Y: 2.0, Z: 0.0}
                         UseStructuredSpline: true
@@ -218,3 +218,8 @@ Hierarchy:
                             62f207d6fc0ad369a2aaa4eb0d3c5291: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
                             09de3db902e392dbd32a5700c71a580e: df5d783c-17ea-4ba6-a8b1-cceb63ad2a00:Materials/Yellow
                             c7d7ba314f5742b464f81a3a1691bb22: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
+                        SplineColors:
+                            7892e80d653d5573e0c5b1e9a7a81345: {R: 44, G: 255, B: 3, A: 255}
+                            f23f67b7d4c604634e77cbb8a97046a0: {R: 255, G: 0, B: 0, A: 255}
+                            4aea9aa4c990fd995e77a8de28718f90: {R: 250, G: 178, B: 0, A: 255}
+                            549f26b7d75595032d4bcb18b63c4698: {R: 3, G: 251, B: 233, A: 255}

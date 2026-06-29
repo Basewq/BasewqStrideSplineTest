@@ -3,16 +3,14 @@
 
 using Stride.Core;
 using Stride.Core.Mathematics;
-using Stride.Graphics;
 using Stride.Rendering;
-using Buffer = Stride.Graphics.Buffer;
 
-namespace Stride.Assets.Presentation.AssetEditors.Gizmos.Splines;
+namespace Stride.Graphics.Meshes;
 
 /// <summary>
 /// Bounding box mesh with length one unit with the origin at the center of the box.
 /// </summary>
-public class GizmoBoundingBoxMesh : ComponentBase
+public class BoundingBoxMesh : ComponentBase
 {
     /// <summary>
     /// The vertex buffer used by this mesh.
@@ -24,7 +22,7 @@ public class GizmoBoundingBoxMesh : ComponentBase
     /// </summary>
     public readonly Buffer IndexBuffer;
 
-    private GizmoBoundingBoxMesh(GraphicsDevice graphicsDevice, VertexPositionNormalTexture[] vertices, ushort[] indices)
+    private BoundingBoxMesh(GraphicsDevice graphicsDevice, VertexPositionNormalTexture[] vertices, ushort[] indices)
     {
         VertexBuffer = Buffer.Vertex.New(graphicsDevice, vertices).RecreateWith(vertices).DisposeBy(this);
         IndexBuffer = Buffer.Index.New(graphicsDevice, indices).RecreateWith(indices).DisposeBy(this);
@@ -44,7 +42,7 @@ public class GizmoBoundingBoxMesh : ComponentBase
         return meshDraw;
     }
 
-    public static GizmoBoundingBoxMesh CreateMesh(GraphicsDevice graphicsDevice)
+    public static BoundingBoxMesh CreateMesh(GraphicsDevice graphicsDevice)
     {
         var indices = new ushort[12 * 2];
         var vertices = new VertexPositionNormalTexture[8];
@@ -80,6 +78,6 @@ public class GizmoBoundingBoxMesh : ComponentBase
             indices[indexOffset++] = (ushort)(i + 4);
         }
 
-        return new GizmoBoundingBoxMesh(graphicsDevice, vertices, indices);
+        return new BoundingBoxMesh(graphicsDevice, vertices, indices);
     }
 }

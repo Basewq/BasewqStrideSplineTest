@@ -1,0 +1,110 @@
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net)
+// Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
+
+namespace Stride.Rendering.Materials
+{
+    shader LineVisualizerShader : ShaderBase, PositionStream4
+    {
+        static const uint LineMode_WorldSpace               = 0;
+        static const uint LineMode_ViewScaled               = 1;
+        static const uint LineMode_FixedScreenLength        = 2;
+
+        struct LineInstanceData
+        {
+            uint LineMode;
+            float3 LinePositionA;
+            float3 LinePositionB;
+            [Color] float4 LineColorA;
+            [Color] float4 LineColorB;
+            float LineThicknessPx;
+            float FixedLengthPx;
+        };
+
+        stage StructuredBuffer<LineInstanceData> LineInstanceArray;
+        stage float LineThicknessScale = 1.0f;
+
+        stage float4x4 ViewProjection;
+        stage float4x4 ViewProjectionInverse;
+
+        // Camera View size
+        stage float2 ViewSize;
+        // Camera Position
+        stage float3 Eye;
+
+        stage stream float ColorLerpAmount;
+
+        stage override void VSMain()
+        {
+            uint instanceId = streams.InstanceID;
+            LineInstanceData instData = LineInstanceArray[instanceId];
+            float2 pixelToNdc = 2.0 / ViewSize;         // NDC are in +/- 1 in both (x, y) so range is 2
+
+            // Note: positions are already in world space
+            float4 linePosA = float4(instData.LinePositionA, 1.0);
+            float4 linePosB = float4(instData.LinePositionB, 1.0);
+
+            float4 lineClipPosA = mul(linePosA, ViewProjection);
+            float4 lineClipPosB = mul(linePosB, ViewProjection);
+            float2 ndcPosA = lineClipPosA.xy / lineClipPosA.w;
+            float2 ndcPosB = lineClipPosB.xy / lineClipPosB.w;
+
+            // Line direction in screen space
+            float2 screenSpaceLineDirVec = normalize(ndcPosB - ndcPosA);
+
+            switch (instData.LineMode)
+            {
+                case LineMode_ViewScaled:
+                {
+                    float fixedLengthPx = instData.FixedLengthPx;
+
+                    float3 worldSpaceViewDir = normalize(Eye - linePosA.xyz);
+                    float3 worldSpaceLineDir = normalize(linePosB.xyz - linePosA.xyz);
+                    float projectedScale = length(cross(worldSpaceViewDir, worldSpaceLineDir));
+
+                    // Get actual end of line in screen space
+                    ndcPosB = ndcPosA + screenSpaceLineDirVec * fixedLengthPx * pixelToNdc * projectedScale;
+                    lineClipPosB.xy = ndcPosB * lineClipPosB.w;
+                    break;
+                }
+                case LineMode_FixedScreenLength:
+                {
+                    float fixedLengthPx = instData.FixedLengthPx;
+
+                    // Get actual end of line in screen space
+                    ndcPosB = ndcPosA + screenSpaceLineDirVec * fixedLengthPx * pixelToNdc;
+                    lineClipPosB.xy = ndcPosB * lineClipPosB.w;
+                    break;
+                }
+            }
+
+            float2 normalVec = float2(-screenSpaceLineDirVec.y, screenSpaceLineDirVec.x);     // Expand perpendicular to the line's direction
+            float expandingSide = streams.Position.y;           // y will be +/- 1 which is the top/bottom side of the quad
+
+            float lineThicknessPx = instData.LineThicknessPx;
+            float2 ndcPosOffset = expandingSide * normalVec * (LineThicknessScale * lineThicknessPx * 0.5) * pixelToNdc;
+
+            bool isLeftSide = streams.Position.x < 0;           // x will be +/- 1 which is the left/right side of the quad
+            float4 lineClipPos = isLeftSide ? lineClipPosA : lineClipPosB;
+            lineClipPos.xy += ndcPosOffset * lineClipPos.w;
+
+            float4 lineWorldPos = mul(lineClipPos, ViewProjectionInverse);
+            streams.PositionWS = lineWorldPos;
+
+            streams.ShadingPosition = lineClipPos;
+            // streams.PositionH = streams.ShadingPosition;
+            streams.DepthVS = streams.ShadingPosition.w;
+
+            streams.ColorLerpAmount = saturate((streams.Position.x * 0.5f) + 0.5f);   // Normalize to [0, 1] range
+        }
+
+        stage override void PSMain()
+        {
+            uint instanceId = streams.InstanceID;
+            LineInstanceData instData = LineInstanceArray[instanceId];
+
+            float4 lineColor = lerp(instData.LineColorA, instData.LineColorB, streams.ColorLerpAmount);
+            //lineColor = float4(1, 0, 0, 1);
+            streams.ColorTarget = lineColor;
+        }
+    };
+}

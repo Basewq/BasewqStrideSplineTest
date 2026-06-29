@@ -1,4 +1,5 @@
 using SplineTest.GameStudioExt.StrideEditorExt;
+using SplineTest.Rendering;
 using Stride.Assets.Presentation.AssetEditors.EntityHierarchyEditor.Game;
 using Stride.Assets.Presentation.AssetEditors.SceneEditor.Game;
 using Stride.Core;

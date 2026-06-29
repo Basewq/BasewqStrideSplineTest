@@ -116,6 +116,12 @@ RenderFeatures:
                 TransparentRenderStage: ref!! 3a8b1b65-defa-47cb-817d-662e624e649c
                 EffectName: null
         PipelineProcessors: {}
+    0bcca2fad4ac33b100c66757c4dccc88*: !SplineTest.Splines.Rendering.LineVisualizer.LineVisualizerRenderFeature,SplineTest.Splines
+        RenderStageSelectors:
+            940480110322e14298bcc1e2ad894199: !SplineTest.Splines.Rendering.LineVisualizer.LineVisualizerRenderStageSelector,SplineTest.Splines
+                OpaqueRenderStage: ref!! efca3eaf-9660-4d84-b472-13bb8ba038e4
+                TransparentRenderStage: ref!! 3a8b1b65-defa-47cb-817d-662e624e649c
+                EffectName: null
 SharedRenderers:
     60459475d3a3adaf2d1ba5d99913ca75: !Stride.Rendering.Compositing.ForwardRenderer,Stride.Engine
         Id: cfc4225b-c91c-47a5-91e8-361d8181dde4
@@ -136,7 +142,6 @@ SharedRenderers:
             Enabled: false
             RequiredApis: {}
             Overlays: {}
-            RequestPassthrough: false
         SubsurfaceScatteringBlurEffect: null
         MSAALevel: None
         MSAAResolver: {}
@@ -159,7 +164,6 @@ SharedRenderers:
             Enabled: false
             RequiredApis: {}
             Overlays: {}
-            RequestPassthrough: false
         SubsurfaceScatteringBlurEffect: null
         MSAALevel: None
         MSAAResolver: {}

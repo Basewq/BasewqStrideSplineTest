@@ -8,6 +8,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SplineTest.Splines\SplineTest.Splines.csproj" />
+    <ProjectReference Include="..\SplineTest\SplineTest.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Gizmos\*.png" />

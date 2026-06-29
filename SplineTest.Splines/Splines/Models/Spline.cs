@@ -406,7 +406,7 @@ public class Spline
         int lastEncounteredControlPointsIndex = -1;
         if (!isMovingForward)
         {
-            MemoryUtilities.Swap(ref startSplineDistance, ref endSplineDistance);
+            Utilities.Swap(ref startSplineDistance, ref endSplineDistance);
             if (endSplineDistance < 0)
             {
                 endSplineDistance += totalDistance;

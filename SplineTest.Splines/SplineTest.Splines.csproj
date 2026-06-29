@@ -11,4 +11,9 @@
   <ItemGroup>
     <InternalsVisibleTo Include="SplineTest.GameStudioExt" />
   </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Update="Effects\StrideLineVisualizerEffect.sdfx">
+      <Generator>StrideEffectCodeGenerator</Generator>
+    </AdditionalFiles>
+  </ItemGroup>
 </Project>

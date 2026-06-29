@@ -12,6 +12,9 @@ namespace SplineTools
     {
         public Material SplineMaterial;
         public Material BoundingBoxMaterial;
+        public Color SplineColor = Color.Aqua;
+        public Color BoundingBoxColor = Color.Orange;
+
         private SplineComponent splineComponent;
         private Random random;
         private bool toggleLoop = true;
@@ -63,10 +66,10 @@ namespace SplineTools
             }
 
             // We use spline render settings if we want to view our spline in the game
-            splineComponent.RenderSettings.ShowSegments = true;
-            splineComponent.RenderSettings.ShowBoundingBox = toggleBoundingBox;
-            splineComponent.RenderSettings.SegmentsMaterial = SplineMaterial;
-            splineComponent.RenderSettings.BoundingBoxMaterial = BoundingBoxMaterial;
+            splineComponent.DebugRenderSettings.ShowCurves = true;
+            splineComponent.DebugRenderSettings.ShowBoundingBox = toggleBoundingBox;
+            splineComponent.DebugRenderSettings.CurveColor = SplineColor;
+            splineComponent.DebugRenderSettings.BoundingBoxColor = BoundingBoxColor;
         }
 
         public override void Update()
@@ -92,7 +95,7 @@ namespace SplineTools
             //Press B to toggle Bounding box of the spline
             if (Input.IsKeyPressed(Keys.B))
             {
-                splineComponent.RenderSettings.ShowBoundingBox = toggleBoundingBox = !toggleBoundingBox;
+                splineComponent.DebugRenderSettings.ShowBoundingBox = toggleBoundingBox = !toggleBoundingBox;
             }
         }
 
