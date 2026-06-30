@@ -229,8 +229,8 @@ Hierarchy:
                             a5268efe20e6e447f9add4fe4bf46082: ref!! 679b045d-e25a-49e8-940d-0963ad623c8d
                             313d2ab5a61a986bd022a63ff99060e1: ref!! 84c1f3c1-5269-4496-a39f-a1c8ca557a77
                         RenderSettings:
-                            ShowSegments: true
-                            SegmentsMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
+                            ShowCurves: true
+                            CurvesMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
                             ShowControlPoints: true
                             ControlPointsMaterial: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
                             ShowBoundingBox: false
@@ -343,8 +343,8 @@ Hierarchy:
                             a5268efe20e6e447f9add4fe4bf46082: ref!! 49e4a9ab-834b-4caf-bf38-67ff46fde308
                             313d2ab5a61a986bd022a63ff99060e1: ref!! 44da1e52-46ff-4478-b9fe-f3274f416426
                         RenderSettings:
-                            ShowSegmentLines: true
-                            SegmentsMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
+                            ShowCurves: true
+                            CurvesMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
                             ShowNodes: true
                             NodesMaterial: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
                             ShowBoundingBox: false

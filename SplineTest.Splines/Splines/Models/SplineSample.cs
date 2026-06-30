@@ -5,7 +5,7 @@ using Stride.Core.Mathematics;
 
 namespace Stride.Engine.Splines.Models;
 
-public struct SplineSample
+public struct SplineSample : IEquatable<SplineSample>
 {
     /// <summary>
     /// Local position relative to the spline.
@@ -25,5 +25,13 @@ public struct SplineSample
         Position = position;
         Rotation = rotation;
         Tangent = tangent;
+    }
+
+    public bool Equals(SplineSample other)
+    {
+        bool isEqual = Position.Equals(other.Position)
+            && Rotation.Equals(other.Rotation)
+            && Tangent.Equals(other.Tangent);
+        return isEqual;
     }
 }

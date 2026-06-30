@@ -25,14 +25,16 @@ namespace SplineTools
             if (SplineComponent?.Spline is not null
                 && dir.LengthSquared() > 0)
             {
-                //Update movement
+                // Update movement
                 dir = Vector3.Normalize(dir);
                 Entity.Transform.Position += dir * MoveSpeed * deltaTime;
 
-                //Show closest point on spline
-                var closestPositionInfo = SplineComponent.Spline.GetClosestPointOnSpline(Entity.Transform.WorldMatrix.TranslationVector);
+                var splineRootPosition = SplineComponent.Entity.Transform.Position;
+                // Show closest point on spline
+                var splineLocalPos = Entity.Transform.Position - splineRootPosition;
+                var closestPositionInfo = SplineComponent.Spline.GetClosestPointOnSpline(splineLocalPos);
                 ClosestPointOrb.Transform.UseTRS = false;
-                ClosestPointOrb.Transform.WorldMatrix.TranslationVector = closestPositionInfo.Position;
+                ClosestPointOrb.Transform.WorldMatrix.TranslationVector = closestPositionInfo.Position + splineRootPosition;
                 ClosestPointOrb.Transform.UpdateLocalFromWorld();
             }
         }

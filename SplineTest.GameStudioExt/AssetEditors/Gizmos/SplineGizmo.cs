@@ -4,7 +4,6 @@
 using SplineTest.GameStudioExt.AssetEditors.Gizmos;
 using SplineTest.GameStudioExt.StrideEditorExt;
 using SplineTest.Rendering;
-using SplineTest.Splines.Rendering.LineVisualizer;
 using Stride.Assets.Presentation.AssetEditors.EntityHierarchyEditor.Game;
 using Stride.Assets.Presentation.AssetEditors.GameEditor.Game;
 using Stride.Core;
@@ -45,7 +44,7 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
     private Entity splineVisualizerRootEntity;
     private Entity splineVisualizerBoundingBoxEntity;
     private ModelComponent splineVisualizerBoundingBoxModelComponent;
-    private readonly List<SplineSample> splineSamples = [];
+    private readonly List<Vector3> splineSamplePoints = [];
 
     private readonly List<IDisposable> disposables = [];
 
@@ -168,11 +167,11 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
             splineVisualizerBoundingBoxEntity.SetParent(splineVisualizerRootEntity);
         }
 
-        splineSamples.Clear();
-        Component.Spline.CollectSplineSamples(splineSamples);
+        splineSamplePoints.Clear();
+        SplineExtensions.CollectSplineSamplePoints(Component.Spline, splineSamplePoints, sampleResolutionPerCurve: 64);
 
         // Bounding box
-        splineVisualizerBoundingBoxModelComponent.Enabled = splineSamples.Count > 1;
+        splineVisualizerBoundingBoxModelComponent.Enabled = splineSamplePoints.Count > 1;
         if (splineVisualizerBoundingBoxModelComponent.Enabled)
         {
             var boundingBox = Component.Spline.CalculateBoundingBox();
@@ -382,11 +381,11 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
             lineVisualizerComponent.LineSet.Segments.Clear();
         }
 
-        var splineSampleSpan = CollectionsMarshal.AsSpan(splineSamples);
-        for (int i = 0; i < splineSampleSpan.Length - 1; i++)
+        var splineSamplePointsSpan = CollectionsMarshal.AsSpan(splineSamplePoints);
+        for (int i = 0; i < splineSamplePointsSpan.Length - 1; i++)
         {
-            var lineStartPos = splineSampleSpan[i].Position;
-            var lineNextPos = splineSampleSpan[i + 1].Position;
+            var lineStartPos = splineSamplePointsSpan[i];
+            var lineNextPos = splineSamplePointsSpan[i + 1];
 
             var instData = new LineSegment
             {

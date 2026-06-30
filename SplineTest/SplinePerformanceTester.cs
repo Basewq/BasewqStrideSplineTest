@@ -96,6 +96,7 @@ public class SplinesPerformanceTest : SyncScript
                 TangentIn = tangents[i * 2],
                 TangentOut = tangents[i * 2 + 1],
             });
+            (splineComponent.Spline.SplineEvaluator as SplineEvaluator)?.SampleResolutionPerCurve = SplineCurveCount;
             //var controlPointEntity = new Entity("controlPoint" + i, controlPointPositions[i]);
             //var controlPointComponent = new SplineNodeComponent(SplineCurveCount, tangents[i * 2], tangents[i * 2 + 1]);
             //controlPointEntity.Add(controlPointComponent);

@@ -147,7 +147,7 @@ public class SplineTraverser
         isSplineDirty = false;
     }
 
-    private readonly List<IndexedSplineControlPoint> controlPointsEncountered = [];
+    private readonly List<int> controlPointIndicesEncountered = [];
     private void UpdatePlacement(float dt, bool forceUpdate = false)
     {
         float previousTravelDistance = currentTravelDistance;
@@ -155,15 +155,6 @@ public class SplineTraverser
         float displacement = speed * dt;
         currentTravelDistance += displacement;
 
-        bool isloop = false;
-
-        if ((splineTotalDistance - currentTravelDistance) < 0.1f)
-        {
-        }
-        if (currentTravelDistance > splineTotalDistance)
-        {
-            isloop = true;
-        }
         if (!spline.IsClosedLoop)
         {
             currentTravelDistance = Math.Clamp(currentTravelDistance, min: 0, max: splineTotalDistance);
@@ -175,18 +166,18 @@ public class SplineTraverser
 
             if (SplineControlPointReached is not null)
             {
-                spline.CollectEncounteredControlPoints(controlPointsEncountered, previousTravelDistance, currentTravelDistance);
-                for (int i = 0; i < controlPointsEncountered.Count; i++)
+                (spline.SplineEvaluator as SplineEvaluator)?.CollectEncounteredControlPoints(previousTravelDistance, currentTravelDistance, controlPointIndicesEncountered);
+                for (int i = 0; i < controlPointIndicesEncountered.Count; i++)
                 {
-                    var indexedPoint = controlPointsEncountered[i];
-                    if (!spline.IsClosedLoop && indexedPoint.ControlPointIndex == spline.Count - 1)
+                    var controlPointIndex = controlPointIndicesEncountered[i];
+                    if (!spline.IsClosedLoop && controlPointIndex == spline.Count - 1)
                     {
                         // Call SplineEndReached instead
                         continue;
                     }
-                    SplineControlPointReached.Invoke(indexedPoint.ControlPointIndex, indexedPoint.ControlPoint);
+                    SplineControlPointReached.Invoke(controlPointIndex, spline[controlPointIndex]);
                 }
-                controlPointsEncountered.Clear();
+                controlPointIndicesEncountered.Clear();
             }
 
             if (!spline.IsClosedLoop && currentTravelDistance >= splineTotalDistance)
@@ -208,13 +199,13 @@ public class SplineTraverser
                 }
             }
             var prevPos = currentSplineSample.Position;
-            currentSplineSample = spline.SampleFromDistance(currentTravelDistance);
+            currentSplineSample = spline.EvaluateFromDistance(currentTravelDistance);
         }
     }
 
     public void SnapPositionToSpline(Vector3 position)
     {
         var splinePositionInfo = spline.GetClosestPointOnSpline(position);
-        currentSplineSample = spline.SampleFromDistance(splinePositionInfo.SplineDistance);
+        currentSplineSample = spline.EvaluateFromDistance(splinePositionInfo.SplineDistance);
     }
 }

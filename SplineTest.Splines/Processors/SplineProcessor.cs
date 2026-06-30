@@ -76,15 +76,15 @@ public class SplineProcessor : EntityProcessor<SplineComponent, SplineProcessor.
                 data.LineVisualizerComponent.LineSet.Segments.Clear();
             }
 
-            var splineSamplePoints = new List<SplineSample>();
-            splineComp.Spline.CollectSplineSamples(splineSamplePoints);
+            var splineSamplePoints = new List<Vector3>();
+            SplineExtensions.CollectSplineSamplePoints(splineComp.Spline, splineSamplePoints);
 
             var lineSet = data.LineVisualizerComponent.LineSet;
             var splineSamplePointsSpan = CollectionsMarshal.AsSpan(splineSamplePoints);
             for (int i = 0; i < splineSamplePointsSpan.Length - 1; i++)
             {
-                var lineStartPos = splineSamplePointsSpan[i].Position;
-                var lineNextPos = splineSamplePointsSpan[i + 1].Position;
+                var lineStartPos = splineSamplePointsSpan[i];
+                var lineNextPos = splineSamplePointsSpan[i + 1];
 
                 var lineColor = renderSettings.CurveColor.ToColor4();
                 lineSet.AddWorldLine(lineStartPos, lineNextPos, lineColor, lineThicknessPx: 3, emissiveScale: 1);

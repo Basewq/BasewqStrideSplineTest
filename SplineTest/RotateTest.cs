@@ -17,7 +17,8 @@ public class RotateTest : StartupScript
         if (spline is not null)
         {
             var splineSamples = new List<SplineSample>();
-            spline.CollectSplineSamples(splineSamples);
+            float totalDistance = spline.GetTotalDistance();
+            SplineExtensions.CollectSplineSamples(spline, splineSamples, sampleStepDistance: 0.25f);
             var splineSamplesSpan = CollectionsMarshal.AsSpan(splineSamples);
             for (int i = 0; i < splineSamplesSpan.Length - 1; i++)
             {

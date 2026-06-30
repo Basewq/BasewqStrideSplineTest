@@ -205,8 +205,8 @@ Hierarchy:
                             a5268efe20e6e447f9add4fe4bf46082: ref!! 1ba67c7e-5646-42d6-860a-d2df3bd97cea
                             313d2ab5a61a986bd022a63ff99060e1: ref!! b623f765-65ae-4c9f-bc8b-cdd2297c715a
                         RenderSettings:
-                            ShowSegments: true
-                            SegmentsMaterial: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
+                            ShowCurves: true
+                            CurvesMaterial: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
                             ShowControlPoints: true
                             ControlPointsMaterial: cd6fe2c7-b2ef-4c0e-a5e7-45abaf69c9c8:Materials/Blue
                             ShowBoundingBox: true

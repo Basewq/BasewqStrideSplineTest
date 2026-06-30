@@ -882,8 +882,8 @@ Hierarchy:
                             885308ac3297d33c2f76f83b3b1e3d3c: ref!! eb4fdf84-63fd-4ae2-9dc1-c19d9bcc7557
                             22f9aaa6b9f712a8a40b86b2bb90aded: ref!! d91dfd6b-1e99-4ef7-97b3-7271ac6ddd03
                         RenderSettings:
-                            ShowSegments: true
-                            SegmentsMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
+                            ShowCurves: true
+                            CurvesMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
                             ShowControlPoints: false
                             ControlPointsMaterial: null
                             ShowBoundingBox: false
