@@ -1,0 +1,229 @@
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net)
+// Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
+
+namespace Stride.Rendering.Materials
+{
+    shader GizmoMarkerShader : ShaderBase, PositionStream4
+    {
+        static const uint GizmoMarkerShape_Circle                       = 0;
+        static const uint GizmoMarkerShape_Box                          = 1;
+        static const uint GizmoMarkerShape_Diamond                      = 2;
+
+        static const uint GizmoMarkerOrientationMode_Billboard          = 0;
+        static const uint GizmoMarkerOrientationMode_AxisBillboard      = 1;
+        static const uint GizmoMarkerOrientationMode_World              = 2;
+
+        static const uint GizmoMarkerScaleMode_FixedScreenSize          = 0;
+        static const uint GizmoMarkerScaleMode_WorldSpace               = 1;
+
+        struct GizmoMarkerInstanceData
+        {
+            uint ShapeAndModes;
+            float4x4 World;
+            [Color] float4 FillColor;
+            float3 Axis;
+            float2 SizePx;
+            float OutlineWidthPx;
+            [Color] float4 OutlineColor;
+            float GlowWidthPx;
+            [Color] float4 GlowColor;
+        };
+
+        stage StructuredBuffer<GizmoMarkerInstanceData> GizmoMarkerInstanceArray;
+        stage float MarkerScale = 1.0f;
+
+        stage float4x4 View;
+        stage float4x4 ViewInverse;
+        stage float4x4 Projection;
+        // Camera View size
+        stage float2 ViewSize;
+        // 0 = Orthographic, 1 = Perspective
+        stage float PerspectiveCamera;
+
+        stage stream float2 QuadLocalPosition;
+
+        float3 GetScale(float4x4 mat)
+        {
+            float3 scale;
+            scale.x = length(mat[0].xyz);
+            scale.y = length(mat[1].xyz);
+            scale.z = length(mat[2].xyz);
+            return scale;
+        }
+
+        float2 GetViewSpaceSizeFromPixelSize(float2 pixelSize, float viewZ)
+        {
+            // Ensures calculation works in both orthographic & perspective
+            // by setting depthScale = 1 when othographic, otherwise viewZ
+            float depthScale = lerp(1.0, viewZ, PerspectiveCamera);
+
+            float sx = (2.0 * depthScale) / (Projection[0][0] * ViewSize.x);
+            float sy = (2.0 * depthScale) / (Projection[1][1] * ViewSize.y);
+            return float2(sx, sy) * pixelSize;
+        }
+
+        stage override void VSMain()
+        {
+            uint instanceId = streams.InstanceID;
+            GizmoMarkerInstanceData instData = GizmoMarkerInstanceArray[instanceId];
+            float2 pixelToNdc = 2.0 / ViewSize;         // NDC are in +/- 1 in both (x, y) so range is 2
+
+            // Shape and modes are packed in 1 byte each
+            uint shapeAndModes = instData.ShapeAndModes;
+            //uint shape = shapeAndModes & 0xFF;
+            uint orientationMode = (shapeAndModes >> 8) & 0xFF;
+            uint scaleMode = (shapeAndModes >> 16) & 0xFF;
+
+            float4 worldPos = mul(float4(0.0, 0.0, 0.0, 1.0), instData.World);
+
+            // Determine which directions to 'expand' the quad in world space
+            float3 worldRightDir;
+            float3 worldUpDir;
+            switch (orientationMode)
+            {
+                case GizmoMarkerOrientationMode_World:
+                {
+                    worldRightDir = normalize(instData.World[0].xyz);
+                    worldUpDir = normalize(instData.World[1].xyz);
+                    break;
+                }
+                case GizmoMarkerOrientationMode_AxisBillboard:
+                {
+                    float3 cameraPosition = ViewInverse[3].xyz;
+                    float3 worldSpaceViewDir = normalize(cameraPosition - worldPos.xyz);
+                    worldRightDir = normalize(cross(instData.Axis, worldSpaceViewDir));
+                    if (length(worldRightDir) < 1e-4)
+                    {
+                        float3 cameraRight = ViewInverse[0].xyz;
+                        worldRightDir = cameraRight;
+                    }
+                    worldUpDir = normalize(cross(worldRightDir, instData.Axis));
+                    break;
+                }
+                default:
+                {
+                    // GizmoMarkerOrientationMode_Billboard
+                    float3 cameraRight = ViewInverse[0].xyz;
+                    float3 cameraUp = ViewInverse[1].xyz;
+                    worldRightDir = normalize(cameraRight);
+                    worldUpDir = normalize(cameraUp);
+                    break;
+                }
+            }
+
+            // Determine how to scale in marker in view space
+            float3 viewPos = mul(worldPos, View).xyz;
+            float3 viewRightDir = mul(worldRightDir, (float3x3)View);
+            float3 viewUpDir = mul(worldUpDir, (float3x3)View);
+
+            float2 expandDir = streams.Position.xy;             // Direction +/- 1 which is the same as the quad's vertex position
+
+            float3 markerViewPos;
+            switch (scaleMode)
+            {
+                case GizmoMarkerScaleMode_WorldSpace:
+                {
+                    float3 scale = GetScale(instData.World);
+                    float2 worldHalfSize = scale.xy * 0.5;
+                    markerViewPos = viewPos
+                        + viewRightDir * (expandDir.x * worldHalfSize.x)
+                        + viewUpDir * (expandDir.y * worldHalfSize.y);
+                    break;
+                }
+                default:
+                {
+                    // GizmoMarkerScaleMode_FixedScreenSize
+
+                    // Get the 'full' size of marker in pixels (ie. shape + outline + glow)
+                    float2 markerHalfSizePx = (instData.SizePx * 0.5) + instData.OutlineWidthPx + instData.GlowWidthPx;
+
+                    float2 viewMarkerHalfSize = GetViewSpaceSizeFromPixelSize(markerHalfSizePx, -viewPos.z);
+                    markerViewPos = viewPos
+                        + viewRightDir * (expandDir.x * viewMarkerHalfSize.x)
+                        + viewUpDir * (expandDir.y * viewMarkerHalfSize.y);
+                    break;
+                }
+            }
+
+            streams.PositionWS = mul(float4(markerViewPos, 1.0), ViewInverse);  // Is this needed?
+
+            streams.ShadingPosition = mul(float4(markerViewPos, 1.0), Projection);
+            streams.DepthVS = streams.ShadingPosition.w;
+
+            streams.QuadLocalPosition = streams.Position.xy;
+        }
+
+        float GetSquareSdf(float2 p)
+        {
+            float2 d = abs(p) - 1.0;
+            return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
+        }
+
+        float GetCircleSdf(float2 p)
+        {
+            return length(p) - 1.0;
+        }
+
+        float GetDiamondSdf(float2 p)
+        {
+            return (abs(p.x) + abs(p.y) - 1.0) * 0.70710678; // 1/sqrt(2)
+        }
+
+        stage override void PSMain()
+        {
+            uint instanceId = streams.InstanceID;
+            GizmoMarkerInstanceData instData = GizmoMarkerInstanceArray[instanceId];
+
+            // Shape and modes are packed in 1 byte each
+            uint shapeAndModes = instData.ShapeAndModes;
+            uint shape = shapeAndModes & 0xFF;
+            //uint orientationMode = (shapeAndModes >> 8) & 0xFF;
+            //uint scaleMode = (shapeAndModes >> 16) & 0xFF;
+
+            float2 markerFullSizePx = instData.SizePx + 2.0 * (instData.OutlineWidthPx + instData.GlowWidthPx);
+            float2 pixelToLocal = 2.0 / markerFullSizePx;        // Quad is in [-1, 1] range so local size is 2 in both xy
+            float2 shapeLocalHalfSize = 0.5 * instData.SizePx * pixelToLocal;
+
+            float2 sdfLocalPos = streams.QuadLocalPosition / shapeLocalHalfSize;
+            float sdfDist = 0.0;
+            switch (shape)
+            {
+                case GizmoMarkerShape_Circle:
+                {
+                    sdfDist = GetCircleSdf(sdfLocalPos);
+                    break;
+                }
+                case GizmoMarkerShape_Box:
+                {
+                    sdfDist = GetSquareSdf(sdfLocalPos);
+                    break;
+                }
+                case GizmoMarkerShape_Diamond:
+                {
+                    sdfDist = GetDiamondSdf(sdfLocalPos);
+                    break;
+                }
+            }
+
+            float pxToSdf = fwidth(sdfDist);
+            // sdfDist < 0 => fill
+            // sdfDist in range [0, outline] => outline
+            // sdfDist > outline => glow
+            float outlineLocalSize = instData.OutlineWidthPx * pxToSdf;
+            float glowLocalSize = instData.GlowWidthPx * pxToSdf;
+            float fillAlpha = step(sdfDist, 0.0);
+            float outlineAlpha = step(0.0, sdfDist) * step(sdfDist, outlineLocalSize);
+            float glowAmount = saturate(1.0 - (sdfDist - outlineLocalSize) / glowLocalSize);
+            glowAmount = glowAmount * glowAmount;       // Faster falloff
+            float glowAlpha = step(outlineLocalSize, sdfDist) * glowAmount;
+
+            float4 color = (fillAlpha * instData.FillColor)
+                            + (outlineAlpha * instData.OutlineColor)
+                            + (glowAlpha * instData.GlowColor);
+
+            //color = float4(1, 0, 0, 1);
+            color.xyz *= color.a;
+            streams.ColorTarget = color;
+        }
+    };
+}

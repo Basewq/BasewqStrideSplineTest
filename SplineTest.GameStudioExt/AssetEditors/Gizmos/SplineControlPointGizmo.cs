@@ -1,16 +1,15 @@
 // Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
-using Stride.Engine.Splines.Components;
+using SplineTest.Rendering;
 using Stride.Assets.Presentation.AssetEditors.GameEditor.Game;
 using Stride.Core;
 using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Engine.Processors;
+using Stride.Engine.Splines.Components;
 using Stride.Engine.Splines.Models;
-using Stride.Extensions;
 using Stride.Graphics.GeometricPrimitives;
-using Stride.Rendering;
 
 namespace Stride.Assets.Presentation.AssetEditors.Gizmos.Splines;
 
@@ -34,32 +33,27 @@ public enum SplineControlPointRaycastFilterFlags
 //[GizmoComponent(typeof(SplineComponent), isMainGizmo: false)]
 public class SplineControlPointGizmo : GizmoBase
 {
-    private const int LineTessellation = 16;
-    private const float LineRadius = 0.025f;
-    private const float HandleCubeSize = 0.35f;
-    private const float HandleCubeHeightScale = 0.35f;
     private const float GizmoDefaultSize = 48; // the default size of the gizmo on the screen in pixels.
 
-    private static readonly Color ControlPointColor = Color.White;
-    private static readonly Color TangentInHandleColor = Color.Aqua;
-    private static readonly Color TangentOutHandleColor = Color.Goldenrod;
-    private static readonly Color TangentLineColor = Color.WhiteSmoke;
-    private static readonly Color SelectedColor = Color.Gold;
+    private static readonly Color4 ControlPointFillColor = Color.White.ToColor4();
+    private static readonly Color4 ControlPointOrientationLineColor = Color.Aqua.ToColor4();
+    private static readonly Color4 ControlPointNormalLineColor = Color.Aqua.ToColor4();
+    private static readonly Color4 TangentInHandleFillColor = Color.LightCoral.ToColor4();
+    private static readonly Color4 TangentOutHandleFillColor = Color.LightGreen.ToColor4();
+    private static readonly Color4 TangentLineColor = Color.WhiteSmoke.ToColor4();
+    private static readonly Color4 SelectedFillColor = Color.Gold.ToColor4();
+    private static readonly Color4 SelectedLineColor = Color.Gold.ToColor4();
 
-    private readonly Dictionary<int, ModelComponent> controlPointGizmoModelComponents = new Dictionary<int, ModelComponent>();
-
-    private Material controlPointMaterial;
-    private Material tangentInMaterial;
-    private Material tangentOutMaterial;
-    private Material tangentLineMaterial;
-    private Material selectedMaterial;
+    private readonly Dictionary<int, ModelComponent> controlPointGizmoModelComponents = [];
 
     private IEditorGameCameraService cameraService;
 
     private int controlPointIndex;
     private SplineComponent splineComponent;
     private Entity controlPointRootGizmoEntity;
-    private ModelComponent controlPointModelComponent;
+    private LineVisualizerComponent controlPointLineVisualizerComponent;
+    private GizmoMarkerSetComponent controlPointGizmoMarkerSetComponent;
+    private bool isMarkersAndLinesUpdateRequired = true;
     private TangentEntityData tangentInEntityData;
     private TangentEntityData tangentOutEntityData;
 
@@ -83,76 +77,33 @@ public class SplineControlPointGizmo : GizmoBase
 
     protected override Entity Create()
     {
-        controlPointMaterial = GizmoEmissiveColorMaterial.Create(GraphicsDevice, ControlPointColor, 0.75f);
-        tangentInMaterial = GizmoEmissiveColorMaterial.Create(GraphicsDevice, TangentInHandleColor, 0.75f);
-        tangentOutMaterial = GizmoEmissiveColorMaterial.Create(GraphicsDevice, TangentOutHandleColor, 0.75f);
-        tangentLineMaterial = GizmoEmissiveColorMaterial.Create(GraphicsDevice, TangentLineColor, 0.75f);
-        selectedMaterial = GizmoEmissiveColorMaterial.Create(GraphicsDevice, SelectedColor);
-
-        var controlPointMesh = GeometricPrimitive.Cube.New(GraphicsDevice, size: HandleCubeSize);
-        disposableGeometricPrimitives.Add(controlPointMesh);
-        var controlPointMeshDraw = controlPointMesh.ToMeshDraw();
         controlPointRootGizmoEntity = new Entity($"SplineControlPoint_{controlPointIndex}");
+        controlPointLineVisualizerComponent = new LineVisualizerComponent
+        {
+            RenderGroup = RenderGroup,
+            DepthTest = false,
+        };
+        controlPointRootGizmoEntity.Add(controlPointLineVisualizerComponent);
+        controlPointGizmoMarkerSetComponent = new GizmoMarkerSetComponent
+        {
+            RenderGroup = RenderGroup,
+            DepthTest = false,
+        };
+        controlPointRootGizmoEntity.Add(controlPointGizmoMarkerSetComponent);
 
         var controlPointModelEntity = new Entity($"SplineControlPoint_Model_{controlPointIndex}");
         controlPointModelEntity.SetParent(controlPointRootGizmoEntity);
-        controlPointModelComponent = new ModelComponent
-        {
-            Enabled = true,
-            Model = new Model { controlPointMaterial, new Mesh { Draw = controlPointMeshDraw } },
-            RenderGroup = RenderGroup,
-            IsShadowCaster = false,
-        };
-        controlPointModelEntity.Add(controlPointModelComponent);
 
-        var handleMesh = GeometricPrimitive.Cube.New(GraphicsDevice, size: HandleCubeSize);
-        disposableGeometricPrimitives.Add(handleMesh);
-        var handleMeshDraw = handleMesh.ToMeshDraw();
-        const float LineLength = 1;     // The line's true length will be changed via the entity's scale
-        var lineMesh = GizmoModelHelper.CreateLine(GraphicsDevice, LineLength, LineRadius, LineTessellation);
-        disposableGeometricPrimitives.Add(lineMesh);
-        var lineMeshDraw = lineMesh.ToMeshDraw();
-        BuildTangentGizmoEntity("TangentIn", tangentInMaterial, tangentLineMaterial, handleMeshDraw, lineMeshDraw, out tangentInEntityData);
-        BuildTangentGizmoEntity("TangentOut", tangentOutMaterial, tangentLineMaterial, handleMeshDraw, lineMeshDraw, out tangentOutEntityData);
+        tangentInEntityData = new TangentEntityData
+        {
+            CurrentLocalPosition = new Vector3(float.MinValue)
+        };
+        tangentOutEntityData = new TangentEntityData
+        {
+            CurrentLocalPosition = new Vector3(float.MinValue)
+        };
 
         return controlPointRootGizmoEntity;
-    }
-
-    private void BuildTangentGizmoEntity(string name, Material handleMaterial, Material lineMaterial, MeshDraw handleMeshDraw, MeshDraw lineMeshDraw, out TangentEntityData data)
-    {
-        data = new();
-        // Three entities will be used to represent the tangent for easier management:
-        // - TangentInRoot/TangentOutRoot: The 'container' entity for the rest of the entities.
-        // - TangentInHandle/TangentOutHandle: The handle of the tangent.
-        // - TangentInLineModel/TangentOutLineModel: The line model entity used to show the control point to handle connection.
-        data.RootEntity = new Entity($"{name}_Root_{controlPointIndex}");
-        // The handle model
-        data.HandleModelComponent = new ModelComponent
-        {
-            Enabled = false,
-            Model = new Model { handleMaterial, new Mesh { Draw = handleMeshDraw } },
-            RenderGroup = RenderGroup,
-            IsShadowCaster = false,
-        };
-        data.HandleEntity = new Entity($"SplineControlPoint_{name}_Handle_{controlPointIndex}") { data.HandleModelComponent };
-        data.HandleEntity.SetParent(data.RootEntity);
-
-        // The line model
-        data.LineModelComponent = new ModelComponent
-        {
-            Enabled = false,
-            Model = new Model { lineMaterial, new Mesh { Draw = lineMeshDraw } },
-            RenderGroup = RenderGroup,
-            IsShadowCaster = false,
-        };
-        data.LineModelEntity = new Entity($"SplineControlPoint_{name}_LineModel_{controlPointIndex}")
-        {
-            data.LineModelComponent
-        };
-        data.LineModelEntity.SetParent(data.RootEntity);
-
-        // Attach to root gizmo entity
-        data.RootEntity.SetParent(controlPointRootGizmoEntity);
     }
 
     public override void Initialize(IServiceRegistry services, Scene editorScene)
@@ -221,34 +172,117 @@ public class SplineControlPointGizmo : GizmoBase
         cameraService ??= Game.EditorServices.Get<IEditorGameCameraService>();
         float targetedScale = GetTargetedScale(cameraService);
 
-        controlPointModelComponent.Entity.Transform.Scale = new Vector3(targetedScale, targetedScale * HandleCubeHeightScale, targetedScale);
-
         var upVec = splineEntity.Transform.WorldMatrix.Up;
-        UpdateTangentTransformation(tangentInEntityData, controlPoint, controlPoint.TangentInPosition, upVec, targetedScale);
-        UpdateTangentTransformation(tangentOutEntityData, controlPoint, controlPoint.TangentOutPosition, upVec, targetedScale);
+        UpdateTangentTransformation(ref tangentInEntityData, controlPoint, controlPoint.TangentInPosition, upVec);
+        UpdateTangentTransformation(ref tangentOutEntityData, controlPoint, controlPoint.TangentOutPosition, upVec);
 
         // Check if updating color
         if (previousEditingSelectionType != EditingSelectionType)
         {
-            if (previousEditingSelectionType == SplineControlPointEditingSelectionType.ControlPoint
-                || EditingSelectionType == SplineControlPointEditingSelectionType.ControlPoint)
-            {
-                bool isSelected = EditingSelectionType == SplineControlPointEditingSelectionType.ControlPoint;
-                controlPointModelComponent.Model.Materials[0] = isSelected ? selectedMaterial : controlPointMaterial;
-            }
-            if (previousEditingSelectionType == SplineControlPointEditingSelectionType.TangentIn
-                || EditingSelectionType == SplineControlPointEditingSelectionType.TangentIn)
-            {
-                bool isSelected = EditingSelectionType == SplineControlPointEditingSelectionType.TangentIn;
-                tangentInEntityData.HandleModelComponent.Model.Materials[0] = isSelected ? selectedMaterial : tangentInMaterial;
-            }
-            if (previousEditingSelectionType == SplineControlPointEditingSelectionType.TangentOut
-                || EditingSelectionType == SplineControlPointEditingSelectionType.TangentOut)
-            {
-                bool isSelected = EditingSelectionType == SplineControlPointEditingSelectionType.TangentOut;
-                tangentOutEntityData.HandleModelComponent.Model.Materials[0] = isSelected ? selectedMaterial : tangentOutMaterial;
-            }
+            isMarkersAndLinesUpdateRequired = true;
             previousEditingSelectionType = EditingSelectionType;
+        }
+
+        if (isMarkersAndLinesUpdateRequired)
+        {
+            const float ShapeSize = 13;
+            const float OutlineWidthPx = 1f;
+            const float ControlPointUpVectorThicknessPx = 2;
+            const float TangentLineThicknessPx = 3;
+            const float SelectedGlowWidthPx = 5;
+
+            var markerSet = controlPointGizmoMarkerSetComponent.GizmoMarkerSet;
+            markerSet.Markers.Clear();
+            var ctrlPointMarker = new GizmoMarkerData
+            {
+                Shape = GizmoMarkerShape.Circle,
+                OrientationMode = GizmoMarkerOrientationMode.Billboard,
+                ScaleMode = GizmoMarkerScaleMode.FixedScreenSize,
+                Position = Vector3.Zero,
+                FillColor = ControlPointFillColor,
+                SizePx = new Vector2(ShapeSize),
+                OutlineWidthPx = OutlineWidthPx,
+                OutlineColor = Color.Black.ToColor4(),
+            };
+            if (EditingSelectionType == SplineControlPointEditingSelectionType.ControlPoint)
+            {
+                ctrlPointMarker.FillColor = SelectedFillColor;
+                ctrlPointMarker.GlowColor = SelectedFillColor;
+                ctrlPointMarker.GlowWidthPx = SelectedGlowWidthPx;
+            }
+            markerSet.Markers.Add(ctrlPointMarker);
+
+            var lineSet = controlPointLineVisualizerComponent.LineSet;
+            lineSet.Segments.Clear();
+            // Control Point visuals
+            var ctrlPointOrientationMarker = new GizmoMarkerData
+            {
+                Shape = GizmoMarkerShape.Circle,
+                OrientationMode = GizmoMarkerOrientationMode.World,
+                ScaleMode = GizmoMarkerScaleMode.FixedScreenSize,
+                Position = Vector3.Zero,
+                Rotation = Quaternion.RotationX(MathUtil.PiOverTwo),
+                FillColor = Color.Transparent.ToColor4(),
+                SizePx = new Vector2(60),
+                OutlineWidthPx = 1.5f,
+                OutlineColor = ControlPointOrientationLineColor,
+            };
+            if (EditingSelectionType == SplineControlPointEditingSelectionType.ControlPoint)
+            {
+                ctrlPointOrientationMarker.FillColor = SelectedFillColor with { A = 0.25f };
+                ctrlPointOrientationMarker.OutlineColor = SelectedLineColor;
+            }
+            markerSet.Markers.Add(ctrlPointOrientationMarker);
+
+            var ctrlPointUpVec = Vector3.UnitY;             // TODO
+            var ctrlPointUpVecColor = EditingSelectionType == SplineControlPointEditingSelectionType.ControlPoint
+                ? SelectedLineColor
+                : ControlPointNormalLineColor;
+            lineSet.AddViewScaledLengthLine(Vector3.Zero, ctrlPointUpVec, fixedLengthPx: 60, ctrlPointUpVecColor, ControlPointUpVectorThicknessPx);
+
+            // Tangent In visuals
+            lineSet.AddWorldLine(Vector3.Zero, tangentInEntityData.CurrentLocalPosition, TangentLineColor, TangentLineThicknessPx);
+            var tangentInMarker = new GizmoMarkerData
+            {
+                Shape = GizmoMarkerShape.Diamond,
+                OrientationMode = GizmoMarkerOrientationMode.Billboard,
+                ScaleMode = GizmoMarkerScaleMode.FixedScreenSize,
+                Position = tangentInEntityData.CurrentLocalPosition,
+                FillColor = TangentInHandleFillColor,
+                SizePx = new Vector2(ShapeSize),
+                OutlineWidthPx = OutlineWidthPx,
+                OutlineColor = Color.Black.ToColor4(),
+            };
+            if (EditingSelectionType == SplineControlPointEditingSelectionType.TangentIn)
+            {
+                tangentInMarker.FillColor = SelectedFillColor;
+                tangentInMarker.GlowColor = SelectedFillColor;
+                tangentInMarker.GlowWidthPx = SelectedGlowWidthPx;
+            }
+            markerSet.Markers.Add(tangentInMarker);
+
+            // Tangent Out visuals
+            lineSet.AddWorldLine(Vector3.Zero, tangentOutEntityData.CurrentLocalPosition, TangentLineColor, TangentLineThicknessPx);
+            var tangentOutMarker = new GizmoMarkerData
+            {
+                Shape = GizmoMarkerShape.Diamond,
+                OrientationMode = GizmoMarkerOrientationMode.Billboard,
+                ScaleMode = GizmoMarkerScaleMode.FixedScreenSize,
+                Position = tangentOutEntityData.CurrentLocalPosition,
+                FillColor = TangentOutHandleFillColor,
+                SizePx = new Vector2(ShapeSize),
+                OutlineWidthPx = OutlineWidthPx,
+                OutlineColor = Color.Black.ToColor4(),
+            };
+            if (EditingSelectionType == SplineControlPointEditingSelectionType.TangentOut)
+            {
+                tangentOutMarker.FillColor = SelectedFillColor;
+                tangentOutMarker.GlowColor = SelectedFillColor;
+                tangentOutMarker.GlowWidthPx = SelectedGlowWidthPx;
+            }
+            markerSet.Markers.Add(tangentOutMarker);
+
+            isMarkersAndLinesUpdateRequired = false;
         }
     }
 
@@ -265,26 +299,11 @@ public class SplineControlPointGizmo : GizmoBase
         return SizeFactor * DefaultScale * cameraService.Component.OrthographicSize;
     }
 
-    private void UpdateTangentTransformation(in TangentEntityData tangentEntityData, in SplineControlPoint controlPoint, in Vector3 tangentPosition, in Vector3 upVec, float targetedScale)
+    private void UpdateTangentTransformation(ref TangentEntityData tangentEntityData, in SplineControlPoint controlPoint, in Vector3 tangentPosition, in Vector3 upVec)
     {
         var tangentHandleLocalPosition = tangentPosition - controlPoint.Position;
-        var controlPointToHandleLength = tangentHandleLocalPosition.Length();
-        if (MathUtil.IsZero(controlPointToHandleLength))
-        {
-            tangentEntityData.HandleModelComponent.Enabled = false;
-            tangentEntityData.LineModelComponent.Enabled = false;
-            return;
-        }
-
-        tangentEntityData.HandleModelComponent.Enabled = true;
-        tangentEntityData.LineModelComponent.Enabled = true;
-        // Update handle position
-        tangentEntityData.HandleEntity.Transform.Position = tangentHandleLocalPosition;
-        tangentEntityData.HandleEntity.Transform.Scale = new Vector3(targetedScale, targetedScale * HandleCubeHeightScale, targetedScale);
-        // Make line point in the correct direction and rescale the mesh
-        var lineRotation = Quaternion.LookRotation(forward: Vector3.Normalize(tangentHandleLocalPosition), upVec);
-        tangentEntityData.LineModelEntity.Transform.Rotation = lineRotation;
-        tangentEntityData.LineModelEntity.Transform.Scale = new Vector3(targetedScale, targetedScale, controlPointToHandleLength);
+        isMarkersAndLinesUpdateRequired = isMarkersAndLinesUpdateRequired || tangentEntityData.CurrentLocalPosition != tangentHandleLocalPosition;
+        tangentEntityData.CurrentLocalPosition = tangentHandleLocalPosition;
     }
 
     internal bool TryRaycastOnHandle(Ray clickRay, SplineControlPointRaycastFilterFlags raycastFilterFlags, ref float minHitDistance, ref SplineControlPointEditingSelectionType newSelection)
@@ -296,12 +315,14 @@ public class SplineControlPointGizmo : GizmoBase
         }
         var controlPoint = spline[controlPointIndex];
 
-        var boxHalfSize = new Vector3(HandleCubeSize * 0.5f);
+        cameraService ??= Game.EditorServices.Get<IEditorGameCameraService>();
+        float targetedScale = GetTargetedScale(cameraService);
 
         bool isHit = false;
 
         var controlPointPos = controlPoint.Position;
-        var controlPointBoxHalfSize = boxHalfSize * controlPointModelComponent.Entity.Transform.Scale;
+        var boxHalfSize = new Vector3(0.35f * 0.5f);
+        var controlPointBoxHalfSize = boxHalfSize * targetedScale;  // TODO
         var controlPointBox = new BoundingBox(minimum: controlPointPos - controlPointBoxHalfSize, maximum: controlPointPos + controlPointBoxHalfSize);
         if ((raycastFilterFlags & SplineControlPointRaycastFilterFlags.ControlPoint) != 0
             && controlPointBox.Intersects(ref clickRay, out float hitDistance))
@@ -316,8 +337,8 @@ public class SplineControlPointGizmo : GizmoBase
 
         if ((raycastFilterFlags & SplineControlPointRaycastFilterFlags.Tangents) != 0)
         {
-            var tangentOutPos = tangentOutEntityData.HandleEntity.Transform.Position + controlPoint.Position;
-            var tangentOutBoxHalfSize = boxHalfSize * tangentOutEntityData.HandleEntity.Transform.Scale;
+            var tangentOutPos = tangentOutEntityData.CurrentLocalPosition + controlPoint.Position;
+            var tangentOutBoxHalfSize = boxHalfSize * targetedScale;
             var tangentOutBox = new BoundingBox(minimum: tangentOutPos - tangentOutBoxHalfSize, maximum: tangentOutPos + tangentOutBoxHalfSize);
             if (tangentOutBox.Intersects(ref clickRay, out hitDistance))
             {
@@ -329,8 +350,8 @@ public class SplineControlPointGizmo : GizmoBase
                 }
             }
 
-            var tangentInPos = tangentInEntityData.HandleEntity.Transform.Position + controlPoint.Position;
-            var tangentInBoxHalfSize = boxHalfSize * tangentInEntityData.HandleEntity.Transform.Scale;
+            var tangentInPos = tangentInEntityData.CurrentLocalPosition + controlPoint.Position;
+            var tangentInBoxHalfSize = boxHalfSize * targetedScale;
             var tangentInBox = new BoundingBox(minimum: tangentInPos - tangentInBoxHalfSize, maximum: tangentInPos + tangentInBoxHalfSize);
             if (tangentInBox.Intersects(ref clickRay, out hitDistance))
             {
@@ -348,12 +369,6 @@ public class SplineControlPointGizmo : GizmoBase
 
     private struct TangentEntityData
     {
-        public Entity RootEntity;
-
-        public Entity HandleEntity;
-        public ModelComponent HandleModelComponent;
-
-        public Entity LineModelEntity;
-        public ModelComponent LineModelComponent;
+        public Vector3 CurrentLocalPosition;
     }
 }

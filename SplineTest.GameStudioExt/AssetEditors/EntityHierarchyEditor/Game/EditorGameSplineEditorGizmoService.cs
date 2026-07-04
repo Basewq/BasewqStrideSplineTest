@@ -2,6 +2,7 @@
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using SplineTest.GameStudioExt.StrideEditorExt;
+using SplineTest.Splines.Rendering.GizmoMarker;
 using SplineTest.Splines.Rendering.LineVisualizer;
 using Stride.Assets.Presentation.AssetEditors.Gizmos;
 using Stride.Assets.Presentation.AssetEditors.Gizmos.Splines;
@@ -136,6 +137,22 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
                             {
                                 EffectName = "Test",
                                 OpaqueRenderStage = fwdRenderer?.OpaqueRenderStage,
+                                TransparentRenderStage = fwdRenderer?.TransparentRenderStage,
+                                RenderGroup =  RenderGroupMask.All,
+                            },
+                        },
+                    });
+                }
+                if (!gfxComp.RenderFeatures.Any(x => x is GizmoMarkerRenderFeature))
+                {
+                    gfxComp.RenderFeatures.Add(new GizmoMarkerRenderFeature
+                    {
+                        RenderStageSelectors =
+                        {
+                            new GizmoMarkerRenderStageSelector
+                            {
+                                EffectName = "Test",
+                                //OpaqueRenderStage = fwdRenderer?.OpaqueRenderStage,
                                 TransparentRenderStage = fwdRenderer?.TransparentRenderStage,
                                 RenderGroup =  RenderGroupMask.All,
                             },
