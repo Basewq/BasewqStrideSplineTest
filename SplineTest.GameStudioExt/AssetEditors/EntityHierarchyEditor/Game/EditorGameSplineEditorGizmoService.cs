@@ -14,7 +14,6 @@ using Stride.Editor.EditorGame.Game;
 using Stride.Engine;
 using Stride.Engine.Splines.Components;
 using Stride.Rendering;
-using Stride.Rendering.Sprites;
 
 namespace Stride.Assets.Presentation.AssetEditors.EntityHierarchyEditor.Game;
 
@@ -194,27 +193,15 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
                     var controlPoint = ActiveSplineComponent.Spline[activeControlPointIndex];
                     if (refreshAnchorPosition)
                     {
-                        activeTangentAnchorEntity.Transform.Position = splinePosition;
-                        if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.ControlPoint)
-                        {
-                            activeTangentAnchorEntity.Transform.Position += controlPoint.Position;
-                        }
-                        else if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.TangentIn)
-                        {
-                            activeTangentAnchorEntity.Transform.Position += controlPoint.TangentInPosition;
-                        }
-                        else if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.TangentOut)
-                        {
-                            activeTangentAnchorEntity.Transform.Position += controlPoint.TangentOutPosition;
-                        }
+                        UpdateAnchorEntityPosition(controlPoint);
                         refreshAnchorPosition = false;
                     }
 
                     await tangentTransformGizmo.Update();
 
                     var anchorEntityPos = activeTangentAnchorEntity.Transform.Position;
-                    var anchorLocalPos = anchorEntityPos - splinePosition;
-                    var controlPointRotationInverse = Quaternion.Invert(controlPoint.Rotation);
+                    Matrix.Invert(ref ActiveSplineComponent.Entity.Transform.WorldMatrix, out var splineWorldInverseMatrix);
+                    Vector3.Transform(in anchorEntityPos, in splineWorldInverseMatrix, out Vector3 anchorLocalPos);
                     if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.ControlPoint)
                     {
                         if (controlPoint.Position != anchorLocalPos)
@@ -227,8 +214,7 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
                     {
                         if (controlPoint.TangentInPosition != anchorLocalPos)
                         {
-                            var posOffset = anchorLocalPos - controlPoint.Position;
-                            controlPoint.TangentIn = controlPointRotationInverse * posOffset;
+                            controlPoint.TangentIn = anchorLocalPos - controlPoint.Position;
                             // Mirror the other handle
                             controlPoint.TangentOut = -controlPoint.TangentIn;
                             ActiveSplineComponent.Spline[activeControlPointIndex] = controlPoint;
@@ -238,8 +224,7 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
                     {
                         if (controlPoint.TangentOutPosition != anchorLocalPos)
                         {
-                            var posOffset = anchorLocalPos - controlPoint.Position;
-                            controlPoint.TangentOut = controlPointRotationInverse * posOffset;
+                            controlPoint.TangentOut = anchorLocalPos - controlPoint.Position;
                             // Mirror the other handle
                             controlPoint.TangentIn = -controlPoint.TangentOut;
                             ActiveSplineComponent.Spline[activeControlPointIndex] = controlPoint;
@@ -286,24 +271,35 @@ public class EditorGameSplineEditorGizmoService : EditorGameServiceBase
             activeTangentAnchorEntity.Transform.Position = splinePosition;
 
             var controlPoint = ActiveSplineComponent.Spline[activeControlPointIndex];
-            if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.ControlPoint)
-            {
-                activeTangentAnchorEntity.Transform.Position += controlPoint.Position;
-            }
-            else if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.TangentIn)
-            {
-                activeTangentAnchorEntity.Transform.Position += controlPoint.TangentInPosition;
-            }
-            else if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.TangentOut)
-            {
-                activeTangentAnchorEntity.Transform.Position += controlPoint.TangentOutPosition;
-            }
+            UpdateAnchorEntityPosition(controlPoint);
 
             transformService ??= game.EditorServices.Get<EditorGameEntityTransformService>();
             if (transformService is not null)
             {
                 transformService.ActiveTransformationGizmo.IsEnabled = false;
             }
+        }
+    }
+
+    private void UpdateAnchorEntityPosition(Engine.Splines.Models.SplineControlPoint controlPoint)
+    {
+        if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.ControlPoint)
+        {
+            var selectedControlPosition = controlPoint.Position;
+            Vector3.Transform(in selectedControlPosition, in ActiveSplineComponent.Entity.Transform.WorldMatrix, out Vector3 anchorPosition);
+            activeTangentAnchorEntity.Transform.Position = anchorPosition;
+        }
+        else if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.TangentIn)
+        {
+            var selectedControlPosition = controlPoint.TangentInPosition;
+            Vector3.Transform(in selectedControlPosition, in ActiveSplineComponent.Entity.Transform.WorldMatrix, out Vector3 anchorPosition);
+            activeTangentAnchorEntity.Transform.Position = anchorPosition;
+        }
+        else if (activeControlPointEditingSelectionType == SplineControlPointEditingSelectionType.TangentOut)
+        {
+            var selectedControlPosition = controlPoint.TangentOutPosition;
+            Vector3.Transform(in selectedControlPosition, in ActiveSplineComponent.Entity.Transform.WorldMatrix, out Vector3 anchorPosition);
+            activeTangentAnchorEntity.Transform.Position = anchorPosition;
         }
     }
 

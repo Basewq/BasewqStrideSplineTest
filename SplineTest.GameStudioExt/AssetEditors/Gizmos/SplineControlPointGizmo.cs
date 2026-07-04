@@ -320,12 +320,12 @@ public class SplineControlPointGizmo : GizmoBase
 
         bool isHit = false;
 
+        float controlHitRadius = 0.25f * targetedScale;    // TODO should this be part of the gizmo picking?
+
         var controlPointPos = controlPoint.Position;
-        var boxHalfSize = new Vector3(0.35f * 0.5f);
-        var controlPointBoxHalfSize = boxHalfSize * targetedScale;  // TODO
-        var controlPointBox = new BoundingBox(minimum: controlPointPos - controlPointBoxHalfSize, maximum: controlPointPos + controlPointBoxHalfSize);
+        var controlPointHitSphere = new BoundingSphere(controlPointPos, controlHitRadius);
         if ((raycastFilterFlags & SplineControlPointRaycastFilterFlags.ControlPoint) != 0
-            && controlPointBox.Intersects(ref clickRay, out float hitDistance))
+            && controlPointHitSphere.Intersects(ref clickRay, out float hitDistance))
         {
             if (hitDistance < minHitDistance)
             {
@@ -338,9 +338,8 @@ public class SplineControlPointGizmo : GizmoBase
         if ((raycastFilterFlags & SplineControlPointRaycastFilterFlags.Tangents) != 0)
         {
             var tangentOutPos = tangentOutEntityData.CurrentLocalPosition + controlPoint.Position;
-            var tangentOutBoxHalfSize = boxHalfSize * targetedScale;
-            var tangentOutBox = new BoundingBox(minimum: tangentOutPos - tangentOutBoxHalfSize, maximum: tangentOutPos + tangentOutBoxHalfSize);
-            if (tangentOutBox.Intersects(ref clickRay, out hitDistance))
+            var tangentOutHitSphere = new BoundingSphere(tangentOutPos, controlHitRadius);
+            if (tangentOutHitSphere.Intersects(ref clickRay, out hitDistance))
             {
                 if (hitDistance < minHitDistance)
                 {
@@ -351,9 +350,8 @@ public class SplineControlPointGizmo : GizmoBase
             }
 
             var tangentInPos = tangentInEntityData.CurrentLocalPosition + controlPoint.Position;
-            var tangentInBoxHalfSize = boxHalfSize * targetedScale;
-            var tangentInBox = new BoundingBox(minimum: tangentInPos - tangentInBoxHalfSize, maximum: tangentInPos + tangentInBoxHalfSize);
-            if (tangentInBox.Intersects(ref clickRay, out hitDistance))
+            var tangentInHitSphere = new BoundingSphere(tangentInPos, controlHitRadius);
+            if (tangentInHitSphere.Intersects(ref clickRay, out hitDistance))
             {
                 if (hitDistance < minHitDistance)
                 {
