@@ -60,14 +60,14 @@ internal class EditorModule
                 throw new Exception("ViewModelServiceProvider was not set.");
             }
 
-            var splineEditorGizmoService = new EditorGameSplineEditorGizmoService(strideEditorService);
-            sceneEditorGame.EditorServices.Add(splineEditorGizmoService);
-            asyncDisposables.Add(splineEditorGizmoService);
+            var splineEditorService = new EditorGameSplineEditorService(strideEditorService);
+            sceneEditorGame.EditorServices.Add(splineEditorService);
+            asyncDisposables.Add(splineEditorService);
 
             // HACK: forced to do a late service registration
             sceneEditorGame.Script.AddTask(async () =>
             {
-                await splineEditorGizmoService.InitializeService(sceneEditorGame);
+                await splineEditorService.InitializeService(sceneEditorGame);
             });
         }
     }

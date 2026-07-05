@@ -45,7 +45,7 @@ Editor controls within the scene:
 
 - `SplineTest.GameStudioExt`
   - [EditorModule.cs](SplineTest.GameStudioExt/EditorModule.cs): Registers editor services within `Game.GameStarted` event.
-  - [EditorGameSplineEditorGizmoService.cs](SplineTest.GameStudioExt/AssetEditors/EntityHierarchyEditor/Game/EditorGameSplineEditorGizmoService.cs): Main coordinator of which gizmos are active when modifying a spline, and commits the data changes back to the asset when the user has finished their action.
+  - [EditorGameSplineEditorService.cs](SplineTest.GameStudioExt/AssetEditors/EntityHierarchyEditor/Game/EditorGameSplineEditorService.cs): Main coordinator of which gizmos are active when modifying a spline, and commits the data changes back to the asset when the user has finished their action.
   - [SplineGizmo.cs](SplineTest.GameStudioExt/AssetEditors/Gizmos/SplineGizmo.cs): Handles the visual of the spline, coordinates which gizmo is active when editing a control point.
   - [SplineControlPointGizmo.cs](SplineTest.GameStudioExt/AssetEditors/Gizmos/SplineControlPointGizmo.cs): Handles the visual of control point and tangent handles when editing a spline.
 - `SplineTest.Splines`

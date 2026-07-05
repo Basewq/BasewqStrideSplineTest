@@ -60,4 +60,29 @@ public static class SplineExtensions
         var lastPos = lastCurve.GetPosition(t: 1);
         splineSamplePointsOutput.Add(lastPos);
     }
+
+    public static void ForEachSamplePoint(Spline spline, Action<Vector3> action, int sampleResolutionPerCurve = 32)
+    {
+        int splineCurveCount = spline.CurveCount;
+        if (splineCurveCount <= 0)
+        {
+            return;
+        }
+
+        for (int curveIdx = 0; curveIdx < splineCurveCount; curveIdx++)
+        {
+            var curve = spline.GetCurve(curveIdx);
+            // Note: we can skip the point at t = 1 because the next curve will be at the same position
+            for (int i = 0; i < sampleResolutionPerCurve; i++)
+            {
+                float curveT = i / (float)sampleResolutionPerCurve;
+                var position = curve.GetPosition(curveT);
+                action(position);
+            }
+        }
+
+        var lastCurve = spline.GetCurve(splineCurveCount - 1);
+        var lastPos = lastCurve.GetPosition(t: 1);
+        action(lastPos);
+    }
 }
