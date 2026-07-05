@@ -50,7 +50,12 @@ Editor controls within the scene:
   - [SplineControlPointGizmo.cs](SplineTest.GameStudioExt/AssetEditors/Gizmos/SplineControlPointGizmo.cs): Handles the visual of control point points and tangent handles when editing the control point.
 - `SplineTest.Splines`
   - [SplineComponent.cs](SplineTest.Splines/Components/SplineComponent.cs): The spline properties as it appears in the editor.
-  - [Spline.cs](SplineTest.Splines/Splines/Models/Spline.cs): The actual implementation of the spline. Can be used independently.
+  - [Spline.cs](SplineTest.Splines/Splines/Models/Spline.cs): The data store of the spline. Can be used independently.
+  - [SplineEvaluator.cs](SplineTest.Splines/Splines/Models/SplineEvaluator.cs): The default implementation of how to read the spline. `Spline` uses this implementation as its default, but you can use implement your own `SplineEvaluator` and set it via `Spline.SplineEvaluator`, or altenatively just use the evaluator directly.
+  - [LineVisualizerComponent.cs](SplineTest.Splines/Rendering/LineVisualizerComponent.cs)
+  - [LineVisualizerRenderFeature.cs](SplineTest.Splines/Rendering/LineVisualizer/LineVisualizerRenderFeature.cs): Required by `LineVisualizerComponent` to render the spline lines. **Must be registered in the Graphics Compositor.**
+  - [GizmoMarkerSetComponent.cs](SplineTest.Splines/Rendering/GizmoMarkerSetComponent.cs)
+  - [GizmoMarkerRenderFeature.cs](SplineTest.Splines/Rendering/GizmoMarker/GizmoMarkerRenderFeature.cs): Required by `GizmoMarkerSetComponent` to render the control points & tangent points in the editor. **Must be registered in the Graphics Compositor.**
 
 ---
 ## Credits/Thanks
