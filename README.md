@@ -9,7 +9,7 @@ Please refer to [Editor Integration Issues](EditorIntegrationIssues.md) for outs
 ---
 ### Demonstration
 
-https://github.com/user-attachments/assets/201bc08c-eda5-4654-afd1-1f225d132b62
+https://github.com/user-attachments/assets/987a06b4-58c3-4229-abd2-956d2d785604
 
 ---
 ### Project Structure
