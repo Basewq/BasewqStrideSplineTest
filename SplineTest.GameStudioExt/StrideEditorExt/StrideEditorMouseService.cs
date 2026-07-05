@@ -35,6 +35,11 @@ class StrideEditorMouseService : EditorGameMouseServiceBase, IStrideEditorMouseS
         }
     }
 
+    public bool IsControllingMouseByOwner(object owner)
+    {
+        return Owner == owner && IsControllingMouse;
+    }
+
     public static IStrideEditorMouseService GetOrCreate(Stride.Core.IServiceRegistry services)
     {
         var sceneEditorGame = (services.GetService<IGame>() as SceneEditorGame)!;

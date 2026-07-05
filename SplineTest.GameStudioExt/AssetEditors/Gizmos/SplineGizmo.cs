@@ -343,6 +343,11 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
                 isControllingMouse = true;
             }
         }
+        if (editorMouseService.IsControllingMouseByOwner(this)
+            && (Input.IsMouseButtonDown(MouseButton.Left) || Input.IsMouseButtonReleased(MouseButton.Left)))
+        {
+            isControllingMouse = true;  // Continue controlling
+        }
 
         editorMouseService.SetIsControllingMouse(isControllingMouse, owner: this);
         System.Diagnostics.Debug.WriteLineIf(isControllingMouse, $"{GetType().Name} isControllingMouse");
