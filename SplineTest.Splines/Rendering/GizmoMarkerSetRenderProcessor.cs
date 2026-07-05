@@ -75,7 +75,7 @@ class GizmoMarkerSetRenderProcessor : EntityProcessor<GizmoMarkerSetComponent, G
             bool hasRenderTypeChanged = renderGroup != data.PrevRenderGroup
                 || depthTest != data.PrevDepthTest
                 || hasTransparency != data.PrevHasTransparency;
-            if (hasRenderTypeChanged)
+            if (hasGizmoMarkerSetObjectChanged || hasRenderTypeChanged)
             {
                 data.PrevRenderGroup = renderGroup;
                 data.PrevDepthTest = depthTest;

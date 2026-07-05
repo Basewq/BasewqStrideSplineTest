@@ -9,9 +9,6 @@ namespace Stride.Engine.Splines.Models;
 [DataContract]
 public class SplineDebugRenderSettings
 {
-    // Currently unused class
-
-
     public delegate void SplineRenderSettingsChangedHandler(SplineDebugRenderSettings renderSettings);
 
     public event SplineRenderSettingsChangedHandler? RenderSettingsChanged;

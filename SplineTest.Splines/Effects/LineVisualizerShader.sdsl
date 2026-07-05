@@ -102,9 +102,9 @@ namespace Stride.Rendering.Materials
             uint instanceId = streams.InstanceID;
             LineInstanceData instData = LineInstanceArray[instanceId];
 
-            float4 lineColor = lerp(instData.LineColorA, instData.LineColorB, streams.ColorLerpAmount);
-            //lineColor = float4(1, 0, 0, 1);
-            streams.ColorTarget = lineColor;
+            float4 color = lerp(instData.LineColorA, instData.LineColorB, streams.ColorLerpAmount);
+            color.rgb *= color.a;   // Premultiplied alpha
+            streams.ColorTarget = color;
         }
     };
 }

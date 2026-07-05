@@ -75,7 +75,7 @@ class LineVisualizerRenderProcessor : EntityProcessor<LineVisualizerComponent, L
             bool hasRenderTypeChanged = renderGroup != data.PrevRenderGroup
                 || depthTest != data.PrevDepthTest
                 || hasTransparency != data.PrevHasTransparency;
-            if (hasRenderTypeChanged)
+            if (hasLineSetObjectChanged || hasRenderTypeChanged)
             {
                 data.PrevRenderGroup = renderGroup;
                 data.PrevDepthTest = depthTest;
