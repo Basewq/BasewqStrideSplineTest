@@ -1,7 +1,6 @@
 // Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
-using System;
 using Stride.Core;
 using Stride.Core.Mathematics;
 
@@ -18,6 +17,7 @@ public struct SplineControlPoint : IEquatable<SplineControlPoint>
     /// <summary>
     /// The orientation of this control point relative to the spline.
     /// </summary>
+    [Display(Browsable = false)]    // TODO: Need to determine what to actually do with this
     public Quaternion Rotation;
     /// <summary>
     /// Tangent vector, relative to the control point, that determines the direction and curvature of the curve entering this control point.
