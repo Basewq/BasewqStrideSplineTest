@@ -47,6 +47,7 @@ public class SplineComponent : EntityComponent
     private void OnSplinePropertyChanged(object sender)
     {
         SplinePropertyChanged?.Invoke(this);
+        HasDebugRenderSettingsChanged = true;
     }
 
     private void OnSplineControlPointsChanged(object sender, ref SplineControlPointsChangedEventArgs e)

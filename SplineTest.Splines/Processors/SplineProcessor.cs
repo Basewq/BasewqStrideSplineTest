@@ -3,6 +3,7 @@
 
 using SplineTest.Rendering;
 using Stride.Core;
+using Stride.Core.Annotations;
 using Stride.Core.Mathematics;
 using Stride.Engine.Splines.Components;
 using Stride.Engine.Splines.Models;
@@ -40,6 +41,24 @@ public class SplineProcessor : EntityProcessor<SplineComponent, SplineProcessor.
         return new AssociatedData
         {
         };
+    }
+
+    protected override void OnEntityComponentRemoved(Entity entity, [NotNull] SplineComponent component, [NotNull] AssociatedData data)
+    {
+        if (data.LineVisualizerComponent is not null)
+        {
+            entity.Remove(data.LineVisualizerComponent);
+        }
+        if (data.GizmoMarkerSetComponent is not null)
+        {
+            entity.Remove(data.GizmoMarkerSetComponent);
+        }
+        if (data.BoundingBoxEntity is not null)
+        {
+            data.BoundingBoxEntity.SetParent(null);
+            data.BoundingBoxEntity.Scene = null;
+            data.BoundingBoxEntity.Dispose();
+        }
     }
 
     protected override bool IsAssociatedDataValid(Entity entity, SplineComponent component, AssociatedData associatedData)
@@ -97,81 +116,43 @@ public class SplineProcessor : EntityProcessor<SplineComponent, SplineProcessor.
 
         if (renderSettings.ShowControlPoints)
         {
-            if (data.ControlPointsRootEntity is null)
+            var splineEntity = splineComp.Entity;
+            if (data.GizmoMarkerSetComponent is null)
             {
-                data.ControlPointsRootEntity = new Entity("DebugSplineControlPoints");
-                data.ControlPointsRootEntity.SetParent(splineComp.Entity);
-            }
-            if (data.ControlPointsMeshDraw is null)
-            {
-                var sphereMesh = GeometricPrimitive.Sphere.New(graphicsDevice, radius: 0.1f, tessellation: 6).DisposeBy(data.ControlPointsRootEntity);
-                var sphereMeshDraw = sphereMesh.ToMeshDraw();
-                data.ControlPointsMeshDraw = sphereMeshDraw;
-            }
-            if (data.ControlPointsMaterial is null)
-            {
-                data.ControlPointsMaterial = CreateMaterial(graphicsDevice, renderSettings.ControlPointColor, 0.75f);
+                data.GizmoMarkerSetComponent = new GizmoMarkerSetComponent();
+                splineEntity.Add(data.GizmoMarkerSetComponent);
             }
             else
             {
-                UpdateColor(graphicsDevice, data.ControlPointsMaterial, renderSettings.ControlPointColor, 0.75f);
+                data.GizmoMarkerSetComponent.GizmoMarkerSet.Markers.Clear();
             }
 
+            var controlPointFillColor = AddEmissiveScale(Color.White.ToColor4(), emissiveScale: 1);
+            var controlPointOutlineColor = Color.Black.ToColor4();
+            const float ShapeSize = 13;
+            const float OutlineWidthPx = 1f;
+
+            var markerSet = data.GizmoMarkerSetComponent.GizmoMarkerSet;
             var controlPoints = splineComp.Spline.ControlPoints;
-            int controlPointCount = controlPoints.Count;
-            var controlPointEntityList = data.ControlPointsEntityList;
-            if (controlPointEntityList.Count < controlPointCount)
-            {
-                // Populate new control points
-                int entityStartIndex = controlPointEntityList.Count;
-                int addEntityCount = controlPointCount - entityStartIndex;
-                for (int i = 0; i < addEntityCount; i++)
-                {
-                    int ctrlPointIndex = entityStartIndex + i;
-
-                    var ctrlPointModelComponent = new ModelComponent
-                    {
-                        Enabled = true,
-                        Model = new Model { data.ControlPointsMaterial, new Mesh { Draw = data.ControlPointsMeshDraw } },
-                        RenderGroup = renderSettings.RenderGroup,
-                        IsShadowCaster = false,
-                    };
-                    var controlPointEntity = new Entity($"DebugSplineControlPoint_{ctrlPointIndex}")
-                    {
-                        ctrlPointModelComponent
-                    };
-                    // Attach to root control point controlPointEntity
-                    controlPointEntity.SetParent(data.ControlPointsRootEntity);
-
-                    controlPointEntityList.Add(controlPointEntity);
-                }
-            }
-            else if (controlPointEntityList.Count > controlPointCount)
-            {
-                // Remove excess control points
-                int entityEndIndex = controlPointCount;
-                for (int i = controlPointEntityList.Count - 1; i >= entityEndIndex; i--)
-                {
-                    var controlPointEntity = controlPointEntityList[i];
-                    controlPointEntity.SetParent(null);
-                    controlPointEntity.Scene = null;
-
-                    controlPointEntityList.RemoveAt(i);
-                }
-            }
-            // Now update all the positions
             for (int i = 0; i < controlPoints.Count; i++)
             {
-                var controlPointEntity = controlPointEntityList[i];
-                controlPointEntity.Transform.Position = controlPoints[i].Position;
+                var ctrlPointMarker = new GizmoMarkerData
+                {
+                    Shape = GizmoMarkerShape.Circle,
+                    OrientationMode = GizmoMarkerOrientationMode.Billboard,
+                    ScaleMode = GizmoMarkerScaleMode.FixedScreenSize,
+                    Position = controlPoints[i].Position,
+                    FillColor = controlPointFillColor,
+                    SizePx = new Vector2(ShapeSize),
+                    OutlineWidthPx = OutlineWidthPx,
+                    OutlineColor = controlPointOutlineColor,
+                };
+                markerSet.Markers.Add(ctrlPointMarker);
             }
         }
-        else if (data.ControlPointsRootEntity is not null)
+        else
         {
-            data.ControlPointsRootEntity.SetParent(null);
-            data.ControlPointsRootEntity.Scene = null;
-            data.ControlPointsRootEntity.Dispose();
-            data.ControlPointsRootEntity = null;
+            data.GizmoMarkerSetComponent?.Enabled = false;
         }
 
         if (renderSettings.ShowBoundingBox)
@@ -215,6 +196,14 @@ public class SplineProcessor : EntityProcessor<SplineComponent, SplineProcessor.
         }
 
         splineComp.HasDebugRenderSettingsChanged = false;
+    }
+
+    private static Color4 AddEmissiveScale(Color4 color, float emissiveScale)
+    {
+        color.R += color.R * emissiveScale;
+        color.G += color.G * emissiveScale;
+        color.B += color.B * emissiveScale;
+        return color;
     }
 
     private static Material CreateMaterial(GraphicsDevice device, Color color, float intensity = 1f)
@@ -263,11 +252,7 @@ public class SplineProcessor : EntityProcessor<SplineComponent, SplineProcessor.
     public class AssociatedData
     {
         internal LineVisualizerComponent LineVisualizerComponent;
-
-        internal Entity? ControlPointsRootEntity;
-        internal readonly List<Entity> ControlPointsEntityList = [];
-        internal MeshDraw? ControlPointsMeshDraw;
-        internal Material? ControlPointsMaterial;
+        internal GizmoMarkerSetComponent GizmoMarkerSetComponent;
 
         internal Entity? BoundingBoxEntity;
         internal Material? BoundingBoxMaterial;
