@@ -75,6 +75,9 @@ Hierarchy:
                             76050d92d9a15b40836baffc47ddfc88: 7b5a7073-7dba-4190-8e98-b5554860c195:Scenes/5.SplineTraverserByCode
                             83aea174e763f98a391df33dfd5a62a0: 4688a67a-2aec-4fc3-816c-c5a52355f096:Scenes/6.SplineTraverserEvents
                             4b4c7429b3ea228c536b09a186c581c5: 6e8bdc37-82de-4aab-aca0-8ae82d197ce4:Scenes/7.SplineTraverserCamera
+                            6fa47271b4eb9256ec224a173d2ca141: c7a8213a-8590-4f69-9f8f-e02eddf3fa3e:Scenes/8.SplineTraverserPhysics
+                            850aeaf2ee01f638d76bd9063f627d68: 696f374e-bae1-4de7-8e06-22117b5608de:Scenes/10.SplineDecorator
+                            ee123767688342befe4c0083dcb5439a: 918da35a-d179-4288-a9aa-e7c801e9759f:Scenes/11.MeshSpline
                             a68c3accc4557497e0b88b83dbafc98a: 881a00ce-94a4-4ee3-ab22-6b64a2321e60:Scenes/20.SplineStressTesting
                             92751329c3a3b1c8b741d77c2930a99b: 2b452418-3f9d-4c71-8fac-f3090c5e53cd:Scenes/21.SplineTraverserStressTest
                         ShowMenu: true
