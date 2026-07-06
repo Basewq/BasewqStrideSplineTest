@@ -26,6 +26,11 @@ public class LineVisualizerRenderFeature : RootRenderFeature
     /// </summary>
     public float LineThicknessScale { get; set; } = 1f;
 
+    /// <summary>
+    /// Pixel size of the checkered look for occluded lines.
+    /// </summary>
+    public int OccludedStyleCheckerSize { get; set; } = 2;
+
     public override Type SupportedRenderObjectType => typeof(RenderLineSet);
 
     public LineVisualizerRenderFeature()
@@ -106,6 +111,7 @@ public class LineVisualizerRenderFeature : RootRenderFeature
     {
         // Set common effect parameters
         lineVisualizerEffect.Parameters.Set(LineVisualizerShaderKeys.LineThicknessScale, LineThicknessScale);
+        lineVisualizerEffect.Parameters.Set(LineVisualizerShaderKeys.OccludedStyleCheckerSize, (uint)OccludedStyleCheckerSize);
         lineVisualizerEffect.Parameters.Set(LineVisualizerShaderKeys.ViewProjection, renderView.ViewProjection);
         lineVisualizerEffect.Parameters.Set(LineVisualizerShaderKeys.ViewProjectionInverse, Matrix.Invert(renderView.ViewProjection));
         lineVisualizerEffect.Parameters.Set(LineVisualizerShaderKeys.ViewSize, renderView.ViewSize);
@@ -129,29 +135,48 @@ public class LineVisualizerRenderFeature : RootRenderFeature
 
             bool depthTest = renderLineSet.DepthTest;
             bool hasTransparency = renderLineSet.HasTransparency;
+            for (int i = 0; i < 2; i++)
+            {
+                bool isOccludedPass = i > 0;
+                if (isOccludedPass && !renderLineSet.RenderOccludedPass)
+                {
+                    break;
+                }
+                ConfigurePipeline(commandList, depthTest, hasTransparency, isOccludedPass);
 
-            ConfigurePipeline(commandList, depthTest, hasTransparency);
+                commandList.SetVertexBuffer(0, vertexBuffer, 0, LineVertex.Layout.VertexStride);
+                commandList.SetIndexBuffer(indexBuffer, 0, is32bits: false);
+                commandList.SetPipelineState(pipelineState.CurrentState);
 
-            commandList.SetVertexBuffer(0, vertexBuffer, 0, LineVertex.Layout.VertexStride);
-            commandList.SetIndexBuffer(indexBuffer, 0, is32bits: false);
-            commandList.SetPipelineState(pipelineState.CurrentState);
+                lineVisualizerEffect.Parameters.Set(LineVisualizerShaderKeys.LineInstanceArray, renderLineSet.LineInstanceDataBuffer);
+                lineVisualizerEffect.Parameters.Set(LineVisualizerShaderKeys.PassIndex, (uint)i);
 
-            lineVisualizerEffect.Parameters.Set(LineVisualizerShaderKeys.LineInstanceArray, renderLineSet.LineInstanceDataBuffer);
+                lineVisualizerEffect.Apply(context.GraphicsContext);
 
-            lineVisualizerEffect.Apply(context.GraphicsContext);
-
-            int indexCountPerInstance = lineMeshData.VertexIndices.Length;
-            commandList.DrawIndexedInstanced(indexCountPerInstance, instanceCount);
+                int indexCountPerInstance = lineMeshData.VertexIndices.Length;
+                commandList.DrawIndexedInstanced(indexCountPerInstance, instanceCount);
+            }
         }
     }
 
-    private void ConfigurePipeline(CommandList commandList, bool depthTest, bool hasTransparency)
+    private void ConfigurePipeline(CommandList commandList, bool depthTest, bool hasTransparency, bool isOccludedPass)
     {
         pipelineState.State.SetDefaults();
-        pipelineState.State.BlendState = hasTransparency ? BlendStates.AlphaBlend : BlendStates.Opaque;
+        pipelineState.State.BlendState = (hasTransparency || isOccludedPass) ? BlendStates.NonPremultiplied : BlendStates.Opaque;
         pipelineState.State.RasterizerState.FillMode = FillMode.Solid;
         pipelineState.State.RasterizerState.CullMode = CullMode.None;
-        pipelineState.State.DepthStencilState = depthTest ? (hasTransparency ? DepthStencilStates.DepthRead : DepthStencilStates.Default) : DepthStencilStates.None;
+        if (isOccludedPass)
+        {
+            pipelineState.State.DepthStencilState = DepthStencilStates.DepthRead with { DepthBufferFunction = CompareFunction.GreaterEqual };
+        }
+        else if (depthTest)
+        {
+            pipelineState.State.DepthStencilState = DepthStencilStates.DepthRead;
+        }
+        else
+        {
+            pipelineState.State.DepthStencilState = DepthStencilStates.None;
+        }
         pipelineState.State.Output.CaptureState(commandList);
         pipelineState.Update();
     }
@@ -160,7 +185,7 @@ public class LineVisualizerRenderFeature : RootRenderFeature
 [StructLayout(LayoutKind.Sequential)]
 public struct LineInstanceData
 {
-    public uint LineMode;
+    public uint LineModeAndStyles;
     public Vector3 LinePositionA;
     public Vector3 LinePositionB;
     public Color4 LineColorA;

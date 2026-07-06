@@ -10,6 +10,7 @@ namespace SplineTest.Rendering;
 public class RenderGizmoMarkerSet : RenderObject
 {
     public bool DepthTest;
+    public bool RenderOccludedPass;
 
     public List<GizmoMarkerInstanceData> GizmoMarkerInstanceDataList;
     internal bool IsGizmoMarkerInstanceUpdateRequired;

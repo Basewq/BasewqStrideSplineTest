@@ -9,9 +9,13 @@ namespace Stride.Rendering.Materials
         static const uint LineMode_ViewScaled               = 1;
         static const uint LineMode_FixedScreenLength        = 2;
 
+        static const uint LineOccludedStyle_None            = 0;
+        static const uint LineOccludedStyle_Dimmed          = 1;
+        static const uint LineOccludedStyle_Checkered       = 2;
+
         struct LineInstanceData
         {
-            uint LineMode;
+            uint LineModeAndStyles;
             float3 LinePositionA;
             float3 LinePositionB;
             [Color] float4 LineColorA;
@@ -22,7 +26,9 @@ namespace Stride.Rendering.Materials
 
         stage StructuredBuffer<LineInstanceData> LineInstanceArray;
         stage float LineThicknessScale = 1.0f;
+        stage uint OccludedStyleCheckerSize = 1;
 
+        stage uint PassIndex;
         stage float4x4 ViewProjection;
         stage float4x4 ViewProjectionInverse;
 
@@ -51,7 +57,10 @@ namespace Stride.Rendering.Materials
             // Line direction in screen space
             float2 screenSpaceLineDirVec = normalize(ndcPosB - ndcPosA);
 
-            switch (instData.LineMode)
+            uint modeAndStyles = instData.LineModeAndStyles;
+            uint lineMode = modeAndStyles & 0xFF;
+            //uint occludedStyle = (modeAndStyles >> 8) & 0xFF;
+            switch (lineMode)
             {
                 case LineMode_ViewScaled:
                 {
@@ -103,7 +112,36 @@ namespace Stride.Rendering.Materials
             LineInstanceData instData = LineInstanceArray[instanceId];
 
             float4 color = lerp(instData.LineColorA, instData.LineColorB, streams.ColorLerpAmount);
-            color.rgb *= color.a;   // Premultiplied alpha
+
+            uint modeAndStyles = instData.LineModeAndStyles;
+            //uint lineMode = modeAndStyles & 0xFF;
+            uint occludedStyle = (modeAndStyles >> 8) & 0xFF;
+            if (PassIndex == 1)
+            {
+                switch (occludedStyle)
+                {
+                    case LineOccludedStyle_Dimmed:
+                    {
+                        color.rgb *= 0.75;
+                        color.a *= 0.25;
+                        break;
+                    }
+                    case LineOccludedStyle_Checkered:
+                    {
+                        uint2 screenCoord = uint2(streams.ShadingPosition.xy);
+                        uint2 cell = screenCoord / OccludedStyleCheckerSize;
+                        if (((cell.x ^ cell.y) & 1) == 0)
+                        {
+                            color.rgb *= 0.25;
+                        }
+                        else
+                        {
+                            color.rgb *= 0.85;
+                        }
+                        break;
+                    }
+                }
+            }
             streams.ColorTarget = color;
         }
     };

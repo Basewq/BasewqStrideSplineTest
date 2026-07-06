@@ -86,6 +86,7 @@ public class SplineProcessor : EntityProcessor<SplineComponent, SplineProcessor.
             if (data.LineVisualizerComponent is null)
             {
                 data.LineVisualizerComponent = new LineVisualizerComponent();
+                data.LineVisualizerComponent.LineSet.OccludedStyle = LineOccludedStyle.Checkered;
                 splineEntity.Add(data.LineVisualizerComponent);
             }
             else
@@ -118,6 +119,7 @@ public class SplineProcessor : EntityProcessor<SplineComponent, SplineProcessor.
             if (data.GizmoMarkerSetComponent is null)
             {
                 data.GizmoMarkerSetComponent = new GizmoMarkerSetComponent();
+                data.GizmoMarkerSetComponent.GizmoMarkerSet.OccludedStyle = GizmoMarkerOccludedStyle.Checkered;
                 splineEntity.Add(data.GizmoMarkerSetComponent);
             }
             else

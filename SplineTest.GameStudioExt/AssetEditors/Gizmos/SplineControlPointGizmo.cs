@@ -76,12 +76,14 @@ public class SplineControlPointGizmo : GizmoBase
             RenderGroup = RenderGroup,
             DepthTest = false,
         };
+        controlPointLineVisualizerComponent.LineSet.OccludedStyle = LineOccludedStyle.Checkered;
         controlPointRootGizmoEntity.Add(controlPointLineVisualizerComponent);
         controlPointGizmoMarkerSetComponent = new GizmoMarkerSetComponent
         {
             RenderGroup = RenderGroup,
             DepthTest = false,
         };
+        controlPointGizmoMarkerSetComponent.GizmoMarkerSet.OccludedStyle = GizmoMarkerOccludedStyle.Checkered;
         controlPointRootGizmoEntity.Add(controlPointGizmoMarkerSetComponent);
 
         var controlPointModelEntity = new Entity($"SplineControlPoint_Model_{controlPointIndex}");

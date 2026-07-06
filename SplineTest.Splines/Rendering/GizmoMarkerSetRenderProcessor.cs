@@ -68,18 +68,19 @@ class GizmoMarkerSetRenderProcessor : EntityProcessor<GizmoMarkerSetComponent, G
 
             var renderGroup = component.RenderGroup;
             bool depthTest = component.DepthTest;
-            bool hasTransparency = hasGizmoMarkerSetObjectChanged
-                ? (markerSet?.HasTransparency() ?? false)
-                : data.PrevHasTransparency;
+            bool hasTransparency = markerSet?.HasTransparency ?? false;
+            var occludedStyle = markerSet?.OccludedStyle ?? GizmoMarkerOccludedStyle.None;
 
             bool hasRenderTypeChanged = renderGroup != data.PrevRenderGroup
                 || depthTest != data.PrevDepthTest
-                || hasTransparency != data.PrevHasTransparency;
+                || hasTransparency != data.PrevHasTransparency
+                || occludedStyle != data.PrevOccludedStyle;
             if (hasGizmoMarkerSetObjectChanged || hasRenderTypeChanged)
             {
                 data.PrevRenderGroup = renderGroup;
                 data.PrevDepthTest = depthTest;
                 data.PrevHasTransparency = hasTransparency;
+                data.PrevOccludedStyle = occludedStyle;
                 // Invalidate the old one
                 data.RenderGizmoMarkerSet?.IsGizmoMarkerInstanceUpdateRequired = true;
             }
@@ -134,6 +135,7 @@ class GizmoMarkerSetRenderProcessor : EntityProcessor<GizmoMarkerSetComponent, G
                 shapeAndModes |= (uint)marker.Shape;
                 shapeAndModes |= (uint)marker.OrientationMode << 8;
                 shapeAndModes |= (uint)marker.ScaleMode << 16;
+                shapeAndModes |= (uint)markerSet.OccludedStyle << 24;
 
                 Matrix.Transformation(scaling: in Vector3.One, rotation: in marker.Rotation, translation: in marker.Position, out var markerWorldMatrix);
                 markerWorldMatrix = markerWorldMatrix * worldMatrix;
@@ -150,6 +152,11 @@ class GizmoMarkerSetRenderProcessor : EntityProcessor<GizmoMarkerSetComponent, G
                     GlowColor = marker.GlowColor.ToColorSpace(colorSpace),
                 };
                 renderGizmoMarkerSet.GizmoMarkerInstanceDataList.Add(lineInstData);
+            }
+
+            if (markerSet.OccludedStyle != GizmoMarkerOccludedStyle.None)
+            {
+                renderGizmoMarkerSet.RenderOccludedPass = true;
             }
         }
 
@@ -213,6 +220,7 @@ class GizmoMarkerSetRenderProcessor : EntityProcessor<GizmoMarkerSetComponent, G
         internal RenderGroup PrevRenderGroup;
         internal bool PrevDepthTest;
         internal bool PrevHasTransparency;
+        internal GizmoMarkerOccludedStyle PrevOccludedStyle;
 
         internal RenderGizmoMarkerSet RenderGizmoMarkerSet;
     }

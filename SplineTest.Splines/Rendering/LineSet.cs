@@ -29,22 +29,21 @@ public class LineSet
         unchecked { Version++; }
     }
 
+    public bool HasTransparency { get; set; } = true;
+
+    public LineOccludedStyle OccludedStyle { get; set; }
+
     public LineSet()
     {
-        Segments = new();
+        Segments = [];
     }
+}
 
-    public bool HasTransparency()
-    {
-        foreach (var segment in segments)
-        {
-            if (segment.StartColor.A < 1 || segment.EndColor.A < 1)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+public enum LineOccludedStyle : byte
+{
+    None,
+    Dimmed,
+    Checkered,
 }
 
 public enum LineMode : byte

@@ -16,6 +16,10 @@ namespace Stride.Rendering.Materials
         static const uint GizmoMarkerScaleMode_FixedScreenSize          = 0;
         static const uint GizmoMarkerScaleMode_WorldSpace               = 1;
 
+        static const uint GizmoMarkerOccludedStyle_None                 = 0;
+        static const uint GizmoMarkerOccludedStyle_Dimmed               = 1;
+        static const uint GizmoMarkerOccludedStyle_Checkered            = 2;
+
         struct GizmoMarkerInstanceData
         {
             uint ShapeAndModes;
@@ -31,7 +35,9 @@ namespace Stride.Rendering.Materials
 
         stage StructuredBuffer<GizmoMarkerInstanceData> GizmoMarkerInstanceArray;
         stage float MarkerScale = 1.0f;
+        stage uint OccludedStyleCheckerSize = 1;
 
+        stage uint PassIndex;
         stage float4x4 View;
         stage float4x4 ViewInverse;
         stage float4x4 Projection;
@@ -73,6 +79,7 @@ namespace Stride.Rendering.Materials
             //uint shape = shapeAndModes & 0xFF;
             uint orientationMode = (shapeAndModes >> 8) & 0xFF;
             uint scaleMode = (shapeAndModes >> 16) & 0xFF;
+            //uint occludedStyle = (shapeAndModes >> 24) & 0xFF;
 
             float4 worldPos = mul(float4(0.0, 0.0, 0.0, 1.0), instData.World);
 
@@ -179,6 +186,7 @@ namespace Stride.Rendering.Materials
             uint shape = shapeAndModes & 0xFF;
             //uint orientationMode = (shapeAndModes >> 8) & 0xFF;
             //uint scaleMode = (shapeAndModes >> 16) & 0xFF;
+            uint occludedStyle = (shapeAndModes >> 24) & 0xFF;
 
             float2 markerFullSizePx = instData.SizePx + 2.0 * (instData.OutlineWidthPx + instData.GlowWidthPx);
             float2 pixelToLocal = 2.0 / markerFullSizePx;        // Quad is in [-1, 1] range so local size is 2 in both xy
@@ -220,7 +228,32 @@ namespace Stride.Rendering.Materials
             float4 color = (fillAlpha * instData.FillColor)
                             + (outlineAlpha * instData.OutlineColor)
                             + (glowAlpha * instData.GlowColor);
-            color.rgb *= color.a;   // Premultiplied alpha
+            if (PassIndex == 1)
+            {
+                switch (occludedStyle)
+                {
+                    case GizmoMarkerOccludedStyle_Dimmed:
+                    {
+                        color.rgb *= 0.75;
+                        color.a *= 0.5;
+                        break;
+                    }
+                    case GizmoMarkerOccludedStyle_Checkered:
+                    {
+                        uint2 screenCoord = uint2(streams.ShadingPosition.xy);
+                        uint2 cell = screenCoord / OccludedStyleCheckerSize;
+                        if (((cell.x ^ cell.y) & 1) == 0)
+                        {
+                            color.rgb *= 0.25;
+                        }
+                        else
+                        {
+                            color.rgb *= 0.85;
+                        }
+                        break;
+                    }
+                }
+            }
             streams.ColorTarget = color;
         }
     };

@@ -68,18 +68,19 @@ class LineVisualizerRenderProcessor : EntityProcessor<LineVisualizerComponent, L
 
             var renderGroup = component.RenderGroup;
             bool depthTest = component.DepthTest;
-            bool hasTransparency = hasLineSetObjectChanged
-                ? (lineSet?.HasTransparency() ?? false)
-                : data.PrevHasTransparency;
+            bool hasTransparency = lineSet?.HasTransparency ?? false;
+            var occludedStyle = lineSet?.OccludedStyle ?? LineOccludedStyle.None;
 
             bool hasRenderTypeChanged = renderGroup != data.PrevRenderGroup
                 || depthTest != data.PrevDepthTest
-                || hasTransparency != data.PrevHasTransparency;
+                || hasTransparency != data.PrevHasTransparency
+                || occludedStyle != data.PrevOccludedStyle;
             if (hasLineSetObjectChanged || hasRenderTypeChanged)
             {
                 data.PrevRenderGroup = renderGroup;
                 data.PrevDepthTest = depthTest;
                 data.PrevHasTransparency = hasTransparency;
+                data.PrevOccludedStyle = occludedStyle;
                 // Invalidate the old one
                 data.RenderLineSet?.IsLineInstanceListUpdateRequired = true;
             }
@@ -130,11 +131,15 @@ class LineVisualizerRenderProcessor : EntityProcessor<LineVisualizerComponent, L
             for (int i = 0; i < lineSegments.Count; i++)
             {
                 var segment = lineSegments[i];
+                uint lineModeAndStyles = 0;
+                lineModeAndStyles |= (uint)segment.LineMode;
+                lineModeAndStyles |= (uint)lineSet.OccludedStyle << 8;
+
                 var linePosA = Vector3.Transform(segment.StartPosition, worldMatrix).XYZ();
                 var linePosB = Vector3.Transform(segment.EndPosition, worldMatrix).XYZ();
                 var lineInstData = new LineInstanceData
                 {
-                    LineMode = (uint)segment.LineMode,
+                    LineModeAndStyles = lineModeAndStyles,
                     LinePositionA = linePosA,
                     LinePositionB = linePosB,
                     LineColorA = segment.StartColor.ToColorSpace(colorSpace),
@@ -143,6 +148,11 @@ class LineVisualizerRenderProcessor : EntityProcessor<LineVisualizerComponent, L
                     FixedLengthPx = segment.FixedLengthPx,
                 };
                 renderLineSet.LineInstanceDataList.Add(lineInstData);
+            }
+
+            if (lineSet.OccludedStyle != LineOccludedStyle.None)
+            {
+                renderLineSet.RenderOccludedPass = true;
             }
         }
 
@@ -208,6 +218,7 @@ class LineVisualizerRenderProcessor : EntityProcessor<LineVisualizerComponent, L
         internal RenderGroup PrevRenderGroup;
         internal bool PrevDepthTest;
         internal bool PrevHasTransparency;
+        internal LineOccludedStyle PrevOccludedStyle;
 
         internal RenderLineSet RenderLineSet;
     }

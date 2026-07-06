@@ -20,6 +20,8 @@ namespace Stride.Rendering.Materials
     {
         public static readonly ObjectParameterKey<Buffer> GizmoMarkerInstanceArray = ParameterKeys.NewObject<Buffer>();
         public static readonly ValueParameterKey<float> MarkerScale = ParameterKeys.NewValue<float>(1.0f);
+        public static readonly ValueParameterKey<uint> OccludedStyleCheckerSize = ParameterKeys.NewValue<uint>(1);
+        public static readonly ValueParameterKey<uint> PassIndex = ParameterKeys.NewValue<uint>();
         public static readonly ValueParameterKey<Matrix> View = ParameterKeys.NewValue<Matrix>();
         public static readonly ValueParameterKey<Matrix> ViewInverse = ParameterKeys.NewValue<Matrix>();
         public static readonly ValueParameterKey<Matrix> Projection = ParameterKeys.NewValue<Matrix>();

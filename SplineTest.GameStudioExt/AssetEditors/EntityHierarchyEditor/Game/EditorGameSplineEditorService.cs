@@ -320,6 +320,7 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
         if (lineVisualizerComponent is null)
         {
             lineVisualizerComponent = new LineVisualizerComponent();
+            lineVisualizerComponent.LineSet.OccludedStyle = LineOccludedStyle.Checkered;
             splineEditingGizmoRootEntity.Add(lineVisualizerComponent);
         }
         else

@@ -27,6 +27,11 @@ public class GizmoMarkerRenderFeature : RootRenderFeature
     /// </summary>
     public float MarkerScale { get; set; } = 1f;
 
+    /// <summary>
+    /// Pixel size of the checkered look for occluded lines.
+    /// </summary>
+    public int OccludedStyleCheckerSize { get; set; } = 2;
+
     public override Type SupportedRenderObjectType => typeof(RenderGizmoMarkerSet);
 
     public GizmoMarkerRenderFeature()
@@ -107,6 +112,7 @@ public class GizmoMarkerRenderFeature : RootRenderFeature
     {
         // Set common effect parameters
         gizmoMarkerEffect.Parameters.Set(GizmoMarkerShaderKeys.MarkerScale, MarkerScale);
+        gizmoMarkerEffect.Parameters.Set(GizmoMarkerShaderKeys.OccludedStyleCheckerSize, (uint)OccludedStyleCheckerSize);
         gizmoMarkerEffect.Parameters.Set(GizmoMarkerShaderKeys.View, renderView.View);
         gizmoMarkerEffect.Parameters.Set(GizmoMarkerShaderKeys.ViewInverse, Matrix.Invert(renderView.View));
         gizmoMarkerEffect.Parameters.Set(GizmoMarkerShaderKeys.Projection, renderView.Projection);
@@ -129,29 +135,48 @@ public class GizmoMarkerRenderFeature : RootRenderFeature
             }
 
             bool depthTest = renderGizmoMarkerSet.DepthTest;
+            for (int i = 0; i < 2; i++)
+            {
+                bool isOccludedPass = i > 0;
+                if (isOccludedPass && !renderGizmoMarkerSet.RenderOccludedPass)
+                {
+                    break;
+                }
+                ConfigurePipeline(commandList, depthTest, isOccludedPass);
 
-            ConfigurePipeline(commandList, depthTest);
+                commandList.SetVertexBuffer(0, vertexBuffer, 0, LineVertex.Layout.VertexStride);
+                commandList.SetIndexBuffer(indexBuffer, 0, is32bits: false);
+                commandList.SetPipelineState(pipelineState.CurrentState);
 
-            commandList.SetVertexBuffer(0, vertexBuffer, 0, LineVertex.Layout.VertexStride);
-            commandList.SetIndexBuffer(indexBuffer, 0, is32bits: false);
-            commandList.SetPipelineState(pipelineState.CurrentState);
+                gizmoMarkerEffect.Parameters.Set(GizmoMarkerShaderKeys.GizmoMarkerInstanceArray, renderGizmoMarkerSet.GizmoMarkerInstanceDataBuffer);
+                gizmoMarkerEffect.Parameters.Set(GizmoMarkerShaderKeys.PassIndex, (uint)i);
 
-            gizmoMarkerEffect.Parameters.Set(GizmoMarkerShaderKeys.GizmoMarkerInstanceArray, renderGizmoMarkerSet.GizmoMarkerInstanceDataBuffer);
+                gizmoMarkerEffect.Apply(context.GraphicsContext);
 
-            gizmoMarkerEffect.Apply(context.GraphicsContext);
-
-            int indexCountPerInstance = gizmoMarkerMeshData.VertexIndices.Length;
-            commandList.DrawIndexedInstanced(indexCountPerInstance, instanceCount);
+                int indexCountPerInstance = gizmoMarkerMeshData.VertexIndices.Length;
+                commandList.DrawIndexedInstanced(indexCountPerInstance, instanceCount);
+            }
         }
     }
 
-    private void ConfigurePipeline(CommandList commandList, bool depthTest)
+    private void ConfigurePipeline(CommandList commandList, bool depthTest, bool isOccludedPass)
     {
         pipelineState.State.SetDefaults();
-        pipelineState.State.BlendState = BlendStates.AlphaBlend;    // Always has transparency
+        pipelineState.State.BlendState = BlendStates.NonPremultiplied;    // Always has transparency
         pipelineState.State.RasterizerState.FillMode = FillMode.Solid;
         pipelineState.State.RasterizerState.CullMode = CullMode.None;
-        pipelineState.State.DepthStencilState = depthTest ? DepthStencilStates.DepthRead : DepthStencilStates.None;
+        if (isOccludedPass)
+        {
+            pipelineState.State.DepthStencilState = DepthStencilStates.DepthRead with { DepthBufferFunction = CompareFunction.GreaterEqual };
+        }
+        else if (depthTest)
+        {
+            pipelineState.State.DepthStencilState = DepthStencilStates.DepthRead;
+        }
+        else
+        {
+            pipelineState.State.DepthStencilState = DepthStencilStates.None;
+        }
         pipelineState.State.Output.CaptureState(commandList);
         pipelineState.Update();
     }

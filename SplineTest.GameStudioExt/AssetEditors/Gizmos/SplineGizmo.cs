@@ -110,6 +110,7 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
         if (lineVisualizerComponent is null)
         {
             lineVisualizerComponent = new LineVisualizerComponent();
+            lineVisualizerComponent.LineSet.OccludedStyle = LineOccludedStyle.Checkered;
             GizmoRootEntity.Add(lineVisualizerComponent);
         }
         else

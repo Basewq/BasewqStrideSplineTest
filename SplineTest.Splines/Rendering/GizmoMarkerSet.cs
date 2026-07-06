@@ -29,24 +29,21 @@ public class GizmoMarkerSet
         unchecked { Version++; }
     }
 
+    public bool HasTransparency { get; set; } = true;
+
+    public GizmoMarkerOccludedStyle OccludedStyle { get; set; }
+
     public GizmoMarkerSet()
     {
-        Markers = new();
+        Markers = [];
     }
+}
 
-    public bool HasTransparency()
-    {
-        foreach (var segment in markers)
-        {
-            if (segment.FillColor.A < 1
-                || (segment.OutlineWidthPx > 0 && segment.OutlineColor.A < 1)
-                || segment.GlowWidthPx > 0)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+public enum GizmoMarkerOccludedStyle : byte
+{
+    None,
+    Dimmed,
+    Checkered,
 }
 
 public enum GizmoMarkerShape : byte

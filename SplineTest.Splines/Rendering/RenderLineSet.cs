@@ -11,6 +11,7 @@ public class RenderLineSet : RenderObject
 {
     public bool DepthTest;
     public bool HasTransparency;
+    public bool RenderOccludedPass;
 
     public List<LineInstanceData> LineInstanceDataList;
     internal bool IsLineInstanceListUpdateRequired;
