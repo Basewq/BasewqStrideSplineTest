@@ -37,9 +37,9 @@ Hierarchy:
                             d6eb2a6372ba8c94add70e4d3de5e87f*~0: 47fe2582-86c3-42c8-ab65-978342467add:Materials/Red
                     156828b262025aeaf42330e24fbf4fa0*: !SplineTraverserComponent
                         Id: 4f455db7-0a93-4fdb-9b6d-29cd95b4c989
-                        SplineComponent: ref!! b5c0cad5-4673-4e81-bb1a-316ef9288d25
+                        SplineComponent: ref!! 958bdf76-71ff-43bb-ab14-19407a8d630b
                         Speed: 0.5
-                        IsMoving: true
+                        IsMoving*: true
                         IsRotating: true
                     df5850558087c2549a80d69a031dccce*: !RigidbodyComponent
                         Id: d8a9136a-8726-4f7c-b736-f10497424147
@@ -83,7 +83,7 @@ Hierarchy:
                         Type: !LightDirectional
                             Color: !ColorRgbProvider
                                 Value: {R: 1.0, G: 1.0, B: 1.0}
-                            Shadow: !LightDirectionalShadowMap
+                            Shadow:
                                 Enabled: true
                                 Filter: !LightShadowMapFilterTypePcf
                                     FilterSize: Filter5x5
@@ -167,6 +167,34 @@ Hierarchy:
                             NodesMaterial: null
                             ShowBoundingBox: false
                             BoundingBoxMaterial: null
+                    a64153e25735d382afd425fb0f58b387: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
+                        Id: 958bdf76-71ff-43bb-ab14-19407a8d630b
+                        Spline:
+                            IsClosedLoop: true
+                            ControlPoints:
+                                647ee4c0e835839de97c285470da2ef3:
+                                    Position: {X: 0.26514018, Y: -0.5625255, Z: -5.2962074}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 2.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -6.0, Y: 0.0, Z: 0.0}
+                                6110d050bf6c04d638faf3f3c5786daf:
+                                    Position: {X: -3.959906, Y: -1.3424315, Z: 3.9012907}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: -2.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 2.0, Y: 0.0, Z: 0.0}
+                                66ac4e66abe434fcba9432130a176d6f:
+                                    Position: {X: 4.511736, Y: 1.3842614, Z: -1.6462331}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: 2.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: -2.0}
+                        DebugRenderSettings:
+                            ShowCurves: true
+                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            ShowControlPoints: false
+                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
+                            ShowBoundingBox: false
+                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
+                            RenderGroup: Group4
         -   Entity:
                 Id: 98b59819-5c07-431e-b5ef-ede7b871c3e5
                 Name: Crate
@@ -239,7 +267,7 @@ Hierarchy:
                         Name: null
                         Projection: Perspective
                         VerticalFieldOfView*: 60.0
-                        Slot: 74df2f5f-7b3c-4819-8415-58dfc3199aea
+                        Slot: d0753af4-09b0-47ce-9cfc-def518c940ff
                     13c784dc3527224fd0f7dc445499473d: !UIComponent
                         Id: 5ac16aef-9017-4a35-b4a3-e8164b5830ab
                         Page: 72db55a9-0b76-4c3c-918b-afaf40334293:UI/MainPage
@@ -425,7 +453,7 @@ Hierarchy:
                         Children: {}
                     3b7dfa1b125c179fd3a6f28da739ba63: !ModelComponent
                         Id: 28cdb247-3676-45fc-a6ad-2556fb2ea332
-                        Model: 136576a0-e08f-4b73-aef1-03df8e422709:Ground
+                        Model: 6c5770f1-e8ec-483f-aa9d-35049e4c3e56:Ground
                         Materials: {}
                     109a9e5dd3241aa3dfb507edce5e85b3: !StaticColliderComponent
                         Id: 4fffaad2-9cca-41fd-bdb6-21d95dc4b35d

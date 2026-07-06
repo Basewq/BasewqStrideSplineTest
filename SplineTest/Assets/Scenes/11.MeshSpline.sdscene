@@ -8,6 +8,7 @@ Hierarchy:
     RootParts:
         - ref!! 3a8da8ee-5413-4804-bd14-a33a9ce75a2f
         - ref!! e436febe-4c37-4096-95ba-b8fa067cd95b
+        - ref!! 31538e2b-b1fc-466a-8f1c-a4c37f5980d2
         - ref!! 441fa21b-74a0-43d2-b0d2-d68edc2a4f2d
         - ref!! 012ee796-7bcf-43eb-805d-6182cdce8f17
         - ref!! cdce7073-b5eb-4a4c-b660-fda1de108c23
@@ -16,7 +17,6 @@ Hierarchy:
         - ref!! d9e17211-c72c-4cd3-a7aa-11203f81701f
         - ref!! 39c6e7e1-3823-4fc2-a3bc-d2b3936680d7
         - ref!! c798390b-a691-4f05-ab4a-19250dd788f6
-        - ref!! 31538e2b-b1fc-466a-8f1c-a4c37f5980d2
         - ref!! 4e218d94-49f5-4f7e-a33e-9cf8887734fa
         - ref!! 0593fca2-393d-4f15-8217-9d9ba1755502
     Parts:
@@ -34,7 +34,7 @@ Hierarchy:
                             9e44f9b68bd94c6476896ba3a0be31e6: ref!! 1503c8b4-f635-4bbd-95ff-4e90b48615dd
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: 50f84999-9c60-41b7-a615-8e063c537041
-                        Model: fbd48d95-45c7-4c3a-b544-e236a6244a51:Sphere
+                        Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
                     3e4aa8b4373d1aeb55417ebfee9e1272: !SplineComponent
@@ -61,7 +61,30 @@ Hierarchy:
                                 Material: 72665805-228b-445a-9c78-1453c4655823:Materials/RoadMaterial
                             Rotation: 0.0
                             CloseEnds: true
-                        SplineComponent: ref!! fc27d216-e3e4-4d1e-857a-a7aed84096bc
+                        SplineComponent: ref!! b7973cf7-7f12-41a0-bb18-0d808d5861ee
+                    5281be147cfef55093f1bca57a7ed04c: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
+                        Id: b7973cf7-7f12-41a0-bb18-0d808d5861ee
+                        Spline:
+                            IsClosedLoop: false
+                            ControlPoints:
+                                b5550793d13a0d3fc5f1794aaa6d1ae4:
+                                    Position: {X: -0.067720175, Y: 0.0, Z: 0.47736168}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: -10.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                890b405cec333dfca4f9b8b2e166f5dc:
+                                    Position: {X: -7.8740573, Y: 0.0, Z: 13.571022}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
+                        DebugRenderSettings:
+                            ShowCurves: true
+                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            ShowControlPoints: false
+                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
+                            ShowBoundingBox: false
+                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
+                            RenderGroup: Group4
         -   Entity:
                 Id: 0593fca2-393d-4f15-8217-9d9ba1755502
                 Name: CylinderTubeSpline-looped
@@ -76,7 +99,7 @@ Hierarchy:
                             9e44f9b68bd94c6476896ba3a0be31e6: ref!! 70cdf4cc-41f7-41a8-bf51-e7f6657b06b9
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: 0210fce4-4f97-42c7-aad6-c42e0e716e52
-                        Model: fbd48d95-45c7-4c3a-b544-e236a6244a51:Sphere
+                        Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
                     3e4aa8b4373d1aeb55417ebfee9e1272: !SplineComponent
@@ -105,7 +128,30 @@ Hierarchy:
                             CloseEnds: true
                             Sides: 16
                             Radius: 1.0
-                        SplineComponent: ref!! 710798ba-939c-4e92-8d17-10f6522978b6
+                        SplineComponent: ref!! 58297db4-cdf5-4c34-8e2f-df0dad813a3e
+                    83b65823e45b8877a923b91487dd1cef: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
+                        Id: 58297db4-cdf5-4c34-8e2f-df0dad813a3e
+                        Spline:
+                            IsClosedLoop: true
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                        DebugRenderSettings:
+                            ShowCurves: true
+                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            ShowControlPoints: false
+                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
+                            ShowBoundingBox: false
+                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
+                            RenderGroup: Group4
         -   Entity:
                 Id: 12139075-6b32-4a96-8f64-c86e4e669b79
                 Name: BoxSpline-looped
@@ -120,7 +166,7 @@ Hierarchy:
                             9e44f9b68bd94c6476896ba3a0be31e6: ref!! df761b28-bce2-4aa4-9a5c-3ff882c39fb4
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: c9bb8107-1796-450d-9fcf-af7db8eb86cb
-                        Model: fbd48d95-45c7-4c3a-b544-e236a6244a51:Sphere
+                        Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
                     3e4aa8b4373d1aeb55417ebfee9e1272: !SplineComponent
@@ -147,7 +193,30 @@ Hierarchy:
                                 Material: a1daa7bb-a33f-4c1d-a204-3ef5f36157e1:Materials/RedBrickMaterial
                             Rotation: 0.0
                             CloseEnds: false
-                        SplineComponent: ref!! 46544d12-0aee-4e4a-a89f-81f419496a92
+                        SplineComponent: ref!! 77b0edc3-942a-478e-a13d-ec5a66f5c76c
+                    d09c7b35c0eceb09d51afdacee19d842: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
+                        Id: 77b0edc3-942a-478e-a13d-ec5a66f5c76c
+                        Spline:
+                            IsClosedLoop: true
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                        DebugRenderSettings:
+                            ShowCurves: true
+                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            ShowControlPoints: false
+                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
+                            ShowBoundingBox: false
+                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
+                            RenderGroup: Group4
         -   Folder: null
             Entity:
                 Id: 1c09b7c0-2b0d-4f7d-a25a-be20c2aa2587
@@ -257,7 +326,7 @@ Hierarchy:
                             9e44f9b68bd94c6476896ba3a0be31e6: ref!! def50bd6-a07c-4f14-96bd-d464e109d755
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: 269af4f1-1eae-482c-9810-843dca74a2dd
-                        Model: fbd48d95-45c7-4c3a-b544-e236a6244a51:Sphere
+                        Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
                     3e4aa8b4373d1aeb55417ebfee9e1272: !SplineComponent
@@ -286,7 +355,30 @@ Hierarchy:
                             CloseEnds: true
                             Sides: 16
                             Radius: 1.0
-                        SplineComponent: ref!! 0df50647-47ef-4cf2-80a2-5b3573bff7a4
+                        SplineComponent: ref!! 5e08b967-c158-4336-bc59-3079514a733d
+                    376bcda5426455fa656fa75e39ab915b: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
+                        Id: 5e08b967-c158-4336-bc59-3079514a733d
+                        Spline:
+                            IsClosedLoop: false
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: -0.43491513, Y: 0.044731244, Z: 1.9411129}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: -10.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -7.5213814, Y: 0.0, Z: 13.336444}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
+                        DebugRenderSettings:
+                            ShowCurves: true
+                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            ShowControlPoints: false
+                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
+                            ShowBoundingBox: false
+                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
+                            RenderGroup: Group4
         -   Entity:
                 Id: 3a8da8ee-5413-4804-bd14-a33a9ce75a2f
                 Name: Camera
@@ -310,7 +402,7 @@ Hierarchy:
                         Children: {}
                     3b7dfa1b125c179fd3a6f28da739ba63: !ModelComponent
                         Id: ba878bf3-0fc5-402a-8293-31d12a67d90f
-                        Model: 136576a0-e08f-4b73-aef1-03df8e422709:Ground
+                        Model: 6c5770f1-e8ec-483f-aa9d-35049e4c3e56:Ground
                         Materials:
                             b6b0704945db6b8336d369d298eb285d~0: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
                     368602981b598ae21a8ed4e68f48ac5a: !SplineTools.GameProfiler,SplineTools
@@ -355,7 +447,7 @@ Hierarchy:
                             9e44f9b68bd94c6476896ba3a0be31e6: ref!! 35a5d504-cd06-447a-a419-030261e12d35
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: c82114df-2ca0-4777-9f10-cb41f6864d13
-                        Model: fbd48d95-45c7-4c3a-b544-e236a6244a51:Sphere
+                        Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
                     3e4aa8b4373d1aeb55417ebfee9e1272: !SplineComponent
@@ -384,7 +476,30 @@ Hierarchy:
                             CloseEnds: false
                             Sides: 16
                             Radius: {X: 0.5, Y: 1.0}
-                        SplineComponent: ref!! b38af933-9bbc-4899-afc2-43b64b235358
+                        SplineComponent: ref!! 81b23b38-e6d1-47d7-b439-8546511203ad
+                    0629fde360ceb603dfe517a61e262c05: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
+                        Id: 81b23b38-e6d1-47d7-b439-8546511203ad
+                        Spline:
+                            IsClosedLoop: false
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 2.5980828, Y: 0.044731244, Z: 1.0635667}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: -10.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -7.5213814, Y: 0.0, Z: 13.336444}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
+                        DebugRenderSettings:
+                            ShowCurves: true
+                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            ShowControlPoints: false
+                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
+                            ShowBoundingBox: false
+                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
+                            RenderGroup: Group4
         -   Folder: null
             Entity:
                 Id: 517fbf00-302b-409f-9f12-3633d357010e
@@ -519,7 +634,7 @@ Hierarchy:
                         Id: 6210bb04-e039-4d8d-bc3f-ae23b3b45734
                         Name: null
                         Projection: Perspective
-                        Slot: 74df2f5f-7b3c-4819-8415-58dfc3199aea
+                        Slot: d0753af4-09b0-47ce-9cfc-def518c940ff
                     13c784dc3527224fd0f7dc445499473d: !UIComponent
                         Id: eed98db6-cb48-47ae-a0f8-17404bd9d3c7
                         Page: 72db55a9-0b76-4c3c-918b-afaf40334293:UI/MainPage
@@ -568,7 +683,7 @@ Hierarchy:
                             9e44f9b68bd94c6476896ba3a0be31e6: ref!! 79a22d20-b05d-4a33-a25d-334e450b3f07
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: b8a92064-5459-4b39-92c6-888e4e9fb7a2
-                        Model: fbd48d95-45c7-4c3a-b544-e236a6244a51:Sphere
+                        Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
                     3e4aa8b4373d1aeb55417ebfee9e1272: !SplineComponent
@@ -597,7 +712,30 @@ Hierarchy:
                             CloseEnds: false
                             Sides: 16
                             Radius: 1.0
-                        SplineComponent: ref!! dbf4665b-fd2c-46bb-a980-89e11de95386
+                        SplineComponent: ref!! 9c3edd86-7688-40b8-93bc-61c35fd071f2
+                    612a4fcd8f613ce08599cdda10671784: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
+                        Id: 9c3edd86-7688-40b8-93bc-61c35fd071f2
+                        Spline:
+                            IsClosedLoop: true
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                        DebugRenderSettings:
+                            ShowCurves: true
+                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            ShowControlPoints: false
+                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
+                            ShowBoundingBox: false
+                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
+                            RenderGroup: Group4
         -   Entity:
                 Id: cdce7073-b5eb-4a4c-b660-fda1de108c23
                 Name: RoadSpline-looped
@@ -612,7 +750,7 @@ Hierarchy:
                             9e44f9b68bd94c6476896ba3a0be31e6: ref!! 7a14bf57-6320-4de4-a7b3-c08e8d39679e
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: 5397e611-7fc7-4c34-9e0b-3dbe7874cc98
-                        Model: fbd48d95-45c7-4c3a-b544-e236a6244a51:Sphere
+                        Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
                     3e4aa8b4373d1aeb55417ebfee9e1272: !SplineComponent
@@ -639,7 +777,30 @@ Hierarchy:
                                 Material: 72665805-228b-445a-9c78-1453c4655823:Materials/RoadMaterial
                             Rotation: 0.0
                             CloseEnds: false
-                        SplineComponent: ref!! 7abc11c1-5b96-497d-9302-26a370504f22
+                        SplineComponent: ref!! 1527caa2-44c4-41fd-9bf4-01dbd730921e
+                    25550c5baf4a8111b66dfd07065c14e6: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
+                        Id: 1527caa2-44c4-41fd-9bf4-01dbd730921e
+                        Spline:
+                            IsClosedLoop: true
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                        DebugRenderSettings:
+                            ShowCurves: true
+                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            ShowControlPoints: false
+                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
+                            ShowBoundingBox: false
+                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
+                            RenderGroup: Group4
         -   Entity:
                 Id: d4eba7dd-eb89-42d3-b2ee-597226e01000
                 Name: A
@@ -713,7 +874,7 @@ Hierarchy:
                             9e44f9b68bd94c6476896ba3a0be31e6: ref!! b5efba2c-b3b5-4b30-b500-ac72dd0fe763
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: 06ab7d1c-75e4-4d6a-8a3b-2ec9ef3e0c8c
-                        Model: fbd48d95-45c7-4c3a-b544-e236a6244a51:Sphere
+                        Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
                     3e4aa8b4373d1aeb55417ebfee9e1272: !SplineComponent
@@ -742,7 +903,30 @@ Hierarchy:
                             CloseEnds: true
                             Sides: 4
                             Radius: 1.0
-                        SplineComponent: ref!! c51e412c-10e3-4701-8ec3-c6e3c8346363
+                        SplineComponent: ref!! b72f4d2c-02d4-4439-8747-2ec81675c9de
+                    f57df7b6ad4c1f89ac0e06a2e64737f4: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
+                        Id: b72f4d2c-02d4-4439-8747-2ec81675c9de
+                        Spline:
+                            IsClosedLoop: false
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 3.1420772, Y: 0.044731244, Z: 13.130105}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: -10.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -7.5213814, Y: 0.0, Z: 13.336444}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
+                        DebugRenderSettings:
+                            ShowCurves: true
+                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            ShowControlPoints: false
+                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
+                            ShowBoundingBox: false
+                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
+                            RenderGroup: Group4
         -   Folder: null
             Entity:
                 Id: da556959-4276-4ab0-98bc-94f07395e84e
@@ -777,7 +961,7 @@ Hierarchy:
                             9e44f9b68bd94c6476896ba3a0be31e6: ref!! d54bba2c-5e65-4524-b6c3-f043cf37049b
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: 0f64e383-11e5-450b-8cb7-df90644d3b89
-                        Model: fbd48d95-45c7-4c3a-b544-e236a6244a51:Sphere
+                        Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
                     3e4aa8b4373d1aeb55417ebfee9e1272: !SplineComponent
@@ -804,7 +988,30 @@ Hierarchy:
                                 Material: a1daa7bb-a33f-4c1d-a204-3ef5f36157e1:Materials/RedBrickMaterial
                             Rotation: 0.0
                             CloseEnds: true
-                        SplineComponent: ref!! a37844b3-478f-4744-875f-197a94e04a82
+                        SplineComponent: ref!! d6f24d47-7979-42e9-91bc-703bc97a5d3b
+                    9b972c4c2dbb879f0daf66d57b0fb094: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
+                        Id: d6f24d47-7979-42e9-91bc-703bc97a5d3b
+                        Spline:
+                            IsClosedLoop: false
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 0.28495574, Y: 0.0, Z: 0.24278355}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: -10.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -7.5213814, Y: 0.0, Z: 13.336444}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
+                        DebugRenderSettings:
+                            ShowCurves: true
+                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            ShowControlPoints: false
+                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
+                            ShowBoundingBox: false
+                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
+                            RenderGroup: Group4
         -   Folder: null
             Entity:
                 Id: e137c18f-71cc-401a-bf4a-6fee6f42904b
@@ -840,7 +1047,7 @@ Hierarchy:
                         Type: !LightDirectional
                             Color: !ColorRgbProvider
                                 Value: {R: 1.0, G: 1.0, B: 1.0}
-                            Shadow: !LightDirectionalShadowMap
+                            Shadow:
                                 Enabled: true
                                 Filter: !LightShadowMapFilterTypePcf
                                     FilterSize: Filter5x5
