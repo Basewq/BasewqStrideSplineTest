@@ -14,7 +14,7 @@ namespace Stride.Engine.Splines.Processors;
 /// <summary>
 /// The processor for <see cref="SplineDecoratorComponent"/>.
 /// </summary>
-public class SplineDecoratorProcessor : EntityProcessor<SplineDecoratorComponent, SplineDecoratorProcessor.SplineDecoratorTransformationInfo>
+public class SplineDecoratorProcessor : EntityProcessor<SplineDecoratorComponent, SplineDecoratorProcessor.AssociatedData>
 {
     private HashSet<SplineDecoratorComponent> splineDecoratorComponentsToUpdate = new();
 
@@ -26,39 +26,72 @@ public class SplineDecoratorProcessor : EntityProcessor<SplineDecoratorComponent
     {
     }
 
-    protected override SplineDecoratorTransformationInfo GenerateComponentData(Entity entity, SplineDecoratorComponent component)
+    protected override AssociatedData GenerateComponentData(Entity entity, SplineDecoratorComponent component)
     {
-        return new SplineDecoratorTransformationInfo
+        return new AssociatedData
         {
             TransformOperation = new SplineDecoratorViewHierarchyTransformOperation(component),
         };
     }
 
-    protected override bool IsAssociatedDataValid(Entity entity, SplineDecoratorComponent component, SplineDecoratorTransformationInfo associatedData)
+    protected override bool IsAssociatedDataValid(Entity entity, SplineDecoratorComponent component, AssociatedData associatedData)
     {
         return component == associatedData.TransformOperation.SplineDecoratorComponent;
     }
 
-    protected override void OnEntityComponentAdding(Entity entity, SplineDecoratorComponent component, SplineDecoratorTransformationInfo data)
+    protected override void OnEntityComponentAdding(Entity entity, SplineDecoratorComponent component, AssociatedData data)
     {
-        //Every time the spline decorator is marked as dirty, we want to re-decorate the spline
-        component.OnSplineDecoratorDirty += () => data.Update(splineDecoratorComponentsToUpdate, component);
+        // Every time the spline decorator is marked as dirty, we want to re-decorate the spline
+        component.OnSplineDecoratorDirty += OnSplineDecoratorDirty;
 
         splineDecoratorComponentsToUpdate.Add(component);
 
         entity.Transform.PostOperations.Add(data.TransformOperation);
     }
 
-    protected override void OnEntityComponentRemoved(Entity entity, SplineDecoratorComponent component, SplineDecoratorTransformationInfo data)
+    private void OnSplineDecoratorDirty(SplineDecoratorComponent component)
+    {
+        if (ComponentDatas.TryGetValue(component, out var data))
+        {
+            data.Update(splineDecoratorComponentsToUpdate, component);
+        }
+    }
+
+    protected override void OnEntityComponentRemoved(Entity entity, SplineDecoratorComponent component, AssociatedData data)
     {
         splineDecoratorComponentsToUpdate.Add(component);
 
-        component.OnSplineDecoratorDirty -= () => data.Update(splineDecoratorComponentsToUpdate, component);
+        component.OnSplineDecoratorDirty -= OnSplineDecoratorDirty;
 
         entity.Transform.PostOperations.Remove(data.TransformOperation);
     }
 
-    public class SplineDecoratorTransformationInfo
+    public override void Update(GameTime time)
+    {
+        foreach (var decoratorComponent in splineDecoratorComponentsToUpdate)
+        {
+            if (decoratorComponent?.DecoratorSettings is null)
+            {
+                continue;
+            }
+
+            decoratorComponent.ClearDecorationInstances();
+
+            BaseSplineDecoratorProcessor baseSplineDecoratorProcessor = decoratorComponent.DecoratorSettings switch
+            {
+                SplineAmountDecoratorSettings => new AmountDecoratorProcessor(),
+                SplineIntervalDecoratorSettings => new IntervalDecoratorProcessor(),
+                _ => throw new InvalidOperationException($"Unsupported SplineDecoratorSettings type {decoratorComponent.DecoratorSettings}")
+            };
+
+            baseSplineDecoratorProcessor.Decorate(decoratorComponent);
+        }
+
+        // Now that dirty spline decorators have been updated, clear the collection
+        splineDecoratorComponentsToUpdate.Clear();
+    }
+
+    public class AssociatedData
     {
         public SplineDecoratorViewHierarchyTransformOperation TransformOperation;
 
@@ -66,30 +99,5 @@ public class SplineDecoratorProcessor : EntityProcessor<SplineDecoratorComponent
         {
             splineDecoratorComponentsToUpdate.Add(component);
         }
-    }
-
-    public override void Update(GameTime time)
-    {
-        foreach (var splineDecoratorComponent in splineDecoratorComponentsToUpdate)
-        {
-            if (splineDecoratorComponent?.DecoratorSettings is null)
-            {
-                continue;
-            }
-
-            splineDecoratorComponent.ClearDecorationInstances();
-
-            BaseSplineDecoratorProcessor baseSplineDecoratorProcessor = splineDecoratorComponent.DecoratorSettings switch
-            {
-                SplineAmountDecoratorSettings => new AmountDecoratorProcessor(),
-                SplineIntervalDecoratorSettings => new IntervalDecoratorProcessor(),
-                _ => throw new InvalidOperationException($"Unsupported SplineDecoratorSettings type {splineDecoratorComponent.DecoratorSettings}")
-            };
-
-            baseSplineDecoratorProcessor.Decorate(splineDecoratorComponent);
-        }
-
-        //Now that dirty spline decorators have been updated, clear the collection
-        splineDecoratorComponentsToUpdate.Clear();
     }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using Stride.Core;
@@ -9,12 +9,17 @@ namespace Stride.Engine.Splines.Models.Decorators;
 [Display("Amount")]
 public class SplineAmountDecoratorSettings : SplineDecoratorSettings
 {
+    private int amount = 4;
     /// <summary>
-    /// The fixed amount of decorations to be instantiated on a spline <see cref="SplineAmountDecoratorSettings"/>
+    /// The fixed amount of decorations to be instantiated on a spline <see cref="SplineAmountDecoratorSettings"/>.
     /// </summary>
     /// <userdoc>
-    /// The fixed amount of decorations to be instantiated on a spline
+    /// The fixed amount of decorations to be instantiated on a spline.
     /// </userdoc>
     [Display(40, "Amount")]
-    public int Amount { get; set; } = 4;
+    public int Amount
+    {
+        get => amount;
+        set => SetField(ref amount, value);
+    }
 }

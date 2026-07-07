@@ -19,13 +19,18 @@ public abstract class BaseSplineDecoratorProcessor
     /// <param name="splineT"></param>
     protected void CreateInstance(SplineDecoratorComponent component, int iteration, float splineT, Random random)
     {
-        var splineSample = component.SplineComponent.Spline.SplineEvaluator.Evaluate(splineT);
-        var instanceRoot = new Entity("Spline" + iteration);
-
         int count = component.DecoratorSettings.Decorations.Count;
         var prefabToInstantiate = component.DecoratorSettings.SpawnOrder == SplineDecoratorInstanceEnum.Sequential
             ? component.DecoratorSettings.Decorations[iteration % count]
             : component.DecoratorSettings.Decorations[random.Next(0, count)];
+        if (prefabToInstantiate is null)
+        {
+            // Empty slot
+            return;
+        }
+
+        var splineSample = component.SplineComponent.Spline.SplineEvaluator.Evaluate(splineT);
+        var instanceRoot = new Entity("Spline" + iteration);
 
         var instanceEntities = prefabToInstantiate.Instantiate();
 

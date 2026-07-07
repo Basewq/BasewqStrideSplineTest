@@ -1,7 +1,6 @@
 // Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
-using System;
 using Stride.Engine.Splines.Components;
 using Stride.Engine.Splines.Models.Decorators;
 
@@ -30,9 +29,12 @@ public class IntervalDecoratorProcessor : BaseSplineDecoratorProcessor
         float totalIntervalDistance = 0.0f;
         int iteration = 0;
 
+        float minInterval = Math.Max(intervalDecoratorSettings.Interval.X, 0.000001f);
+        float maxInterval = Math.Max(intervalDecoratorSettings.Interval.Y, minInterval + 0.000001f);    // Must always increase
+        float intervalRange = maxInterval - minInterval;
         while (iteration < 1000)
         {
-            double nextInterval = random.NextDouble() * (intervalDecoratorSettings.Interval.Y - intervalDecoratorSettings.Interval.X) + intervalDecoratorSettings.Interval.X;
+            double nextInterval = random.NextDouble() * intervalRange + minInterval;
             totalIntervalDistance += (float)nextInterval;
 
             if (totalIntervalDistance > totalSplineDistance)

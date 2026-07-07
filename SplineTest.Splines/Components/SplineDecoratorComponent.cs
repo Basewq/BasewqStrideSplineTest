@@ -56,7 +56,7 @@ public sealed class SplineDecoratorComponent : EntityComponent
     /// <summary>
     /// Event triggered when the splineDecorator has become dirty.
     /// </summary>
-    public delegate void DirtySplineDecoratorHandler();
+    public delegate void DirtySplineDecoratorHandler(SplineDecoratorComponent component);
 
     public event DirtySplineDecoratorHandler OnSplineDecoratorDirty;
 
@@ -65,7 +65,7 @@ public sealed class SplineDecoratorComponent : EntityComponent
     /// </summary>
     private void EnqueueSplineDecoratorUpdate()
     {
-        OnSplineDecoratorDirty?.Invoke();
+        OnSplineDecoratorDirty?.Invoke(this);
     }
 
     public SplineDecoratorComponent()
@@ -87,9 +87,16 @@ public sealed class SplineDecoratorComponent : EntityComponent
         get { return decoratorSettings; }
         set
         {
+            decoratorSettings?.DecoratorSettingsChanged -= OnDecoratorSettingsChanged;
             decoratorSettings = value;
+            decoratorSettings?.DecoratorSettingsChanged += OnDecoratorSettingsChanged;
             EnqueueSplineDecoratorUpdate();
         }
+    }
+
+    private void OnDecoratorSettingsChanged(SplineDecoratorSettings renderSettings)
+    {
+        EnqueueSplineDecoratorUpdate();
     }
 
     /// <summary>

@@ -14,11 +14,11 @@ Hierarchy:
     Parts:
         -   Entity:
                 Id: 458ab9f1-b892-4dfc-94e3-20a2eb5fb87c
-                Name: SplineDecorator-Amount1
+                Name: SplineDecorator-Amount
                 Components:
                     3048e49ff5a16ef987b325d524fcfaf9: !TransformComponent
                         Id: 678f6cc5-e736-4a0f-a1df-683865104400
-                        Position: {X: 9.498013, Y: 0.0, Z: 3.3552155}
+                        Position: {X: 6.4980125, Y: 0.0, Z: 3.3552155}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children:
@@ -75,11 +75,11 @@ Hierarchy:
                             RenderGroup: Group4
         -   Entity:
                 Id: 47323954-a9ac-4c83-a175-987dd2180486
-                Name: SplineDecorator-Amount2
+                Name: SplineDecorator-Interval
                 Components:
                     3048e49ff5a16ef987b325d524fcfaf9: !TransformComponent
                         Id: 3d26b8a9-27f9-487e-b83b-97c9f6c23262
-                        Position: {X: 9.498013, Y: 0.0, Z: 3.3552155}
+                        Position: {X: 13.498013, Y: 0.0, Z: 3.3552155}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children:
@@ -126,6 +126,14 @@ Hierarchy:
                             ShowBoundingBox: false
                             BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
                             RenderGroup: Group4
+                    b21d2d8e2ce520f0f96e0e9cfb599f6f: !SplineDecoratorComponent
+                        Id: f2f8ed5c-8bba-46d4-a498-30d26eec45ed
+                        DecoratorSettings: !SplineIntervalDecorator
+                            Decorations:
+                                fada7b8d1fd8d4a4a022bb0653681342: 5f1f7629-82e5-4324-a35d-623539b45472:Prefabs/Streetlight/StreetLight _v2
+                            SpawnOrder: Random
+                            Interval: {X: 1.0, Y: 4.0}
+                        SplineComponent: ref!! 22b56eff-182e-4bb1-b108-e28cd8f70f32
         -   Entity:
                 Id: 745e9268-c019-4f20-a1fd-72aee1da238a
                 Name: Camera

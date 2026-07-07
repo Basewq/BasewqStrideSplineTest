@@ -10,6 +10,7 @@ namespace Stride.Engine.Splines.Models.Decorators;
 [Display("Interval")]
 public class SplineIntervalDecoratorSettings : SplineDecoratorSettings
 {
+    private Vector2 interval = new Vector2(1, 1);
     /// <summary>
     /// The random distribution of instantiated prefabs along a spline <see cref="SplineIntervalDecoratorSettings"/>.
     /// </summary>
@@ -18,5 +19,9 @@ public class SplineIntervalDecoratorSettings : SplineDecoratorSettings
     /// new instances will be made for each random length interval.
     /// </userdoc>
     [Display("Interval")]
-    public Vector2 Interval { get; set; } = new Vector2(1, 1);
+    public Vector2 Interval
+    {
+        get => interval;
+        set => SetField(ref interval, value);
+    }
 }
