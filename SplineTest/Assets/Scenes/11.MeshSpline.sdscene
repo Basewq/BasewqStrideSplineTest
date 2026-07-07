@@ -29,27 +29,12 @@ Hierarchy:
                         Position: {X: 0.6579301, Y: 0.0, Z: -0.52320266}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children:
-                            ac320f6ed796dc63c4e9b061bacd130c: ref!! 09fdab0d-283e-415f-a1a3-6076be5b9bfd
-                            9e44f9b68bd94c6476896ba3a0be31e6: ref!! 1503c8b4-f635-4bbd-95ff-4e90b48615dd
+                        Children: {}
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: 50f84999-9c60-41b7-a615-8e063c537041
                         Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
-                    3e4aa8b4373d1aeb55417ebfee9e1272: !SplineComponent
-                        Id: fc27d216-e3e4-4d1e-857a-a7aed84096bc
-                        Loop: false
-                        Nodes:
-                            54cbfa1340e6f38ad6da503637b91992: ref!! cf5a75de-f38d-4220-b30f-b00c10021581
-                            5b55ddc46022e91afb500a2912d30a1c: ref!! 08266c7e-48dd-430d-8275-6839443aa1c0
-                        RenderSettings:
-                            ShowSegments: true
-                            SegmentsMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
-                            ShowNodes: false
-                            NodesMaterial: null
-                            ShowBoundingBox: false
-                            BoundingBoxMaterial: null
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: b5c44060-3bd2-4813-9704-b982dce46663
                         SplineMesh: !SplineMeshPlane
@@ -79,7 +64,7 @@ Hierarchy:
                                     TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
                         DebugRenderSettings:
                             ShowCurves: true
-                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
                             ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
@@ -94,27 +79,12 @@ Hierarchy:
                         Position: {X: -20.631067, Y: 1.1567775, Z: 60.432938}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children:
-                            ac320f6ed796dc63c4e9b061bacd130c: ref!! 7a10ecc1-7620-4a32-adc6-7eb2e8241b56
-                            9e44f9b68bd94c6476896ba3a0be31e6: ref!! 70cdf4cc-41f7-41a8-bf51-e7f6657b06b9
+                        Children: {}
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: 0210fce4-4f97-42c7-aad6-c42e0e716e52
                         Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
-                    3e4aa8b4373d1aeb55417ebfee9e1272: !SplineComponent
-                        Id: 710798ba-939c-4e92-8d17-10f6522978b6
-                        Loop: true
-                        Nodes:
-                            54cbfa1340e6f38ad6da503637b91992: ref!! 0be85d34-4265-4abe-94d4-115e238023e7
-                            5b55ddc46022e91afb500a2912d30a1c: ref!! 3c679df8-a8e7-4df3-aec8-3da9985161d2
-                        RenderSettings:
-                            ShowSegments: true
-                            SegmentsMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
-                            ShowNodes: false
-                            NodesMaterial: null
-                            ShowBoundingBox: false
-                            BoundingBoxMaterial: null
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: f22241aa-f6e3-452f-9a32-4050a424b91b
                         SplineMesh: !SplineMeshCylinder
@@ -146,7 +116,7 @@ Hierarchy:
                                     TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
                         DebugRenderSettings:
                             ShowCurves: true
-                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
                             ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
@@ -161,27 +131,12 @@ Hierarchy:
                         Position: {X: -20.000292, Y: 0.37739605, Z: 19.804495}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children:
-                            ac320f6ed796dc63c4e9b061bacd130c: ref!! f93dd235-e94f-4eb2-8015-9847734418ad
-                            9e44f9b68bd94c6476896ba3a0be31e6: ref!! df761b28-bce2-4aa4-9a5c-3ff882c39fb4
+                        Children: {}
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: c9bb8107-1796-450d-9fcf-af7db8eb86cb
                         Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
-                    3e4aa8b4373d1aeb55417ebfee9e1272: !SplineComponent
-                        Id: 46544d12-0aee-4e4a-a89f-81f419496a92
-                        Loop: true
-                        Nodes:
-                            54cbfa1340e6f38ad6da503637b91992: ref!! 374bc699-fb6f-4a30-872f-b2f80e995091
-                            5b55ddc46022e91afb500a2912d30a1c: ref!! d7c6a0ef-df42-4415-861a-c9f8645f274b
-                        RenderSettings:
-                            ShowSegments: true
-                            SegmentsMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
-                            ShowNodes: false
-                            NodesMaterial: null
-                            ShowBoundingBox: false
-                            BoundingBoxMaterial: null
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: 2a9ba767-4f47-4350-86c5-39aa3e6143eb
                         SplineMesh: !SplineMeshBox
@@ -211,72 +166,12 @@ Hierarchy:
                                     TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
                         DebugRenderSettings:
                             ShowCurves: true
-                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
                             ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
                             BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
                             RenderGroup: Group4
-        -   Folder: null
-            Entity:
-                Id: 1c09b7c0-2b0d-4f7d-a25a-be20c2aa2587
-                Name: B
-                Components:
-                    3b762631430f107c0b569575ce60c509: !TransformComponent
-                        Id: df761b28-bce2-4aa4-9a5c-3ff882c39fb4
-                        Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    f12821e26016f7b452be62d4d93e6792: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: d7c6a0ef-df42-4415-861a-c9f8645f274b
-                        SplineNode:
-                            Segments: 40
-                            TangentOutLocal: {X: -10.0, Y: 0.0, Z: 0.0}
-                            TangentInLocal: {X: 10.0, Y: 0.0, Z: 0.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
-        -   Folder: null
-            Entity:
-                Id: 1cf204b7-4a0b-4407-85c0-718a6b185970
-                Name: B
-                Components:
-                    3b762631430f107c0b569575ce60c509: !TransformComponent
-                        Id: def50bd6-a07c-4f14-96bd-d464e109d755
-                        Position: {X: -7.5213814, Y: 0.0, Z: 13.336444}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    f12821e26016f7b452be62d4d93e6792: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: 4525aa5b-230d-4f73-8f0e-1b34cff5f54e
-                        SplineNode:
-                            Segments: 40
-                            TangentOutLocal: {X: 0.0, Y: 0.0, Z: 10.0}
-                            TangentInLocal: {X: 10.0, Y: 0.0, Z: 0.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
-        -   Folder: null
-            Entity:
-                Id: 2901e473-49ee-43bc-8767-e4f66410b8bb
-                Name: A
-                Components:
-                    1fe77c234f191da79029876ed18ccc6a: !TransformComponent
-                        Id: f93dd235-e94f-4eb2-8015-9847734418ad
-                        Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    ed3d1d2342d68eb6d270fd98469e92b0: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: 374bc699-fb6f-4a30-872f-b2f80e995091
-                        SplineNode:
-                            Segments: 40
-                            TangentOutLocal: {X: 10.0, Y: 0.0, Z: 0.0}
-                            TangentInLocal: {X: -10.0, Y: 0.0, Z: 0.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
         -   Entity:
                 Id: 31538e2b-b1fc-466a-8f1c-a4c37f5980d2
                 Name: Ambient light
@@ -292,26 +187,6 @@ Hierarchy:
                         Type: !LightAmbient
                             Color: !ColorRgbProvider
                                 Value: {R: 0.54365, G: 0.655, B: 0.62493545}
-        -   Folder: null
-            Entity:
-                Id: 33e48842-51ba-4dd3-be88-1526557d08f0
-                Name: B
-                Components:
-                    3b762631430f107c0b569575ce60c509: !TransformComponent
-                        Id: 70cdf4cc-41f7-41a8-bf51-e7f6657b06b9
-                        Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    f12821e26016f7b452be62d4d93e6792: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: 3c679df8-a8e7-4df3-aec8-3da9985161d2
-                        SplineNode:
-                            Segments: 40
-                            TangentOutLocal: {X: -10.0, Y: 0.0, Z: 0.0}
-                            TangentInLocal: {X: 10.0, Y: 0.0, Z: 0.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
         -   Entity:
                 Id: 39c6e7e1-3823-4fc2-a3bc-d2b3936680d7
                 Name: CyllinderSpline_MediumPoly
@@ -321,27 +196,12 @@ Hierarchy:
                         Position: {X: -0.9196067, Y: 4.8441725, Z: 42.94981}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children:
-                            ac320f6ed796dc63c4e9b061bacd130c: ref!! 0e135424-29d7-4f55-84e7-fc6f9430a5c9
-                            9e44f9b68bd94c6476896ba3a0be31e6: ref!! def50bd6-a07c-4f14-96bd-d464e109d755
+                        Children: {}
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: 269af4f1-1eae-482c-9810-843dca74a2dd
                         Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
-                    3e4aa8b4373d1aeb55417ebfee9e1272: !SplineComponent
-                        Id: 0df50647-47ef-4cf2-80a2-5b3573bff7a4
-                        Loop: false
-                        Nodes:
-                            54cbfa1340e6f38ad6da503637b91992: ref!! 7c8a8235-664b-4d48-a0a3-dff5951dc883
-                            5b55ddc46022e91afb500a2912d30a1c: ref!! 4525aa5b-230d-4f73-8f0e-1b34cff5f54e
-                        RenderSettings:
-                            ShowSegments: true
-                            SegmentsMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
-                            ShowNodes: false
-                            NodesMaterial: null
-                            ShowBoundingBox: false
-                            BoundingBoxMaterial: null
                     0f13d0678119184ee49980efbeea9c8a: !SplineMeshComponent
                         Id: f9957ca2-ab5f-4e4f-9c28-b07f0103695f
                         SplineMesh: !SplineMeshCylinder
@@ -373,7 +233,7 @@ Hierarchy:
                                     TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
                         DebugRenderSettings:
                             ShowCurves: true
-                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
                             ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
@@ -405,7 +265,7 @@ Hierarchy:
                         Model: 6c5770f1-e8ec-483f-aa9d-35049e4c3e56:Ground
                         Materials:
                             b6b0704945db6b8336d369d298eb285d~0: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
-                    368602981b598ae21a8ed4e68f48ac5a: !SplineTools.GameProfiler,SplineTools
+                    368602981b598ae21a8ed4e68f48ac5a: !SplineTools.GameProfiler,SplineTest
                         Id: 5c899ce8-e073-40b0-8776-ca2e520bdae1
                         Enabled: true
                         TextColor: {R: 0, G: 0, B: 0, A: 255}
@@ -413,26 +273,6 @@ Hierarchy:
                         SortingMode: ByTime
                         FilteringMode: Fps
                         ResultPage: 1
-        -   Folder: null
-            Entity:
-                Id: 457eee85-3001-439c-8092-e4e8b450fe73
-                Name: B
-                Components:
-                    3b762631430f107c0b569575ce60c509: !TransformComponent
-                        Id: 35a5d504-cd06-447a-a419-030261e12d35
-                        Position: {X: -7.5213814, Y: 0.0, Z: 13.336444}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    f12821e26016f7b452be62d4d93e6792: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: da70819b-3d12-40b1-9de4-7679d04b4552
-                        SplineNode:
-                            Segments: 40
-                            TangentOutLocal: {X: 0.0, Y: 0.0, Z: 10.0}
-                            TangentInLocal: {X: 10.0, Y: 0.0, Z: 0.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
         -   Entity:
                 Id: 4e218d94-49f5-4f7e-a33e-9cf8887734fa
                 Name: CyllinderTubeSpline
@@ -442,27 +282,12 @@ Hierarchy:
                         Position: {X: -0.7133488, Y: 0.46568102, Z: 62.879837}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children:
-                            ac320f6ed796dc63c4e9b061bacd130c: ref!! fc6c5128-2668-43b3-9a38-5141763d6b8a
-                            9e44f9b68bd94c6476896ba3a0be31e6: ref!! 35a5d504-cd06-447a-a419-030261e12d35
+                        Children: {}
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: c82114df-2ca0-4777-9f10-cb41f6864d13
                         Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
-                    3e4aa8b4373d1aeb55417ebfee9e1272: !SplineComponent
-                        Id: b38af933-9bbc-4899-afc2-43b64b235358
-                        Loop: false
-                        Nodes:
-                            54cbfa1340e6f38ad6da503637b91992: ref!! 1c47f013-d306-41d3-87df-6aa477f3a549
-                            5b55ddc46022e91afb500a2912d30a1c: ref!! da70819b-3d12-40b1-9de4-7679d04b4552
-                        RenderSettings:
-                            ShowSegments: true
-                            SegmentsMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
-                            ShowNodes: false
-                            NodesMaterial: null
-                            ShowBoundingBox: false
-                            BoundingBoxMaterial: null
                     0f13d0678119184ee49980efbeea9c8a: !SplineMeshComponent
                         Id: 7c316433-bbc3-416e-8baf-f6738775c717
                         SplineMesh: !SplineMeshTube
@@ -494,132 +319,12 @@ Hierarchy:
                                     TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
                         DebugRenderSettings:
                             ShowCurves: true
-                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
                             ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
                             BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
                             RenderGroup: Group4
-        -   Folder: null
-            Entity:
-                Id: 517fbf00-302b-409f-9f12-3633d357010e
-                Name: A
-                Components:
-                    1fe77c234f191da79029876ed18ccc6a: !TransformComponent
-                        Id: 07fade0c-042c-4d1f-a592-245f414882ec
-                        Position: {X: 3.1420772, Y: 0.044731244, Z: 13.130105}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    ed3d1d2342d68eb6d270fd98469e92b0: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: 056f24b5-1ef9-4166-b5d3-88e297feca8e
-                        SplineNode:
-                            Segments: 2
-                            TangentOutLocal: {X: -10.0, Y: 0.0, Z: 0.0}
-                            TangentInLocal: {X: 0.0, Y: 0.0, Z: -10.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
-        -   Folder: null
-            Entity:
-                Id: 54e36592-5db3-461d-8f75-64f3c162c58a
-                Name: B
-                Components:
-                    3b762631430f107c0b569575ce60c509: !TransformComponent
-                        Id: b5efba2c-b3b5-4b30-b500-ac72dd0fe763
-                        Position: {X: -7.5213814, Y: 0.0, Z: 13.336444}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    f12821e26016f7b452be62d4d93e6792: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: a499b524-759f-4e65-a17e-0fb452429fa8
-                        SplineNode:
-                            Segments: 40
-                            TangentOutLocal: {X: 0.0, Y: 0.0, Z: 10.0}
-                            TangentInLocal: {X: 10.0, Y: 0.0, Z: 0.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
-        -   Folder: null
-            Entity:
-                Id: 688a7721-990b-469c-b3ba-caebfd91abcf
-                Name: A
-                Components:
-                    1fe77c234f191da79029876ed18ccc6a: !TransformComponent
-                        Id: 031f82e2-2b5a-432c-9c8b-45874b5e7ad0
-                        Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    ed3d1d2342d68eb6d270fd98469e92b0: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: 7f357889-8100-42da-97ab-5573b5e42e08
-                        SplineNode:
-                            Segments: 40
-                            TangentOutLocal: {X: 10.0, Y: 0.0, Z: 0.0}
-                            TangentInLocal: {X: -10.0, Y: 0.0, Z: 0.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
-        -   Folder: null
-            Entity:
-                Id: 8b7ff223-7be7-49ee-aa26-86236aabd72b
-                Name: B
-                Components:
-                    3b762631430f107c0b569575ce60c509: !TransformComponent
-                        Id: 7a14bf57-6320-4de4-a7b3-c08e8d39679e
-                        Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    f12821e26016f7b452be62d4d93e6792: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: 92fa7f16-0962-4577-8c09-9ae3381c074f
-                        SplineNode:
-                            Segments: 40
-                            TangentOutLocal: {X: -10.0, Y: 0.0, Z: 0.0}
-                            TangentInLocal: {X: 10.0, Y: 0.0, Z: 0.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
-        -   Folder: null
-            Entity:
-                Id: 9205d88f-d097-452f-8fb6-32e5cf12c82d
-                Name: B
-                Components:
-                    3b762631430f107c0b569575ce60c509: !TransformComponent
-                        Id: 79a22d20-b05d-4a33-a25d-334e450b3f07
-                        Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    f12821e26016f7b452be62d4d93e6792: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: 6d82ac62-1b9b-4fbe-b6b7-25ebc50edb87
-                        SplineNode:
-                            Segments: 40
-                            TangentOutLocal: {X: -10.0, Y: 0.0, Z: 0.0}
-                            TangentInLocal: {X: 10.0, Y: 0.0, Z: 0.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
-        -   Folder: null
-            Entity:
-                Id: 95021873-a567-487a-968f-185c6c3159a5
-                Name: A
-                Components:
-                    1fe77c234f191da79029876ed18ccc6a: !TransformComponent
-                        Id: fc6c5128-2668-43b3-9a38-5141763d6b8a
-                        Position: {X: 2.5980828, Y: 0.044731244, Z: 1.0635667}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    ed3d1d2342d68eb6d270fd98469e92b0: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: 1c47f013-d306-41d3-87df-6aa477f3a549
-                        SplineNode:
-                            Segments: 40
-                            TangentOutLocal: {X: -10.0, Y: 0.0, Z: 0.0}
-                            TangentInLocal: {X: 0.0, Y: 0.0, Z: -10.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
         -   Entity:
                 Id: a3186170-0839-4471-b74d-67a8a5d7333a
                 Name: Camera
@@ -678,27 +383,12 @@ Hierarchy:
                         Position: {X: -20.631067, Y: 1.1567775, Z: 39.38648}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children:
-                            ac320f6ed796dc63c4e9b061bacd130c: ref!! 951f9a32-95c9-42a2-a9d5-7fc4629da929
-                            9e44f9b68bd94c6476896ba3a0be31e6: ref!! 79a22d20-b05d-4a33-a25d-334e450b3f07
+                        Children: {}
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: b8a92064-5459-4b39-92c6-888e4e9fb7a2
                         Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
-                    3e4aa8b4373d1aeb55417ebfee9e1272: !SplineComponent
-                        Id: dbf4665b-fd2c-46bb-a980-89e11de95386
-                        Loop: true
-                        Nodes:
-                            54cbfa1340e6f38ad6da503637b91992: ref!! 8bd83129-0e7e-4a59-82d8-34ed7576194f
-                            5b55ddc46022e91afb500a2912d30a1c: ref!! 6d82ac62-1b9b-4fbe-b6b7-25ebc50edb87
-                        RenderSettings:
-                            ShowSegments: true
-                            SegmentsMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
-                            ShowNodes: false
-                            NodesMaterial: null
-                            ShowBoundingBox: false
-                            BoundingBoxMaterial: null
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: 18d79886-fd10-4ef5-91d8-d579b7d9fb1a
                         SplineMesh: !SplineMeshCylinder
@@ -730,7 +420,7 @@ Hierarchy:
                                     TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
                         DebugRenderSettings:
                             ShowCurves: true
-                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
                             ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
@@ -745,27 +435,12 @@ Hierarchy:
                         Position: {X: -19.658426, Y: 0.0, Z: -0.37735084}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children:
-                            ac320f6ed796dc63c4e9b061bacd130c: ref!! 031f82e2-2b5a-432c-9c8b-45874b5e7ad0
-                            9e44f9b68bd94c6476896ba3a0be31e6: ref!! 7a14bf57-6320-4de4-a7b3-c08e8d39679e
+                        Children: {}
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: 5397e611-7fc7-4c34-9e0b-3dbe7874cc98
                         Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
-                    3e4aa8b4373d1aeb55417ebfee9e1272: !SplineComponent
-                        Id: 7abc11c1-5b96-497d-9302-26a370504f22
-                        Loop: true
-                        Nodes:
-                            54cbfa1340e6f38ad6da503637b91992: ref!! 7f357889-8100-42da-97ab-5573b5e42e08
-                            5b55ddc46022e91afb500a2912d30a1c: ref!! 92fa7f16-0962-4577-8c09-9ae3381c074f
-                        RenderSettings:
-                            ShowSegments: true
-                            SegmentsMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
-                            ShowNodes: false
-                            NodesMaterial: null
-                            ShowBoundingBox: false
-                            BoundingBoxMaterial: null
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: af209539-abd1-4895-8157-719155a3ee30
                         SplineMesh: !SplineMeshPlane
@@ -795,71 +470,12 @@ Hierarchy:
                                     TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
                         DebugRenderSettings:
                             ShowCurves: true
-                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
                             ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
                             BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
                             RenderGroup: Group4
-        -   Entity:
-                Id: d4eba7dd-eb89-42d3-b2ee-597226e01000
-                Name: A
-                Components:
-                    1fe77c234f191da79029876ed18ccc6a: !TransformComponent
-                        Id: 09fdab0d-283e-415f-a1a3-6076be5b9bfd
-                        Position: {X: -0.067720175, Y: 0.0, Z: 0.47736168}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    ed3d1d2342d68eb6d270fd98469e92b0: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: cf5a75de-f38d-4220-b30f-b00c10021581
-                        SplineNode:
-                            Segments: 40
-                            TangentOutLocal: {X: -10.0, Y: 0.0, Z: 0.0}
-                            TangentInLocal: {X: 0.0, Y: 0.0, Z: -10.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
-        -   Folder: null
-            Entity:
-                Id: d6d51fd2-6304-4f7c-9d10-3bbc3a1abda2
-                Name: A
-                Components:
-                    1fe77c234f191da79029876ed18ccc6a: !TransformComponent
-                        Id: faf7c789-7a6f-497b-86ec-a1e0efd49833
-                        Position: {X: 0.28495574, Y: 0.0, Z: 0.24278355}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    ed3d1d2342d68eb6d270fd98469e92b0: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: dac79c59-c679-4373-ba38-82d557a641d4
-                        SplineNode:
-                            Segments: 40
-                            TangentOutLocal: {X: -10.0, Y: 0.0, Z: 0.0}
-                            TangentInLocal: {X: 0.0, Y: 0.0, Z: -10.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
-        -   Folder: null
-            Entity:
-                Id: d957385f-729d-429f-8636-8fd7edd64320
-                Name: A
-                Components:
-                    1fe77c234f191da79029876ed18ccc6a: !TransformComponent
-                        Id: 7a10ecc1-7620-4a32-adc6-7eb2e8241b56
-                        Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    ed3d1d2342d68eb6d270fd98469e92b0: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: 0be85d34-4265-4abe-94d4-115e238023e7
-                        SplineNode:
-                            Segments: 40
-                            TangentOutLocal: {X: 10.0, Y: 0.0, Z: 0.0}
-                            TangentInLocal: {X: -10.0, Y: 0.0, Z: 0.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
         -   Entity:
                 Id: d9e17211-c72c-4cd3-a7aa-11203f81701f
                 Name: CyllinderSpline_LowPoly
@@ -869,27 +485,12 @@ Hierarchy:
                         Position: {X: -0.56220096, Y: 0.46568102, Z: 41.634327}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children:
-                            ac320f6ed796dc63c4e9b061bacd130c: ref!! 07fade0c-042c-4d1f-a592-245f414882ec
-                            9e44f9b68bd94c6476896ba3a0be31e6: ref!! b5efba2c-b3b5-4b30-b500-ac72dd0fe763
+                        Children: {}
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: 06ab7d1c-75e4-4d6a-8a3b-2ec9ef3e0c8c
                         Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
-                    3e4aa8b4373d1aeb55417ebfee9e1272: !SplineComponent
-                        Id: c51e412c-10e3-4701-8ec3-c6e3c8346363
-                        Loop: false
-                        Nodes:
-                            54cbfa1340e6f38ad6da503637b91992: ref!! 056f24b5-1ef9-4166-b5d3-88e297feca8e
-                            5b55ddc46022e91afb500a2912d30a1c: ref!! a499b524-759f-4e65-a17e-0fb452429fa8
-                        RenderSettings:
-                            ShowSegments: true
-                            SegmentsMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
-                            ShowNodes: false
-                            NodesMaterial: null
-                            ShowBoundingBox: false
-                            BoundingBoxMaterial: null
                     0f13d0678119184ee49980efbeea9c8a: !SplineMeshComponent
                         Id: 848f131c-a5a3-42af-a9fc-208624acde74
                         SplineMesh: !SplineMeshCylinder
@@ -921,32 +522,12 @@ Hierarchy:
                                     TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
                         DebugRenderSettings:
                             ShowCurves: true
-                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
                             ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
                             BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
                             RenderGroup: Group4
-        -   Folder: null
-            Entity:
-                Id: da556959-4276-4ab0-98bc-94f07395e84e
-                Name: B
-                Components:
-                    3b762631430f107c0b569575ce60c509: !TransformComponent
-                        Id: d54bba2c-5e65-4524-b6c3-f043cf37049b
-                        Position: {X: -7.5213814, Y: 0.0, Z: 13.336444}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    f12821e26016f7b452be62d4d93e6792: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: 77f5dbfd-d812-492e-8c70-e64f305e7395
-                        SplineNode:
-                            Segments: 40
-                            TangentOutLocal: {X: 0.0, Y: 0.0, Z: 10.0}
-                            TangentInLocal: {X: 10.0, Y: 0.0, Z: 0.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
         -   Entity:
                 Id: dc1d4c92-1327-47c1-93a4-0de1590c88fa
                 Name: BoxSpline
@@ -956,27 +537,12 @@ Hierarchy:
                         Position: {X: -0.79006314, Y: 0.37739605, Z: 20.079206}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children:
-                            ac320f6ed796dc63c4e9b061bacd130c: ref!! faf7c789-7a6f-497b-86ec-a1e0efd49833
-                            9e44f9b68bd94c6476896ba3a0be31e6: ref!! d54bba2c-5e65-4524-b6c3-f043cf37049b
+                        Children: {}
                     09be169be47c889dd7bfc170407ed6f9: !ModelComponent
                         Id: 0f64e383-11e5-450b-8cb7-df90644d3b89
                         Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
                         Materials:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
-                    3e4aa8b4373d1aeb55417ebfee9e1272: !SplineComponent
-                        Id: a37844b3-478f-4744-875f-197a94e04a82
-                        Loop: false
-                        Nodes:
-                            54cbfa1340e6f38ad6da503637b91992: ref!! dac79c59-c679-4373-ba38-82d557a641d4
-                            5b55ddc46022e91afb500a2912d30a1c: ref!! 77f5dbfd-d812-492e-8c70-e64f305e7395
-                        RenderSettings:
-                            ShowSegments: true
-                            SegmentsMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
-                            ShowNodes: false
-                            NodesMaterial: null
-                            ShowBoundingBox: false
-                            BoundingBoxMaterial: null
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: 31701bb4-d3d5-4211-9fed-644aa98ec774
                         SplineMesh: !SplineMeshBox
@@ -1006,32 +572,12 @@ Hierarchy:
                                     TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
                         DebugRenderSettings:
                             ShowCurves: true
-                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
+                            CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
                             ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
                             BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
                             RenderGroup: Group4
-        -   Folder: null
-            Entity:
-                Id: e137c18f-71cc-401a-bf4a-6fee6f42904b
-                Name: A
-                Components:
-                    1fe77c234f191da79029876ed18ccc6a: !TransformComponent
-                        Id: 951f9a32-95c9-42a2-a9d5-7fc4629da929
-                        Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    ed3d1d2342d68eb6d270fd98469e92b0: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: 8bd83129-0e7e-4a59-82d8-34ed7576194f
-                        SplineNode:
-                            Segments: 40
-                            TangentOutLocal: {X: 10.0, Y: 0.0, Z: 0.0}
-                            TangentInLocal: {X: -10.0, Y: 0.0, Z: 0.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
         -   Entity:
                 Id: e436febe-4c37-4096-95ba-b8fa067cd95b
                 Name: Directional light
@@ -1056,42 +602,3 @@ Hierarchy:
                                 PartitionMode: !LightDirectionalShadowMap.PartitionLogarithmic {}
                                 ComputeTransmittance: false
                                 BiasParameters: {}
-        -   Folder: null
-            Entity:
-                Id: ef725423-cb6e-4049-9a3d-8faf473ca240
-                Name: A
-                Components:
-                    1fe77c234f191da79029876ed18ccc6a: !TransformComponent
-                        Id: 0e135424-29d7-4f55-84e7-fc6f9430a5c9
-                        Position: {X: -0.43491513, Y: 0.044731244, Z: 1.9411129}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    ed3d1d2342d68eb6d270fd98469e92b0: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: 7c8a8235-664b-4d48-a0a3-dff5951dc883
-                        SplineNode:
-                            Segments: 16
-                            TangentOutLocal: {X: -10.0, Y: 0.0, Z: 0.0}
-                            TangentInLocal: {X: 0.0, Y: 0.0, Z: -10.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
-        -   Entity:
-                Id: f9c50409-122a-4b44-ba31-f79b11433b69
-                Name: B
-                Components:
-                    3b762631430f107c0b569575ce60c509: !TransformComponent
-                        Id: 1503c8b4-f635-4bbd-95ff-4e90b48615dd
-                        Position: {X: -7.8740573, Y: 0.0, Z: 13.571022}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    f12821e26016f7b452be62d4d93e6792: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: 08266c7e-48dd-430d-8275-6839443aa1c0
-                        SplineNode:
-                            Segments: 40
-                            TangentOutLocal: {X: 0.0, Y: 0.0, Z: 10.0}
-                            TangentInLocal: {X: 10.0, Y: 0.0, Z: 0.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}

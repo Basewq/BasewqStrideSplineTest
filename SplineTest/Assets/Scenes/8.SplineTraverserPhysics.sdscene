@@ -94,26 +94,6 @@ Hierarchy:
                                 BiasParameters:
                                     NormalOffsetScale: 1.0
                         Intensity: 5.0
-        -   Folder: null
-            Entity:
-                Id: 3442c2d2-7d98-45f5-bc67-7b6d2b3edc00
-                Name: Node1
-                Components:
-                    12849867b907b4f072ad6b0a722e7113: !TransformComponent
-                        Id: b9bf74be-c471-46d9-abf1-ad6b3219482c
-                        Position: {X: 0.26514018, Y: -0.5625255, Z: -5.2962074}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    4cfe05c90ae3791cacbe14b76d3cdf38: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: 39a80954-03fb-4da8-8c33-1bc6fa0b3c97
-                        SplineNode:
-                            Segments: 10
-                            TangentOutLocal: {X: -6.0, Y: 0.0, Z: 0.0}
-                            TangentInLocal: {X: 2.0, Y: 0.0, Z: 0.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
         -   Entity:
                 Id: 5d65aebf-6245-4c97-8e67-9586e220451e
                 Name: Crate
@@ -149,24 +129,7 @@ Hierarchy:
                         Position: {X: -0.5263246, Y: 1.6292517, Z: 0.36650455}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children:
-                            fcaff8bfc7ccc2997d1ad89405f6483d: ref!! b9bf74be-c471-46d9-abf1-ad6b3219482c
-                            4c6bcbb9739788ace98ad12051002038: ref!! 9d8be292-16e6-4b84-b657-c16ff55a9f84
-                            5ebb31d13716c2130cc2bd8983cfa608: ref!! e2128251-5d34-446d-8ec7-6a9d4a772923
-                    24e554ca1177df07bc9473147d12c446: !SplineComponent
-                        Id: b5c0cad5-4673-4e81-bb1a-316ef9288d25
-                        Loop: true
-                        Nodes:
-                            e706a950956bc6e1a6d615287b67553d: ref!! 39a80954-03fb-4da8-8c33-1bc6fa0b3c97
-                            a062211d59d321ce068fec0f17ccbbc8: ref!! 13770405-5725-4299-b992-cafffc6cf3e8
-                            3ca7c3bafda2366b20429bad7241c5d3: ref!! b44182a9-aa8e-4879-8340-ef44e8df2889
-                        RenderSettings:
-                            ShowSegments: true
-                            SegmentsMaterial: 2d416634-146f-4b5e-969c-ab6add1c80e6:Materials/LightBlue
-                            ShowNodes: false
-                            NodesMaterial: null
-                            ShowBoundingBox: false
-                            BoundingBoxMaterial: null
+                        Children: {}
                     a64153e25735d382afd425fb0f58b387: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: 958bdf76-71ff-43bb-ab14-19407a8d630b
                         Spline:
@@ -349,25 +312,6 @@ Hierarchy:
                         Materials:
                             55d423913e79087b029b325c6a3a3f38~0: cd6fe2c7-b2ef-4c0e-a5e7-45abaf69c9c8:Materials/Blue
         -   Entity:
-                Id: c6a4c7a7-9237-4ad7-bf6e-dfeb336a5a2e
-                Name: Node3
-                Components:
-                    12849867b907b4f072ad6b0a722e7113: !TransformComponent
-                        Id: e2128251-5d34-446d-8ec7-6a9d4a772923
-                        Position: {X: 4.511736, Y: 1.3842614, Z: -1.6462331}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    4cfe05c90ae3791cacbe14b76d3cdf38: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: b44182a9-aa8e-4879-8340-ef44e8df2889
-                        SplineNode:
-                            Segments: 10
-                            TangentOutLocal: {X: 0.0, Y: 0.0, Z: -2.0}
-                            TangentInLocal: {X: 0.0, Y: 0.0, Z: 2.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
-        -   Entity:
                 Id: d11d84ce-a4e2-4877-9149-0bb46e261223
                 Name: Crate
                 Components:
@@ -381,8 +325,7 @@ Hierarchy:
                         Id: 27dc6aad-16e6-4e75-b8db-1806f6ced5e6
                         Model: 647edf5d-6ee1-4133-b6b5-d1ae1cb7bf29:Prefabs/Crate/Cube
                         Materials:
-                            23f84b454dc2dfd9ee78634648a237e1*~0: df5d783c-17ea-4ba6-a8b1-cceb63ad2a00:Materials/Yellow
-                            f247bb1e1b5e5fd2b9a1ec9f31081fdb~: ~(Deleted)
+                            f247bb1e1b5e5fd2b9a1ec9f31081fdb~0: df5d783c-17ea-4ba6-a8b1-cceb63ad2a00:Materials/Yellow
                     cfa2b70bcd6939fa366b9138ded2b4cf: !RigidbodyComponent
                         Id: e5e571d8-d403-4ba5-8ade-ebb0cd9cc3f2
                         CollisionGroup*: KinematicFilter
@@ -410,26 +353,6 @@ Hierarchy:
                 BasePartAsset: 989f836f-f09f-402b-b75e-3c966c2a1531:Prefabs/Crate/Crate
                 BasePartId: 17fb8a39-b5ba-4539-8453-719336f22f39
                 InstanceId: 76111006-9b93-43b4-be1a-c42bd37ba09d
-        -   Folder: null
-            Entity:
-                Id: d983ba88-0e4c-47dc-9d2c-b63541ea77e1
-                Name: Node2
-                Components:
-                    12849867b907b4f072ad6b0a722e7113: !TransformComponent
-                        Id: 9d8be292-16e6-4b84-b657-c16ff55a9f84
-                        Position: {X: -3.959906, Y: -1.3424315, Z: 3.9012907}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    4cfe05c90ae3791cacbe14b76d3cdf38: !Stride.Engine.Splines.Components.SplineNodeComponent,Stride.Engine
-                        Id: 13770405-5725-4299-b992-cafffc6cf3e8
-                        SplineNode:
-                            Segments: 10
-                            TangentOutLocal: {X: 2.0, Y: 0.0, Z: 0.0}
-                            TangentInLocal: {X: -2.0, Y: 0.0, Z: 0.0}
-                            BoundingBox:
-                                Minimum: {X: 0.0, Y: 0.0, Z: 0.0}
-                                Maximum: {X: 0.0, Y: 0.0, Z: 0.0}
         -   Entity:
                 Id: dc6fb3d7-6c06-4f98-b8b0-faadc578c924
                 Name: Camera
@@ -486,8 +409,7 @@ Hierarchy:
                         Id: 9907aac5-c7ef-464e-b63a-ca4d3e11f5ff
                         Model: 647edf5d-6ee1-4133-b6b5-d1ae1cb7bf29:Prefabs/Crate/Cube
                         Materials:
-                            b867cfb843f35fa2adadf9598c29c82c*~0: df5d783c-17ea-4ba6-a8b1-cceb63ad2a00:Materials/Yellow
-                            f247bb1e1b5e5fd2b9a1ec9f31081fdb~: ~(Deleted)
+                            f247bb1e1b5e5fd2b9a1ec9f31081fdb~0: df5d783c-17ea-4ba6-a8b1-cceb63ad2a00:Materials/Yellow
                     cfa2b70bcd6939fa366b9138ded2b4cf: !RigidbodyComponent
                         Id: 4201ab5e-eec0-4fe1-874a-7ce9c1d9b3f6
                         CanSleep: false
