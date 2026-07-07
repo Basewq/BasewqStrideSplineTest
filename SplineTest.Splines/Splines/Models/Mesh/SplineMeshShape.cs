@@ -5,6 +5,7 @@ using Stride.Core;
 using Stride.Core.Mathematics;
 using Stride.Engine.Splines.Components;
 using Stride.Graphics;
+using System.Runtime.InteropServices;
 
 namespace Stride.Engine.Splines.Models.Mesh;
 
@@ -23,11 +24,13 @@ public class SplineMeshShape : SplineMesh
 
         var splinePoints = new List<Vector3>();
         SplineExtensions.CollectSplineSamplePoints(Spline, splinePoints);
+        var splinePointsSpan = CollectionsMarshal.AsSpan(splinePoints);
         var shapePoints = new List<Vector3>();
         SplineExtensions.CollectSplineSamplePoints(Spline, shapePoints);
+        var shapePointsSpan = CollectionsMarshal.AsSpan(shapePoints);
 
-        int splinePointCount = splinePoints.Count;
-        var shapePointsCount = shapePoints.Count;
+        int splinePointCount = splinePointsSpan.Length;
+        int shapePointsCount = shapePointsSpan.Length;
 
         var totalVertexCount = 4 * (shapePointsCount - 1) * (splinePointCount - 1);
         var totalIndicesCount = (totalVertexCount / 4) * 6;
@@ -39,24 +42,23 @@ public class SplineMeshShape : SplineMesh
         var indices = new int[totalIndicesCount];
 
         int verticesIndex = 0;
-        Vector3 posA, posB, posC, posD;
         float splineDistance = 0.0f;
 
         for (int i = 0; i < splinePointCount - 1; i++)
         {
-            var startPoint = splinePoints[i];
-            var targetPoint = splinePoints[i + 1];
+            var startPoint = splinePointsSpan[i];
+            var targetPoint = splinePointsSpan[i + 1];
             var splineForward = targetPoint - startPoint;
-
             splineForward.Normalize();
+
             var left = Vector3.Cross(splineForward, Vector3.UnitY);
             var right = -left;
             float textureY;
 
             for (int j = 0; j < shapePointsCount - 1; j++)
             {
-                var startShapePoint = shapePoints[j];
-                var targetShapePoint = shapePoints[j + 1];
+                var startShapePoint = shapePointsSpan[j];
+                var targetShapePoint = shapePointsSpan[j + 1];
 
                 var shapeForward = (targetShapePoint - startShapePoint);
                 shapeForward.Normalize();
@@ -67,10 +69,10 @@ public class SplineMeshShape : SplineMesh
                     var temp = right;
                     temp *= targetShapePoint.X - startShapePoint.X;
                     temp.Y += targetShapePoint.Y - startShapePoint.Y;
-                    posA = startPoint;
-                    posB = startPoint + temp;
-                    posC = targetPoint;
-                    posD = targetPoint + temp;
+                    var posA = startPoint;
+                    var posB = startPoint + temp;
+                    var posC = targetPoint;
+                    var posD = targetPoint + temp;
 
                     textureY = splineDistance / UvScale.Y;
                     vertices[verticesIndex++] = CreateVertex(posA, normal, new Vector2(0, textureY));
@@ -84,10 +86,10 @@ public class SplineMeshShape : SplineMesh
                     temp.X *= targetShapePoint.X - startShapePoint.X;
                     temp.Y += targetShapePoint.Y - startShapePoint.Y;
                     //right *= offset.X;
-                    posA = vertices[verticesIndex - 3].Position;
-                    posB = vertices[verticesIndex - 3].Position + temp;
-                    posC = vertices[verticesIndex - 1].Position;
-                    posD = vertices[verticesIndex - 1].Position + temp;
+                    var posA = vertices[verticesIndex - 3].Position;
+                    var posB = vertices[verticesIndex - 3].Position + temp;
+                    var posC = vertices[verticesIndex - 1].Position;
+                    var posD = vertices[verticesIndex - 1].Position + temp;
                     splineDistance += Vector3.Distance(startPoint, targetPoint);
                     textureY = splineDistance / UvScale.Y;
                     vertices[verticesIndex++] = CreateVertex(posA, normal, new Vector2(0, textureY));

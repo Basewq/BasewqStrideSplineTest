@@ -2,6 +2,7 @@
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using System;
+using System.Runtime.InteropServices;
 using Stride.Core;
 using Stride.Core.Mathematics;
 using Stride.Graphics;
@@ -26,7 +27,8 @@ public class SplineMeshCylinder : SplineMesh
     {
         var splinePoints = new List<Vector3>();
         SplineExtensions.CollectSplineSamplePoints(Spline, splinePoints);
-        int splinePointCount = splinePoints.Count;
+        var splinePointsSpan = CollectionsMarshal.AsSpan(splinePoints);
+        int splinePointCount = splinePointsSpan.Length;
         int vertexCount = splinePointCount * Sides;
         int indicesCount = (splinePointCount - 1) * Sides * 6;
 
@@ -49,9 +51,9 @@ public class SplineMeshCylinder : SplineMesh
 
         for (int i = 0; i < splinePointCount; i++)
         {
-            var point = splinePoints[i];
-            var nextPoint = splinePoints[(i + 1) % splinePointCount];
-            Vector3 direction = (nextPoint - point);
+            var point = splinePointsSpan[i];
+            var nextPoint = splinePointsSpan[(i + 1) % splinePointCount];
+            var direction = (nextPoint - point);
             direction.Normalize();
 
             float textureY = splineDistance / UvScale.Y;
@@ -63,16 +65,16 @@ public class SplineMeshCylinder : SplineMesh
                 float x = (float)Math.Cos(angle) * Radius;
                 float z = (float)Math.Sin(angle) * Radius;
 
-                Vector3 perpendicular = new Vector3(-direction.Z, 0, direction.X); // Perpendicular vector on the XZ plane
-                Vector3 sideVertexPosition = point + perpendicular * x + Vector3.UnitY * Scale.Y * z;
-                Vector3 normal = CalculateNormal(sideVertexPosition, point);
+                var perpendicular = new Vector3(-direction.Z, 0, direction.X); // Perpendicular vector on the XZ plane
+                var sideVertexPosition = point + perpendicular * x + Vector3.UnitY * Scale.Y * z;
+                var normal = CalculateRadialNormal(sideVertexPosition, point);
 
                 vertices[verticesIndex++] = CreateVertex(sideVertexPosition, normal, new Vector2((float)side / Sides, textureY));
             }
 
             if (i < splinePointCount - 1)
             {
-                splineDistance += Vector3.Distance(point, splinePoints[i + 1]);
+                splineDistance += Vector3.Distance(point, splinePointsSpan[i + 1]);
             }
         }
 
@@ -103,13 +105,6 @@ public class SplineMeshCylinder : SplineMesh
         }
 
         return new GeometricMeshData<VertexPositionNormalTexture>(vertices, indices, isLeftHanded: true);
-    }
-
-    private Vector3 CalculateNormal(Vector3 vertexPosition, Vector3 centerPosition)
-    {
-        Vector3 radialVector = vertexPosition - centerPosition;
-        radialVector.Normalize();
-        return radialVector;
     }
 
     private void CloseCylinderEnds(int sides, int splinePointCount, VertexPositionNormalTexture[] vertices, int[] indices, ref int indicesIndex)

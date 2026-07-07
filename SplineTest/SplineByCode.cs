@@ -28,14 +28,14 @@ namespace SplineTools
 
         private void GenerateSpline()
         {
-            var controlPointPositions = new Vector3[]
+            Span<Vector3> controlPointPositions = stackalloc Vector3[]
             {
                 new (Random(-4, 4), 1, 0),
                 new (0, 2, Random(-2, 2)),
                 new (-2, 1, Random(-2, 2))
             };
 
-            var tangents = new Vector3[]
+            Span<Vector3> tangents = stackalloc Vector3[]
             {
                 new (Random(-2, 2), Random(-2, 2), Random(0,  3)), //Node 1 - out
                 new (Random(-3, 3), Random(-2, 2), Random(-3, 0)), //Node 1 - in

@@ -1,10 +1,11 @@
 // Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
-using System;
 using Stride.Core;
 using Stride.Core.Mathematics;
 using Stride.Graphics;
+using System;
+using System.Runtime.InteropServices;
 
 namespace Stride.Engine.Splines.Models.Mesh;
 
@@ -26,7 +27,8 @@ public class SplineMeshTube : SplineMesh
     {
         var splinePoints = new List<Vector3>();
         SplineExtensions.CollectSplineSamplePoints(Spline, splinePoints);
-        int splinePointCount = splinePoints.Count;
+        var splinePointsSpan = CollectionsMarshal.AsSpan(splinePoints);
+        int splinePointCount = splinePointsSpan.Length;
         bool isHollow = Radius.X > 0;
         int vertexCount = isHollow ? splinePointCount * Sides * 2 : splinePointCount * Sides;
         int indicesCount = isHollow ? (splinePointCount - 1) * Sides * 12 : (splinePointCount - 1) * Sides * 6;
@@ -50,9 +52,9 @@ public class SplineMeshTube : SplineMesh
 
         for (int i = 0; i < splinePointCount; i++)
         {
-            var point = splinePoints[i];
-            var nextPoint = splinePoints[(i + 1) % splinePointCount];
-            Vector3 direction = (nextPoint - point);
+            var point = splinePointsSpan[i];
+            var nextPoint = splinePointsSpan[(i + 1) % splinePointCount];
+            var direction = (nextPoint - point);
             direction.Normalize();
 
             float textureY = splineDistance / UvScale.Y;
@@ -64,32 +66,32 @@ public class SplineMeshTube : SplineMesh
                 float cosAngle = MathF.Cos(angle);
                 float sinAngle = MathF.Sin(angle);
 
-                Vector3 perpendicular = new Vector3(-direction.Z, 0, direction.X); // Perpendicular vector on the XZ plane
+                var perpendicular = new Vector3(-direction.Z, 0, direction.X); // Perpendicular vector on the XZ plane
 
                 if (isHollow)
                 {
                     // Outer vertices
-                    Vector3 outerVertexPosition = point + perpendicular * cosAngle * Radius.Y + Vector3.UnitY * Scale.Y * sinAngle * Radius.Y;
-                    Vector3 outerNormal = CalculateNormal(outerVertexPosition, point);
+                    var outerVertexPosition = point + perpendicular * cosAngle * Radius.Y + Vector3.UnitY * Scale.Y * sinAngle * Radius.Y;
+                    var outerNormal = CalculateRadialNormal(outerVertexPosition, point);
                     vertices[verticesIndex++] = CreateVertex(outerVertexPosition, outerNormal, new Vector2((float)side / Sides, textureY));
 
                     // Inner vertices
-                    Vector3 innerVertexPosition = point + perpendicular * cosAngle * Radius.X + Vector3.UnitY * Scale.Y * sinAngle * Radius.X;
-                    Vector3 innerNormal = CalculateNormal(innerVertexPosition, point);
+                    var innerVertexPosition = point + perpendicular * cosAngle * Radius.X + Vector3.UnitY * Scale.Y * sinAngle * Radius.X;
+                    var innerNormal = CalculateRadialNormal(innerVertexPosition, point);
                     vertices[verticesIndex++] = CreateVertex(innerVertexPosition, -innerNormal, new Vector2((float)side / Sides, textureY));
                 }
                 else
                 {
                     // Single radius (solid cylinder)
-                    Vector3 sideVertexPosition = point + perpendicular * cosAngle * Radius.Y + Vector3.UnitY * Scale.Y * sinAngle * Radius.Y;
-                    Vector3 normal = CalculateNormal(sideVertexPosition, point);
+                    var sideVertexPosition = point + perpendicular * cosAngle * Radius.Y + Vector3.UnitY * Scale.Y * sinAngle * Radius.Y;
+                    var normal = CalculateRadialNormal(sideVertexPosition, point);
                     vertices[verticesIndex++] = CreateVertex(sideVertexPosition, normal, new Vector2((float)side / Sides, textureY));
                 }
             }
 
             if (i < splinePointCount - 1)
             {
-                splineDistance += Vector3.Distance(point, splinePoints[i + 1]);
+                splineDistance += Vector3.Distance(point, splinePointsSpan[i + 1]);
             }
         }
 
@@ -150,32 +152,25 @@ public class SplineMeshTube : SplineMesh
         {
             if (isHollow)
             {
-                CloseTubeEnds(Sides, splinePoints, vertices, indices, ref indicesIndex);
+                CloseTubeEnds(Sides, splinePointsSpan, vertices, indices, ref indicesIndex);
             }
             else
             {
-                CloseCylinderEnds(Sides, splinePoints, vertices, indices, ref indicesIndex);
+                CloseCylinderEnds(Sides, splinePointsSpan, vertices, indices, ref indicesIndex);
             }
         }
 
         return new GeometricMeshData<VertexPositionNormalTexture>(vertices, indices, isLeftHanded: true);
     }
 
-    private static Vector3 CalculateNormal(Vector3 vertexPosition, Vector3 centerPosition)
-    {
-        Vector3 radialVector = vertexPosition - centerPosition;
-        radialVector.Normalize();
-        return radialVector;
-    }
-
     private void CloseCylinderEnds(
-        int sides, List<Vector3> splinePoints, VertexPositionNormalTexture[] vertices, int[] indices, ref int indicesIndex)
+        int sides, Span<Vector3> splinePoints, VertexPositionNormalTexture[] vertices, int[] indices, ref int indicesIndex)
     {
         int startCapVertexOffset = vertices.Length - 2 * sides;
         int endCapVertexOffset = vertices.Length - sides;
 
-        Vector3 startCenter = splinePoints[0];
-        Vector3 endCenter = splinePoints[^1];
+        var startCenter = splinePoints[0];
+        var endCenter = splinePoints[^1];
 
         // Generate vertices for the caps
         for (int side = 0; side < sides; side++)
@@ -185,13 +180,13 @@ public class SplineMeshTube : SplineMesh
             float z = (float)Math.Sin(angle) * Radius.Y;
 
             // Start cap vertices
-            Vector3 startCapPosition = startCenter + new Vector3(x, 0, z);
-            Vector3 startNormal = -Vector3.UnitY; // Normal pointing inward for the cap
+            var startCapPosition = startCenter + new Vector3(x, 0, z);
+            var startNormal = -Vector3.UnitY; // Normal pointing inward for the cap
             vertices[startCapVertexOffset + side] = new VertexPositionNormalTexture(startCapPosition, startNormal, new Vector2((float)side / sides, 0));
 
             // End cap vertices
-            Vector3 endCapPosition = endCenter + new Vector3(x, 0, z);
-            Vector3 endNormal = Vector3.UnitY; // Normal pointing outward for the cap
+            var endCapPosition = endCenter + new Vector3(x, 0, z);
+            var endNormal = Vector3.UnitY; // Normal pointing outward for the cap
             vertices[endCapVertexOffset + side] = new VertexPositionNormalTexture(endCapPosition, endNormal, new Vector2((float)side / sides, 1));
         }
 
@@ -220,15 +215,15 @@ public class SplineMeshTube : SplineMesh
         }
     }
 
-    private void CloseTubeEnds(int sides, List<Vector3> splinePoints, VertexPositionNormalTexture[] vertices, int[] indices, ref int indicesIndex)
+    private void CloseTubeEnds(int sides, Span<Vector3> splinePoints, VertexPositionNormalTexture[] vertices, int[] indices, ref int indicesIndex)
     {
         int startOuterCapVertexOffset = vertices.Length - 4 * sides;
         int startInnerCapVertexOffset = vertices.Length - 3 * sides;
         int endOuterCapVertexOffset = vertices.Length - 2 * sides;
         int endInnerCapVertexOffset = vertices.Length - sides;
 
-        Vector3 startCenter = splinePoints[0];
-        Vector3 endCenter = splinePoints[^1];
+        var startCenter = splinePoints[0];
+        var endCenter = splinePoints[^1];
 
         // Generate vertices for the caps
         for (int side = 0; side < sides; side++)
@@ -238,17 +233,17 @@ public class SplineMeshTube : SplineMesh
             float sinAngle = (float)Math.Sin(angle);
 
             // Start cap vertices
-            Vector3 startOuterCapPosition = startCenter + new Vector3(cosAngle * Radius.Y, 0, sinAngle * Radius.Y);
-            Vector3 startInnerCapPosition = startCenter + new Vector3(cosAngle * Radius.X, 0, sinAngle * Radius.X);
-            Vector3 startNormal = -Vector3.UnitY; // Normal pointing inward for the cap
+            var startOuterCapPosition = startCenter + new Vector3(cosAngle * Radius.Y, 0, sinAngle * Radius.Y);
+            var startInnerCapPosition = startCenter + new Vector3(cosAngle * Radius.X, 0, sinAngle * Radius.X);
+            var startNormal = -Vector3.UnitY; // Normal pointing inward for the cap
 
             vertices[startOuterCapVertexOffset + side] = new VertexPositionNormalTexture(startOuterCapPosition, startNormal, new Vector2((float)side / sides, 0));
             vertices[startInnerCapVertexOffset + side] = new VertexPositionNormalTexture(startInnerCapPosition, startNormal, new Vector2((float)side / sides, 1));
 
             // End cap vertices
-            Vector3 endOuterCapPosition = endCenter + new Vector3(cosAngle * Radius.Y, 0, sinAngle * Radius.Y);
-            Vector3 endInnerCapPosition = endCenter + new Vector3(cosAngle * Radius.X, 0, sinAngle * Radius.X);
-            Vector3 endNormal = Vector3.UnitY; // Normal pointing outward for the cap
+            var endOuterCapPosition = endCenter + new Vector3(cosAngle * Radius.Y, 0, sinAngle * Radius.Y);
+            var endInnerCapPosition = endCenter + new Vector3(cosAngle * Radius.X, 0, sinAngle * Radius.X);
+            var endNormal = Vector3.UnitY; // Normal pointing outward for the cap
 
             vertices[endOuterCapVertexOffset + side] = new VertexPositionNormalTexture(endOuterCapPosition, endNormal, new Vector2((float)side / sides, 0));
             vertices[endInnerCapVertexOffset + side] = new VertexPositionNormalTexture(endInnerCapPosition, endNormal, new Vector2((float)side / sides, 1));

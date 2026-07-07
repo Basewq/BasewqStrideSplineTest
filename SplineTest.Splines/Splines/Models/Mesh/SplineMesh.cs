@@ -22,14 +22,14 @@ public abstract class SplineMesh : PrimitiveProceduralModelBase
 
     protected abstract override GeometricMeshData<VertexPositionNormalTexture> CreatePrimitiveMeshData();
 
-    protected static VertexPositionNormalTexture CreateVertex(Vector3 position, Vector3 normal, Vector2 texture)
+    protected static VertexPositionNormalTexture CreateVertex(Vector3 position, Vector3 normal, Vector2 texCoord)
     {
-        return new VertexPositionNormalTexture(position, normal, texture);
+        return new VertexPositionNormalTexture(position, normal, texCoord);
     }
 
     protected static Vector3 CalculateRadialNormal(Vector3 vertexPosition, Vector3 centerPosition)
     {
-        Vector3 radialVector = vertexPosition - centerPosition;
+        var radialVector = vertexPosition - centerPosition;
         radialVector.Normalize();
         return radialVector;
     }

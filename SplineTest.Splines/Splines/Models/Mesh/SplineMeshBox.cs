@@ -4,6 +4,7 @@
 using Stride.Core;
 using Stride.Core.Mathematics;
 using Stride.Graphics;
+using System.Runtime.InteropServices;
 
 namespace Stride.Engine.Splines.Models.Mesh;
 
@@ -11,19 +12,12 @@ namespace Stride.Engine.Splines.Models.Mesh;
 [Display("Box")]
 public class SplineMeshBox : SplineMesh
 {
-    private readonly Vector3[] normals =
-    [
-        -Vector3.UnitY, // Down Vector3(0,1,0)
-        -Vector3.UnitX, // Right Vector3(0,1,0)
-        +Vector3.UnitY, // Up Vector3(0,1,0)
-        +Vector3.UnitX  // Left Vector3(0,1,0)
-    ];
-
     protected override GeometricMeshData<VertexPositionNormalTexture> CreatePrimitiveMeshData()
     {
         var splinePoints = new List<Vector3>();
         SplineExtensions.CollectSplineSamplePoints(Spline, splinePoints);
-        int splinePointCount = splinePoints.Count;
+        var splinePointsSpan = CollectionsMarshal.AsSpan(splinePoints);
+        int splinePointCount = splinePointsSpan.Length;
         int vertexCount = splinePointCount * 4 * 2; // 4 sides * 2 per corner
         int indicesCount = (splinePointCount - 1) * 24;
 
@@ -47,10 +41,18 @@ public class SplineMeshBox : SplineMesh
         int triangleIndex = 0;
         float splineDistance = 0.0f;
 
+        Span<Vector3> normals = stackalloc Vector3[]
+        {
+            -Vector3.UnitY, // Down Vector3(0,1,0)
+            -Vector3.UnitX, // Right Vector3(0,1,0)
+            +Vector3.UnitY, // Up Vector3(0,1,0)
+            +Vector3.UnitX  // Left Vector3(0,1,0)
+        };
+        Span<Vector3> sides = stackalloc Vector3[4];
         for (int i = 0; i < splinePointCount - 1; i++)
         {
-            var startPoint = splinePoints[i];
-            var targetPoint = splinePoints[i + 1];
+            var startPoint = splinePointsSpan[i];
+            var targetPoint = splinePointsSpan[i + 1];
             var forward = (targetPoint - startPoint);
             forward.Normalize();
             var right = Vector3.Cross(forward, Vector3.UnitY) * halfWidth;
@@ -58,13 +60,10 @@ public class SplineMeshBox : SplineMesh
             float textureY;
 
             // Create vertices
-            var sides = new Vector3[4]
-            {
-                left - halfHeight,  // Bottom left
-                right - halfHeight, // Bottom right
-                right + halfHeight, // Top right
-                left + halfHeight   // Top Left
-            };
+            sides[0] = left - halfHeight;   // Bottom left
+            sides[1] = right - halfHeight;  // Bottom right
+            sides[2] = right + halfHeight;  // Top right
+            sides[3] = left + halfHeight;   // Top Left
 
             if (i == 0) // First vertexes
             {
@@ -77,9 +76,9 @@ public class SplineMeshBox : SplineMesh
                 }
             }
 
-            if (i == splinePointCount - 2 && Spline.IsClosedLoop) //If Spline.IsClosedLoop is enabled, then the target node is the first node in the entire spline
+            if (i == splinePointCount - 2 && Spline.IsClosedLoop) // If Spline.IsClosedLoop is enabled, then the target node is the first node in the entire spline
             {
-                splineDistance += Vector3.Distance(startPoint, splinePoints[0]);
+                splineDistance += Vector3.Distance(startPoint, splinePointsSpan[0]);
                 textureY = splineDistance / UvScale.Y;
 
                 for (int side = 0; side < sides.Length; side++)

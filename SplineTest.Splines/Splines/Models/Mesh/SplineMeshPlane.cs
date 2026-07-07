@@ -4,6 +4,7 @@
 using Stride.Core;
 using Stride.Core.Mathematics;
 using Stride.Graphics;
+using System.Runtime.InteropServices;
 
 namespace Stride.Engine.Splines.Models.Mesh;
 
@@ -15,7 +16,8 @@ public class SplineMeshPlane : SplineMesh
     {
         var splinePoints = new List<Vector3>();
         SplineExtensions.CollectSplineSamplePoints(Spline, splinePoints);
-        int splinePointCount = splinePoints.Count;
+        var splinePointsSpan = CollectionsMarshal.AsSpan(splinePoints);
+        int splinePointCount = splinePointsSpan.Length;
         int vertexCount = splinePointCount * 2;
         var indexCount = (splinePointCount - 1) * 6;
         if (Spline.IsClosedLoop)
@@ -34,8 +36,8 @@ public class SplineMeshPlane : SplineMesh
 
         for (int i = 0; i < splinePointCount - 1; i++)
         {
-            var startPoint = splinePoints[i];
-            var targetPoint = splinePoints[i + 1];
+            var startPoint = splinePointsSpan[i];
+            var targetPoint = splinePointsSpan[i + 1];
             var forward = (targetPoint - startPoint);
             forward.Normalize();
             var left = Vector3.Cross(forward, Vector3.UnitY) * halfWidth;
@@ -66,10 +68,10 @@ public class SplineMeshPlane : SplineMesh
             if (i == splinePointCount - 2 && Spline.IsClosedLoop)
             {
                 // Create vertices for closing the loop
-                splineDistance += Vector3.Distance(targetPoint, splinePoints[0]);
+                splineDistance += Vector3.Distance(targetPoint, splinePointsSpan[0]);
                 textureY = splineDistance / UvScale.Y;
-                vertices[verticesIndex] = new VertexPositionNormalTexture(splinePoints[0] + left, normal, new Vector2(0, textureY));
-                vertices[verticesIndex + 1] = new VertexPositionNormalTexture(splinePoints[0] + right, normal, new Vector2(1, textureY));
+                vertices[verticesIndex] = new VertexPositionNormalTexture(splinePointsSpan[0] + left, normal, new Vector2(0, textureY));
+                vertices[verticesIndex + 1] = new VertexPositionNormalTexture(splinePointsSpan[0] + right, normal, new Vector2(1, textureY));
 
                 // Create indices for closing the loop
                 var loopIndicesIndex = (splinePointCount - 1) * 6;
