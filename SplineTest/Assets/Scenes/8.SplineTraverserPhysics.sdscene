@@ -120,7 +120,7 @@ Hierarchy:
                 Components:
                     a850e8cabac34034db2d8cf0447fb1af: !TransformComponent
                         Id: 298ac124-7998-470b-a8de-f149838c136d
-                        Position: {X: -0.27350414, Y: 1.8166559, Z: -4.9771767}
+                        Position: {X: -0.17416923, Y: 2.8871832, Z: -4.997641}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children:
@@ -201,7 +201,7 @@ Hierarchy:
                 Components:
                     a850e8cabac34034db2d8cf0447fb1af: !TransformComponent
                         Id: 060c8984-0d4b-48fb-8317-a620cb129d10
-                        Position: {X: 0.33787692, Y: 1.8166559, Z: -4.9771767}
+                        Position: {X: -0.49666208, Y: 2.27661, Z: -5.386213}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children:
@@ -373,7 +373,7 @@ Hierarchy:
                 Components:
                     77488cc2fe54023378c36d95e0fb0379: !TransformComponent
                         Id: 7a6d5948-61d6-4479-b6c4-bdafdda9c517
-                        Position*: {X: 0.57583076, Y: 1.0705273, Z: -0.020464191}
+                        Position: {X: 0.0, Y: 0.2365655, Z: 0.0}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 0.396606, Y: 0.396606, Z: 0.396606}
                         Children: {}
@@ -478,7 +478,7 @@ Hierarchy:
                 Components:
                     77488cc2fe54023378c36d95e0fb0379: !TransformComponent
                         Id: e027c545-6146-4ca1-88f8-33440f44b209
-                        Position*: {X: -0.08453901, Y: 0.45995405, Z: -0.40903628}
+                        Position: {X: 0.0, Y: 0.2365655, Z: 0.0}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 0.396606, Y: 0.396606, Z: 0.396606}
                         Children: {}

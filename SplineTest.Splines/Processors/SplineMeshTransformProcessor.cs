@@ -12,7 +12,7 @@ namespace Stride.Engine.Splines.Processors;
 /// <summary>
 /// The processor for <see cref="SplineMeshComponent"/>.
 /// </summary>
-public class SplineMeshTransformProcessor : EntityProcessor<SplineMeshComponent, SplineMeshTransformProcessor.SplineMeshTransformationInfo>
+public class SplineMeshTransformProcessor : EntityProcessor<SplineMeshComponent, SplineMeshTransformProcessor.AssociatedData>
 {
     private HashSet<SplineMeshComponent> splineMeshComponentsToUpdate = new();
 
@@ -24,20 +24,20 @@ public class SplineMeshTransformProcessor : EntityProcessor<SplineMeshComponent,
     {
     }
 
-    protected override SplineMeshTransformationInfo GenerateComponentData(Entity entity, SplineMeshComponent component)
+    protected override AssociatedData GenerateComponentData(Entity entity, SplineMeshComponent component)
     {
-        return new SplineMeshTransformationInfo
+        return new AssociatedData
         {
             TransformOperation = new SplineMeshViewHierarchyTransformOperation(component),
         };
     }
 
-    protected override bool IsAssociatedDataValid(Entity entity, SplineMeshComponent component, SplineMeshTransformationInfo associatedData)
+    protected override bool IsAssociatedDataValid(Entity entity, SplineMeshComponent component, AssociatedData associatedData)
     {
         return component == associatedData.TransformOperation.SplineMeshComponent;
     }
 
-    protected override void OnEntityComponentAdding(Entity entity, SplineMeshComponent component, SplineMeshTransformationInfo data)
+    protected override void OnEntityComponentAdding(Entity entity, SplineMeshComponent component, AssociatedData data)
     {
         component.OnMeshRequiresUpdate += EnqueueMeshComponentForUpdate;
         if (component.SplineComponent is not null && component.SplineMesh is not null)
@@ -53,7 +53,7 @@ public class SplineMeshTransformProcessor : EntityProcessor<SplineMeshComponent,
         splineMeshComponentsToUpdate.Add(component);
     }
 
-    protected override void OnEntityComponentRemoved(Entity entity, SplineMeshComponent component, SplineMeshTransformationInfo data)
+    protected override void OnEntityComponentRemoved(Entity entity, SplineMeshComponent component, AssociatedData data)
     {
         component.OnMeshRequiresUpdate -= EnqueueMeshComponentForUpdate;
         entity.Transform.PostOperations.Remove(data.TransformOperation);
@@ -116,7 +116,7 @@ public class SplineMeshTransformProcessor : EntityProcessor<SplineMeshComponent,
         splineMeshComponentsToUpdate.Clear();
     }
 
-    public class SplineMeshTransformationInfo
+    public class AssociatedData
     {
         public SplineMeshViewHierarchyTransformOperation TransformOperation;
 
