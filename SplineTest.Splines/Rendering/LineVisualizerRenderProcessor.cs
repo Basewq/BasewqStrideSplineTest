@@ -66,17 +66,20 @@ class LineVisualizerRenderProcessor : EntityProcessor<LineVisualizerComponent, L
 
             bool hasLineSetObjectChanged = lineSet is null || data.PrevLineSetVersion != lineSet.Version;
 
+            bool isEnabled = component.Enabled;
             var renderGroup = component.RenderGroup;
             bool depthTest = component.DepthTest;
             bool hasTransparency = lineSet?.HasTransparency ?? false;
             var occludedStyle = lineSet?.OccludedStyle ?? LineOccludedStyle.None;
 
-            bool hasRenderTypeChanged = renderGroup != data.PrevRenderGroup
+            bool hasRenderTypeChanged = isEnabled != data.PrevIsEnabled
+                || renderGroup != data.PrevRenderGroup
                 || depthTest != data.PrevDepthTest
                 || hasTransparency != data.PrevHasTransparency
                 || occludedStyle != data.PrevOccludedStyle;
             if (hasLineSetObjectChanged || hasRenderTypeChanged)
             {
+                data.PrevIsEnabled = isEnabled;
                 data.PrevRenderGroup = renderGroup;
                 data.PrevDepthTest = depthTest;
                 data.PrevHasTransparency = hasTransparency;
@@ -120,7 +123,8 @@ class LineVisualizerRenderProcessor : EntityProcessor<LineVisualizerComponent, L
         {
             var lineSet = component.LineSet;
             var renderLineSet = data.RenderLineSet;
-            if (lineSet is null
+            if (!component.Enabled
+                || lineSet is null
                 || renderLineSet is null || !renderLineSet.IsLineInstanceListUpdateRequired)
             {
                 continue;
@@ -215,6 +219,7 @@ class LineVisualizerRenderProcessor : EntityProcessor<LineVisualizerComponent, L
         internal uint PrevLineSetVersion = uint.MaxValue;
         internal Matrix PrevWorldMatrix;
 
+        internal bool PrevIsEnabled;
         internal RenderGroup PrevRenderGroup;
         internal bool PrevDepthTest;
         internal bool PrevHasTransparency;

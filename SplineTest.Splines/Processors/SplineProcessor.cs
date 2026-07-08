@@ -91,6 +91,7 @@ public class SplineProcessor : EntityProcessor<SplineComponent, SplineProcessor.
             }
             else
             {
+                data.LineVisualizerComponent.Enabled = true;
                 data.LineVisualizerComponent.LineSet.Segments.Clear();
             }
 
@@ -124,6 +125,7 @@ public class SplineProcessor : EntityProcessor<SplineComponent, SplineProcessor.
             }
             else
             {
+                data.GizmoMarkerSetComponent.Enabled = true;
                 data.GizmoMarkerSetComponent.GizmoMarkerSet.Markers.Clear();
             }
 

@@ -77,6 +77,7 @@ public class SplineMeshTransformProcessor : EntityProcessor<SplineMeshComponent,
             if (splineMeshComponent.SplineComponent?.Spline is null || splineMeshComponent.SplineMesh is null)
             {
                 data.MeshModelComponent?.Enabled = false;
+                data.MeshModelComponent?.Model = null;
                 data.ModelResource.ReleaseResources();
                 continue;
             }
@@ -93,7 +94,7 @@ public class SplineMeshTransformProcessor : EntityProcessor<SplineMeshComponent,
             }
 
             if (splineMeshComponent.SplineMesh is SplineMeshShape splineMeshShape
-                && splineMeshShape.SplineComponent is null)
+                && splineMeshShape.SplineComponent?.Spline is null)
             {
                 continue;
             }
@@ -110,6 +111,7 @@ public class SplineMeshTransformProcessor : EntityProcessor<SplineMeshComponent,
             splineMeshComponent.SplineMesh.Generate(Services, model);
             data.ModelResource.AddFromModel(model);
             data.MeshModelComponent.Model = model;
+            data.MeshModelComponent.Enabled = true;
         }
 
         // Now that dirty splines meshes are updated, clear the collection

@@ -66,17 +66,20 @@ class GizmoMarkerSetRenderProcessor : EntityProcessor<GizmoMarkerSetComponent, G
 
             bool hasGizmoMarkerSetObjectChanged = markerSet is null || data.PrevGizmoMarkerSetVersion != markerSet.Version;
 
+            bool isEnabled = component.Enabled;
             var renderGroup = component.RenderGroup;
             bool depthTest = component.DepthTest;
             bool hasTransparency = markerSet?.HasTransparency ?? false;
             var occludedStyle = markerSet?.OccludedStyle ?? GizmoMarkerOccludedStyle.None;
 
-            bool hasRenderTypeChanged = renderGroup != data.PrevRenderGroup
+            bool hasRenderTypeChanged = isEnabled != data.PrevIsEnabled
+                || renderGroup != data.PrevRenderGroup
                 || depthTest != data.PrevDepthTest
                 || hasTransparency != data.PrevHasTransparency
                 || occludedStyle != data.PrevOccludedStyle;
             if (hasGizmoMarkerSetObjectChanged || hasRenderTypeChanged)
             {
+                data.PrevIsEnabled = isEnabled;
                 data.PrevRenderGroup = renderGroup;
                 data.PrevDepthTest = depthTest;
                 data.PrevHasTransparency = hasTransparency;
@@ -120,7 +123,8 @@ class GizmoMarkerSetRenderProcessor : EntityProcessor<GizmoMarkerSetComponent, G
         {
             var markerSet = component.GizmoMarkerSet;
             var renderGizmoMarkerSet = data.RenderGizmoMarkerSet;
-            if (markerSet is null
+            if (!component.Enabled
+                || markerSet is null
                 || renderGizmoMarkerSet is null || !renderGizmoMarkerSet.IsGizmoMarkerInstanceUpdateRequired)
             {
                 continue;
@@ -217,6 +221,7 @@ class GizmoMarkerSetRenderProcessor : EntityProcessor<GizmoMarkerSetComponent, G
         internal uint PrevGizmoMarkerSetVersion = uint.MaxValue;
         internal Matrix PrevWorldMatrix;
 
+        internal bool PrevIsEnabled;
         internal RenderGroup PrevRenderGroup;
         internal bool PrevDepthTest;
         internal bool PrevHasTransparency;
