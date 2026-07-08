@@ -15,8 +15,6 @@ using Stride.Core.Quantum;
 using Stride.Core.Serialization;
 using Stride.Editor.EditorGame.ContentLoader;
 using Stride.Engine;
-using Stride.GameStudio.View;
-using Stride.GameStudio.ViewModels;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
@@ -31,8 +29,8 @@ public class StrideEditorService : IStrideEditorService
     {
         get
         {
-            var gsVm = GameStudioViewModel.GameStudio;
-            bool isValid = IsValid(gsVm);
+            var editorVm = EditorViewModel.Instance;
+            bool isValid = IsValid(editorVm);
             return isValid;
         }
     }
@@ -65,12 +63,12 @@ public class StrideEditorService : IStrideEditorService
 
     public void Invoke(Action action)
     {
-        var gsVm = GameStudioViewModel.GameStudio;
-        if (!IsValid(gsVm))
+        var editorVm = EditorViewModel.Instance;
+        if (!IsValid(editorVm))
         {
             return;
         }
-        gsVm.StrideAssets.Dispatcher.Invoke(() =>
+        StrideAssetsViewModel.Instance.Dispatcher.Invoke(() =>
         {
             _editorViewModels = EditorViewModels.Create();
             action();
@@ -80,12 +78,12 @@ public class StrideEditorService : IStrideEditorService
 
     public void Invoke(Action<SessionViewModel> action)
     {
-        var gsVm = GameStudioViewModel.GameStudio;
-        if (!IsValid(gsVm))
+        var editorVm = EditorViewModel.Instance;
+        if (!IsValid(editorVm))
         {
             return;
         }
-        gsVm.StrideAssets.Dispatcher.Invoke(() =>
+        StrideAssetsViewModel.Instance.Dispatcher.Invoke(() =>
         {
             _editorViewModels = EditorViewModels.Create();
             action(_editorViewModels?.SessionViewModel!);
@@ -95,12 +93,12 @@ public class StrideEditorService : IStrideEditorService
 
     public Task InvokeAsync(Func<Task> actionAsync)
     {
-        var gsVm = GameStudioViewModel.GameStudio;
-        if (!IsValid(gsVm))
+        var editorVm = EditorViewModel.Instance;
+        if (!IsValid(editorVm))
         {
             return Task.CompletedTask;
         }
-        var task = gsVm.StrideAssets.Dispatcher.InvokeTask(async () =>
+        var task = StrideAssetsViewModel.Instance.Dispatcher.InvokeTask(async () =>
         {
             _editorViewModels = EditorViewModels.Create();
             await actionAsync();
@@ -111,12 +109,12 @@ public class StrideEditorService : IStrideEditorService
 
     public Task InvokeAsync(Func<SessionViewModel, Task> actionAsync)
     {
-        var gsVm = GameStudioViewModel.GameStudio;
-        if (!IsValid(gsVm))
+        var editorVm = EditorViewModel.Instance;
+        if (!IsValid(editorVm))
         {
             return Task.CompletedTask;
         }
-        var task = gsVm.StrideAssets.Dispatcher.InvokeTask(async () =>
+        var task = StrideAssetsViewModel.Instance.Dispatcher.InvokeTask(async () =>
         {
             _editorViewModels = EditorViewModels.Create();
             await actionAsync(_editorViewModels?.SessionViewModel!);
@@ -674,12 +672,12 @@ public class StrideEditorService : IStrideEditorService
             return obj;
         }
 
-        var gsVm = GameStudioViewModel.GameStudio;
-        if (!IsValid(gsVm))
+        var editorVm = EditorViewModel.Instance;
+        if (!IsValid(editorVm))
         {
             return default;
         }
-        var returnValue = gsVm.StrideAssets.Dispatcher.Invoke(() =>
+        var returnValue = StrideAssetsViewModel.Instance.Dispatcher.Invoke(() =>
         {
             _editorViewModels = EditorViewModels.Create();
             var obj = func();
@@ -725,21 +723,21 @@ public class StrideEditorService : IStrideEditorService
         }
     }
 
-    private static Func<GameStudioViewModel, bool>? IsGameStudioViewModelDestroyed;
-    private static bool IsValid(GameStudioViewModel gsVm)
+    private static Func<ViewModelBase, bool>? IsGameStudioViewModelDestroyed;
+    private static bool IsValid(ViewModelBase editorVm)
     {
         // HACK: When closing the editor, UI events may be triggered causing your own code
         // to try invoke UI methods. We check the GameStudioViewModel if its IsDestroyed value
         // which is true when the editor is closing.
         if (IsGameStudioViewModelDestroyed is null)
         {
-            var isDestroyed_PropertyInfo = typeof(GameStudioViewModel).GetProperty("IsDestroyed", BindingFlags.NonPublic | BindingFlags.Instance);
+            var isDestroyed_PropertyInfo = typeof(ViewModelBase).GetProperty("IsDestroyed", BindingFlags.NonPublic | BindingFlags.Instance);
             Debug.Assert(isDestroyed_PropertyInfo is not null);
             var isDestroyed_MethodInfo = isDestroyed_PropertyInfo.GetGetMethod(nonPublic: true);
             Debug.Assert(isDestroyed_MethodInfo is not null);
-            IsGameStudioViewModelDestroyed = isDestroyed_MethodInfo.CreateDelegate<Func<GameStudioViewModel, bool>>();
+            IsGameStudioViewModelDestroyed = isDestroyed_MethodInfo.CreateDelegate<Func<ViewModelBase, bool>>();
         }
-        return !IsGameStudioViewModelDestroyed(gsVm);
+        return !IsGameStudioViewModelDestroyed(editorVm);
     }
 
     private static void NullCheck<T>([NotNull] T? objectToCheck, string errorMessage)
@@ -760,19 +758,15 @@ public class StrideEditorService : IStrideEditorService
         {
             var viewModels = new EditorViewModels();
 
-            //var editorVm = Stride.Core.Assets.Editor.ViewModel.EditorViewModel.Instance as Stride.GameStudio.GameStudioViewModel;     // Unused
-
             // Application.Current must be accessed on the UI thread
-            var window = (GameStudioWindow)System.Windows.Application.Current.MainWindow;
+            var window = System.Windows.Application.Current.MainWindow;
             var sceneEditorView = window.GetChildOfType<SceneEditorView>();
             var sceneEditorVm = sceneEditorView?.DataContext as SceneEditorViewModel;
             var sceneVm = sceneEditorVm?.Asset;
 
-            var gsVm = GameStudioViewModel.GameStudio;
-
             viewModels.SceneViewModel = sceneVm;
             viewModels.SceneEditorViewModel = sceneEditorVm;
-            viewModels.SessionViewModel = gsVm.Session;
+            viewModels.SessionViewModel = EditorViewModel.Instance.Session;
 
             return viewModels;
         }
