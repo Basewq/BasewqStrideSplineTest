@@ -841,7 +841,7 @@ Hierarchy:
                             IsClosedLoop: false
                             ControlPoints:
                                 630519b868f4a4dc0717a92e0e9a0294:
-                                    Position: {X: 3.1420772, Y: 0.044731244, Z: 13.130105}
+                                    Position: {X: -0.43491513, Y: 0.044731244, Z: 1.9411129}
                                     Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                                     TangentIn: {X: 0.0, Y: 0.0, Z: -10.0}
                                     TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
