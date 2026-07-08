@@ -18,13 +18,8 @@ public class SplineMeshPlane : SplineMesh
         SplineExtensions.CollectSplineSamplePoints(Spline, splinePoints);
         var splinePointsSpan = CollectionsMarshal.AsSpan(splinePoints);
         int splinePointCount = splinePointsSpan.Length;
-        int vertexCount = splinePointCount * 2;
-        var indexCount = (splinePointCount - 1) * 6;
-        if (Spline.IsClosedLoop)
-        {
-            vertexCount += 2;
-            indexCount += 6;
-        }
+        int vertexCount = splinePointCount * 2;         // 2 vertices to form a single edge
+        int indexCount = (splinePointCount - 1) * 6;    // 6 indices = 2 tris * 3 indices => 1 quad
 
         var vertices = new VertexPositionNormalTexture[vertexCount];
         var indices = new int[indexCount];
@@ -38,14 +33,13 @@ public class SplineMeshPlane : SplineMesh
         {
             var startPoint = splinePointsSpan[i];
             var targetPoint = splinePointsSpan[i + 1];
-            var forward = (targetPoint - startPoint);
-            forward.Normalize();
+            var forward = Vector3.Normalize(targetPoint - startPoint);
+
             var left = Vector3.Cross(forward, Vector3.UnitY) * halfWidth;
             var right = -left;
             var normal = Vector3.UnitY;
-            float textureY;
 
-            // Create vertices
+            // Generate vertices around the spline at position 'startPoint'
             if (i == 0)
             {
                 vertices[verticesIndex] = new VertexPositionNormalTexture(startPoint + left, normal, new Vector2(0, 0));
@@ -53,8 +47,9 @@ public class SplineMeshPlane : SplineMesh
                 verticesIndex += 2;
             }
 
+            // Generate vertices around the spline at position 'targetPoint'
             splineDistance += Vector3.Distance(startPoint, targetPoint);
-            textureY = splineDistance / UvScale.Y;
+            float textureY = splineDistance / UvScale.Y;
             vertices[verticesIndex] = new VertexPositionNormalTexture(targetPoint + left, normal, new Vector2(0, textureY));
             vertices[verticesIndex + 1] = new VertexPositionNormalTexture(targetPoint + right, normal, new Vector2(1, textureY));
             verticesIndex += 2;
@@ -63,19 +58,15 @@ public class SplineMeshPlane : SplineMesh
             var indicesIndex = i * 6;
             SetIndices(indices, triangleIndex, indicesIndex);
             triangleIndex += 2;
+        }
 
-            // If this was the last loop, we do 1 additional check for closing if spline is Spline.IsClosedLoop
-            if (i == splinePointCount - 2 && Spline.IsClosedLoop)
+        if (Spline.IsClosedLoop)
+        {
+            // Stitch the start/end positions to remove seams.
+            int endStartIndex = vertices.Length - 2;
+            for (int i = 0; i < 2; i++)
             {
-                // Create vertices for closing the loop
-                splineDistance += Vector3.Distance(targetPoint, splinePointsSpan[0]);
-                textureY = splineDistance / UvScale.Y;
-                vertices[verticesIndex] = new VertexPositionNormalTexture(splinePointsSpan[0] + left, normal, new Vector2(0, textureY));
-                vertices[verticesIndex + 1] = new VertexPositionNormalTexture(splinePointsSpan[0] + right, normal, new Vector2(1, textureY));
-
-                // Create indices for closing the loop
-                var loopIndicesIndex = (splinePointCount - 1) * 6;
-                SetIndices(indices, triangleIndex, loopIndicesIndex);
+                StitchVertexPositions(vertices, i, endStartIndex + i);
             }
         }
 

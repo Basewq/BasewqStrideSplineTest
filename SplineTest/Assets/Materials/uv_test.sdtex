@@ -1,0 +1,7 @@
+!Texture
+Id: 9d03ea57-f261-45c7-b2df-07e967b94445
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../Resources/Materials/uv_test.png
+Type: !ColorTextureType
+    ColorKeyColor: {R: 255, G: 0, B: 255, A: 255}

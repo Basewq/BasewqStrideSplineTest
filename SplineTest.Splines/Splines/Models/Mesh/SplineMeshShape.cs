@@ -15,9 +15,10 @@ public class SplineMeshShape : SplineMesh
 {
     public SplineComponent SplineComponent;
 
+    // TODO: No idea how this should work...
     protected override GeometricMeshData<VertexPositionNormalTexture> CreatePrimitiveMeshData()
     {
-        if (SplineComponent is null)
+        if (SplineComponent?.Spline is null)
         {
             return null;
         }
@@ -26,17 +27,17 @@ public class SplineMeshShape : SplineMesh
         SplineExtensions.CollectSplineSamplePoints(Spline, splinePoints);
         var splinePointsSpan = CollectionsMarshal.AsSpan(splinePoints);
         var shapePoints = new List<Vector3>();
-        SplineExtensions.CollectSplineSamplePoints(Spline, shapePoints);
+        SplineExtensions.CollectSplineSamplePoints(SplineComponent.Spline, shapePoints);
         var shapePointsSpan = CollectionsMarshal.AsSpan(shapePoints);
 
         int splinePointCount = splinePointsSpan.Length;
         int shapePointsCount = shapePointsSpan.Length;
 
-        var totalVertexCount = 4 * (shapePointsCount - 1) * (splinePointCount - 1);
-        var totalIndicesCount = (totalVertexCount / 4) * 6;
+        int totalVertexCount = 4 * (shapePointsCount - 1) * (splinePointCount - 1);
+        int totalIndicesCount = (totalVertexCount / 4) * 6;
 
-        var verticesPerShapeCount = (shapePointsCount - 1) * 2;
-        var indicesPerShapeCount = (shapePointsCount - 1) * 6;
+        int verticesPerShapeCount = (shapePointsCount - 1) * 2;
+        int indicesPerShapeCount = (shapePointsCount - 1) * 6;
 
         var vertices = new VertexPositionNormalTexture[totalVertexCount];
         var indices = new int[totalIndicesCount];
@@ -60,8 +61,7 @@ public class SplineMeshShape : SplineMesh
                 var startShapePoint = shapePointsSpan[j];
                 var targetShapePoint = shapePointsSpan[j + 1];
 
-                var shapeForward = (targetShapePoint - startShapePoint);
-                shapeForward.Normalize();
+                var shapeForward = Vector3.Normalize(targetShapePoint - startShapePoint);
                 var normal = Vector3.Cross(shapeForward, Vector3.UnitY);
                 // First vertices
                 if (j == 0)

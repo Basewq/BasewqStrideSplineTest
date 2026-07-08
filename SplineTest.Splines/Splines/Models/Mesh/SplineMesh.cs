@@ -33,4 +33,13 @@ public abstract class SplineMesh : PrimitiveProceduralModelBase
         radialVector.Normalize();
         return radialVector;
     }
+
+    protected static void StitchVertexPositions(VertexPositionNormalTexture[] vertices, int index1, int index2)
+    {
+        var pos1 = vertices[index1].Position;
+        var pos2 = vertices[index2].Position;
+        var avgPos = (pos1 + pos2) * 0.5f;
+        vertices[index1].Position = avgPos;
+        vertices[index2].Position = avgPos;
+    }
 }
