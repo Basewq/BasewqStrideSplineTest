@@ -13,118 +13,88 @@ namespace Stride.Engine.Splines.Models.Mesh;
 [Display("Spline")]
 public class SplineMeshShape : SplineMesh
 {
-    public SplineComponent SplineComponent;
+    public SplineComponent ShapeSplineComponent;
 
-    // TODO: No idea how this should work...
     protected override GeometricMeshData<VertexPositionNormalTexture> CreatePrimitiveMeshData()
     {
-        if (SplineComponent?.Spline is null)
+        if (ShapeSplineComponent?.Spline is null)
         {
             return null;
         }
 
-        var splinePoints = new List<Vector3>();
-        SplineExtensions.CollectSplineSamplePoints(Spline, splinePoints);
-        var splinePointsSpan = CollectionsMarshal.AsSpan(splinePoints);
-        var shapePoints = new List<Vector3>();
-        SplineExtensions.CollectSplineSamplePoints(SplineComponent.Spline, shapePoints);
-        var shapePointsSpan = CollectionsMarshal.AsSpan(shapePoints);
+        var splineSamples = new List<SplineSample>();
+        SplineExtensions.CollectSplineSamples(Spline, splineSamples, sampleStepDistance: 0.5f);     // TODO adaptive
+        var splineSamplesSpan = CollectionsMarshal.AsSpan(splineSamples);
+        var shapeProfileVertices = BuildProfileVertices(ShapeSplineComponent.Spline);
 
-        int splinePointCount = splinePointsSpan.Length;
-        int shapePointsCount = shapePointsSpan.Length;
+        int splinePointCount = splineSamplesSpan.Length;
+        int shapeProfileVerticesCount = shapeProfileVertices.Length;
+        int shapeProfileEdgeCount = shapeProfileVerticesCount - 1;
 
-        int totalVertexCount = 4 * (shapePointsCount - 1) * (splinePointCount - 1);
-        int totalIndicesCount = (totalVertexCount / 4) * 6;
-
-        int verticesPerShapeCount = (shapePointsCount - 1) * 2;
-        int indicesPerShapeCount = (shapePointsCount - 1) * 6;
+        int totalVertexCount = splinePointCount * shapeProfileVerticesCount;
+        int totalIndicesCount = (splinePointCount - 1) * shapeProfileEdgeCount * 6;
 
         var vertices = new VertexPositionNormalTexture[totalVertexCount];
         var indices = new int[totalIndicesCount];
 
         int verticesIndex = 0;
+        int indicesIndex = 0;
         float splineDistance = 0.0f;
 
-        for (int i = 0; i < splinePointCount - 1; i++)
+        var prevSplinePosition = splineSamplesSpan[0].Position;
+        for (int i = 0; i < splinePointCount; i++)
         {
-            var startPoint = splinePointsSpan[i];
-            var targetPoint = splinePointsSpan[i + 1];
-            var splineForward = targetPoint - startPoint;
-            splineForward.Normalize();
+            var sample = splineSamplesSpan[i];
+            var splinePosition = sample.Position;
+            var forward = sample.Tangent;
 
-            var left = Vector3.Cross(splineForward, Vector3.UnitY);
-            var right = -left;
-            float textureY;
+            var profileLocalRotation = Quaternion.BetweenDirections(Vector3.UnitZ, forward);
 
-            for (int j = 0; j < shapePointsCount - 1; j++)
+            splineDistance += Vector3.Distance(prevSplinePosition, splinePosition);
+            prevSplinePosition = splinePosition;
+            float textureY = splineDistance / EnsureNonZero(UvScale.Y);
+            for (int profIdx = 0; profIdx < shapeProfileVertices.Length; profIdx++)
             {
-                var startShapePoint = shapePointsSpan[j];
-                var targetShapePoint = shapePointsSpan[j + 1];
+                ref readonly var profVert = ref shapeProfileVertices[profIdx];
 
-                var shapeForward = Vector3.Normalize(targetShapePoint - startShapePoint);
-                var normal = Vector3.Cross(shapeForward, Vector3.UnitY);
-                // First vertices
-                if (j == 0)
-                {
-                    var temp = right;
-                    temp *= targetShapePoint.X - startShapePoint.X;
-                    temp.Y += targetShapePoint.Y - startShapePoint.Y;
-                    var posA = startPoint;
-                    var posB = startPoint + temp;
-                    var posC = targetPoint;
-                    var posD = targetPoint + temp;
+                var vertPos = profileLocalRotation * profVert.Position;
+                vertPos += splinePosition;
+                var vertNorm = profileLocalRotation * profVert.Normal;
+                var texCoordX = profVert.ProfileT / EnsureNonZero(UvScale.X);
 
-                    textureY = splineDistance / UvScale.Y;
-                    vertices[verticesIndex++] = CreateVertex(posA, normal, new Vector2(0, textureY));
-                    vertices[verticesIndex++] = CreateVertex(posB, normal, new Vector2(1, textureY));
-                    vertices[verticesIndex++] = CreateVertex(posC, normal, new Vector2(0, textureY));
-                    vertices[verticesIndex++] = CreateVertex(posD, normal, new Vector2(1, textureY));
-                }
-                else
-                {
-                    var temp = right;
-                    temp.X *= targetShapePoint.X - startShapePoint.X;
-                    temp.Y += targetShapePoint.Y - startShapePoint.Y;
-                    //right *= offset.X;
-                    var posA = vertices[verticesIndex - 3].Position;
-                    var posB = vertices[verticesIndex - 3].Position + temp;
-                    var posC = vertices[verticesIndex - 1].Position;
-                    var posD = vertices[verticesIndex - 1].Position + temp;
-                    splineDistance += Vector3.Distance(startPoint, targetPoint);
-                    textureY = splineDistance / UvScale.Y;
-                    vertices[verticesIndex++] = CreateVertex(posA, normal, new Vector2(0, textureY));
-                    vertices[verticesIndex++] = CreateVertex(posB, normal, new Vector2(1, textureY));
-                    vertices[verticesIndex++] = CreateVertex(posC, normal, new Vector2(0, textureY));
-                    vertices[verticesIndex++] = CreateVertex(posD, normal, new Vector2(1, textureY));
-                }
+                vertices[verticesIndex++] = CreateVertex(vertPos, vertNorm, new Vector2(texCoordX, textureY));
             }
+
         }
 
         for (int i = 0; i < splinePointCount - 1; i++)
         {
-            for (int j = 0; j < shapePointsCount - 1; j++)
+            int currentShapeStartIndex = i * shapeProfileVerticesCount;
+            int nextShapeStartIndex = (i + 1) * shapeProfileVerticesCount;
+
+            for (int j = 0; j < shapeProfileVerticesCount - 1; j++)
             {
-                //if (j > 0)
-                {
-                    // Indices
-                    int vertexIndex = i * verticesPerShapeCount * 2; // Huidige Spline iteratie, 6, 12, 18
-                    int vertexShapeIndex = j * 4;
+                int currentShapeVert0 = currentShapeStartIndex + j;
+                int currentShapeVert1 = currentShapeVert0 + 1;
+                int nextShapeVert0 = nextShapeStartIndex + j;
+                int nextShapeVert1 = nextShapeVert0 + 1;
 
-                    int indiceIndex = i * indicesPerShapeCount;
-                    int triangleIndex = j * 6;
+                indices[indicesIndex++] = currentShapeVert0;
+                indices[indicesIndex++] = nextShapeVert1;
+                indices[indicesIndex++] = nextShapeVert0;
 
-                    indices[indiceIndex + triangleIndex + 0] = vertexIndex + vertexShapeIndex + 0;
-                    indices[indiceIndex + triangleIndex + 1] = vertexIndex + vertexShapeIndex + 2;
-                    indices[indiceIndex + triangleIndex + 2] = vertexIndex + vertexShapeIndex + 1;
-
-                    indices[indiceIndex + triangleIndex + 3] = vertexIndex + vertexShapeIndex + 1;
-                    indices[indiceIndex + triangleIndex + 4] = vertexIndex + vertexShapeIndex + 2;
-                    indices[indiceIndex + triangleIndex + 5] = vertexIndex + vertexShapeIndex + 3;
-                }
+                indices[indicesIndex++] = currentShapeVert0;
+                indices[indicesIndex++] = currentShapeVert1;
+                indices[indicesIndex++] = nextShapeVert1;
             }
         }
 
         // Create the primitive object for further processing by the base class
         return new GeometricMeshData<VertexPositionNormalTexture>(vertices, indices, isLeftHanded: false);
+    }
+
+    private float EnsureNonZero(float value)
+    {
+        return value == 0 ? 1 : value;
     }
 }

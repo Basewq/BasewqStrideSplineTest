@@ -26,6 +26,8 @@ Hierarchy:
         - ref!! c798390b-a691-4f05-ab4a-19250dd788f6
         - ref!! 4e218d94-49f5-4f7e-a33e-9cf8887734fa
         - ref!! 0593fca2-393d-4f15-8217-9d9ba1755502
+        - ref!! 8aac7a2e-3fd2-48af-923e-24d35312a3de
+        - ref!! 3955ea41-5323-4bff-8184-9029c02038a7
     Parts:
         -   Entity:
                 Id: 012ee796-7bcf-43eb-805d-6182cdce8f17
@@ -244,6 +246,50 @@ Hierarchy:
                         Type: !LightAmbient
                             Color: !ColorRgbProvider
                                 Value: {R: 0.54365, G: 0.655, B: 0.62493545}
+        -   Folder: null
+            Entity:
+                Id: 3955ea41-5323-4bff-8184-9029c02038a7
+                Name: MeshShapeTarget
+                Components:
+                    3048e49ff5a16ef987b325d524fcfaf9: !TransformComponent
+                        Id: 3a0c1199-2b36-4c40-a207-c5a8e9a8c186
+                        Position: {X: -42.631065, Y: 1.1567775, Z: 11.432938}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    09be169be47c889dd7bfc170407ed6f9: !ModelComponent
+                        Id: 4710f370-6237-4f76-aae0-bd2a58d6614c
+                        Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
+                        Materials:
+                            b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
+                    83b65823e45b8877a923b91487dd1cef: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
+                        Id: ce0f003c-b61e-4f9c-bc2d-a252db6df14b
+                        Spline:
+                            IsClosedLoop: true
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: -0.76260376, Y: 1.4999999, Z: 0.0}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: -2.0, Y: -0.0, Z: 0.0}
+                                    TangentOut: {X: 2.0, Y: 0.0, Z: 0.0}
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: 0.6765938, Y: 0.018047452, Z: 0.0}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: -1.8994179, Y: 0.48979062, Z: 0.0}
+                                    TangentOut: {X: 1.8994179, Y: -0.48979062, Z: -0.0}
+                                209f2943a922266b3161876cf5da13fb:
+                                    Position: {X: -1.823494, Y: -1.5, Z: 0.0}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 1.0, Y: -0.0, Z: 0.0}
+                                    TangentOut: {X: -1.0, Y: 0.0, Z: 0.0}
+                        DebugRenderSettings:
+                            ShowCurves: true
+                            CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowControlPoints: false
+                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
+                            ShowBoundingBox: false
+                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
+                            RenderGroup: Group4
         -   Entity:
                 Id: 39c6e7e1-3823-4fc2-a3bc-d2b3936680d7
                 Name: CyllinderSpline_MediumPoly
@@ -526,6 +572,58 @@ Hierarchy:
                                     TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
                                 3a4ed491ec78697825ec2ca884d34108:
                                     Position: {X: -5.0, Y: 0.0, Z: 15.0}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                        DebugRenderSettings:
+                            ShowCurves: true
+                            CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowControlPoints: false
+                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
+                            ShowBoundingBox: false
+                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
+                            RenderGroup: Group4
+        -   Folder: null
+            Entity:
+                Id: 8aac7a2e-3fd2-48af-923e-24d35312a3de
+                Name: MeshShapeSpline
+                Components:
+                    3048e49ff5a16ef987b325d524fcfaf9: !TransformComponent
+                        Id: 3a3bf57d-0463-4552-a10b-c3f826cebdce
+                        Position: {X: -43.631065, Y: 1.1567775, Z: 16.432938}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    09be169be47c889dd7bfc170407ed6f9: !ModelComponent
+                        Id: 6a0a7ac0-859f-447a-b5fe-0f6bf02d5769
+                        Model: 0e9da690-72b1-4985-b730-bc7b3de8f8b3:Sphere
+                        Materials:
+                            b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
+                    8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
+                        Id: 84f4a2a8-1dd4-49c3-892e-0dfc2a5749c3
+                        SplineMesh: !SplineMeshShape
+                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                            UvScale: {X: 1.0, Y: 1.0}
+                            LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
+                            NumberOfTextureCoordinates: 10
+                            MaterialInstance:
+                                Material: a355a68f-8949-4857-88cb-5caa189f2328:Materials/UVTestMaterial
+                            Rotation: 0.0
+                            CloseEnds: false
+                            ShapeSplineComponent: ref!! ce0f003c-b61e-4f9c-bc2d-a252db6df14b
+                        SplineComponent: ref!! 14a614b5-9f52-43b6-8d2f-3007e1efeb8c
+                    83b65823e45b8877a923b91487dd1cef: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
+                        Id: 14a614b5-9f52-43b6-8d2f-3007e1efeb8c
+                        Spline:
+                            IsClosedLoop: false
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
+                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
                                     Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                                     TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
                                     TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}

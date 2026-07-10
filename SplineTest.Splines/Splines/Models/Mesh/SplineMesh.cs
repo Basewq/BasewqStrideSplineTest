@@ -3,8 +3,10 @@
 
 using Stride.Core;
 using Stride.Core.Mathematics;
+using Stride.Engine.Splines.Components;
 using Stride.Graphics;
 using Stride.Rendering.ProceduralModels;
+using System.Runtime.InteropServices;
 
 namespace Stride.Engine.Splines.Models.Mesh;
 
@@ -41,5 +43,35 @@ public abstract class SplineMesh : PrimitiveProceduralModelBase
         var avgPos = (pos1 + pos2) * 0.5f;
         vertices[index1].Position = avgPos;
         vertices[index2].Position = avgPos;
+    }
+
+    public static ProfileVertex[] BuildProfileVertices(Spline spline)
+    {
+        var splineSamples = new List<SplineSample>();
+        SplineExtensions.CollectSplineSamples(spline, splineSamples, sampleStepDistance: 0.5f);     // TODO adaptive
+        var splineSamplesSpan = CollectionsMarshal.AsSpan(splineSamples);
+        int splineSamplesCount = splineSamplesSpan.Length;
+
+        var profileVertices = new ProfileVertex[splineSamplesCount];
+
+        int vertexProfilesIndex = 0;
+        for (int i = 0; i < splineSamplesCount; i++)
+        {
+            var sample = splineSamplesSpan[i];
+
+            var forward = sample.Tangent;
+            var up = sample.Rotation * Vector3.UnitY;
+            var right = Vector3.Normalize(Vector3.Cross(up, forward));
+            var orthoUp = Vector3.Cross(forward, right);    // Ensure the actual up used is right-angled
+
+            profileVertices[vertexProfilesIndex++] = new ProfileVertex
+            {
+                Position = sample.Position,
+                Normal = orthoUp,
+                ProfileT = sample.SplineT
+            };
+        }
+
+        return profileVertices;
     }
 }

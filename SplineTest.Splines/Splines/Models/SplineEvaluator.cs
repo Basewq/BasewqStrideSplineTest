@@ -86,7 +86,7 @@ public class SplineEvaluator : ISplineEvaluator
         var curve = Spline.GetCurve(lookupResult.CurveIndex);
         var tangent = curve.GetTangent(lookupResult.CurveLocalT);     // Too expensive?
 
-        return new SplineSample(position, rotation, tangent);
+        return new SplineSample(position, rotation, tangent, splineT);
     }
 
     public SplineSample EvaluateFromDistance(float distance)
@@ -103,7 +103,8 @@ public class SplineEvaluator : ISplineEvaluator
         var curve = Spline.GetCurve(lookupResult.CurveIndex);
         var tangent = curve.GetTangent(lookupResult.CurveLocalT);     // Too expensive?
 
-        return new SplineSample(position, rotation, tangent);
+        float splineT = GetTFromDistance(distance);
+        return new SplineSample(position, rotation, tangent, splineT);
     }
 
     private Quaternion CalculateRotation(int controlPointStartIndex, float curveT)

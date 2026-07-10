@@ -94,7 +94,7 @@ public class SplineMeshTransformProcessor : EntityProcessor<SplineMeshComponent,
             }
 
             if (splineMeshComponent.SplineMesh is SplineMeshShape splineMeshShape
-                && splineMeshShape.SplineComponent?.Spline is null)
+                && splineMeshShape.ShapeSplineComponent?.Spline is null)
             {
                 continue;
             }

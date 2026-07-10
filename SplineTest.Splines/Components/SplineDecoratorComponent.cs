@@ -27,7 +27,7 @@ public sealed class SplineDecoratorComponent : EntityComponent
     private List<Entity> decorationInstances = new List<Entity>();
     private SplineDecoratorSettings decoratorSettings;
 
-    [Display(10, "SplineComponent")]
+    [Display(10, "ShapeSplineComponent")]
     public SplineComponent SplineComponent
     {
         get { return splineComponent; }

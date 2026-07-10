@@ -20,11 +20,14 @@ public struct SplineSample : IEquatable<SplineSample>
     /// </summary>
     public Vector3 Tangent;
 
-    public SplineSample(Vector3 position, Quaternion rotation, Vector3 tangent)
+    public float SplineT;
+
+    public SplineSample(Vector3 position, Quaternion rotation, Vector3 tangent, float splineT)
     {
         Position = position;
         Rotation = rotation;
         Tangent = tangent;
+        SplineT = splineT;
     }
 
     public bool Equals(SplineSample other)
