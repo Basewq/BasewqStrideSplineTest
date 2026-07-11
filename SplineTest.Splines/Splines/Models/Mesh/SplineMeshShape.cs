@@ -14,6 +14,10 @@ namespace Stride.Engine.Splines.Models.Mesh;
 public class SplineMeshShape : SplineMesh
 {
     public SplineComponent ShapeSplineComponent;
+    public ShapeProfilePlane ShapeProfilePlane = ShapeProfilePlane.XZ;
+    public ShapeProfileFlipAxis ShapeProfileFlipAxis = ShapeProfileFlipAxis.Z;      // In the editor spline would most likely be drawn X right, Z down
+    public bool ShapeProfileInvertNormals;
+    public bool MeshFlipWinding;
 
     protected override GeometricMeshData<VertexPositionNormalTexture> CreatePrimitiveMeshData()
     {
@@ -25,7 +29,7 @@ public class SplineMeshShape : SplineMesh
         var splineSamples = new List<SplineSample>();
         SplineExtensions.CollectSplineSamples(Spline, splineSamples, sampleStepDistance: 0.5f);     // TODO adaptive
         var splineSamplesSpan = CollectionsMarshal.AsSpan(splineSamples);
-        var shapeProfileVertices = BuildProfileVertices(ShapeSplineComponent.Spline);
+        var shapeProfileVertices = BuildProfileVertices(ShapeSplineComponent.Spline, ShapeProfilePlane, ShapeProfileFlipAxis, ShapeProfileInvertNormals);
 
         int splinePointCount = splineSamplesSpan.Length;
         int shapeProfileVerticesCount = shapeProfileVertices.Length;
@@ -52,7 +56,7 @@ public class SplineMeshShape : SplineMesh
 
             splineDistance += Vector3.Distance(prevSplinePosition, splinePosition);
             prevSplinePosition = splinePosition;
-            float textureY = splineDistance / EnsureNonZero(UvScale.Y);
+            float textureY = splineDistance / GetNonZeroOrOne(UvScale.Y);
             for (int profIdx = 0; profIdx < shapeProfileVertices.Length; profIdx++)
             {
                 ref readonly var profVert = ref shapeProfileVertices[profIdx];
@@ -60,7 +64,7 @@ public class SplineMeshShape : SplineMesh
                 var vertPos = profileLocalRotation * profVert.Position;
                 vertPos += splinePosition;
                 var vertNorm = profileLocalRotation * profVert.Normal;
-                var texCoordX = profVert.ProfileT / EnsureNonZero(UvScale.X);
+                var texCoordX = profVert.ProfileT / GetNonZeroOrOne(UvScale.X);
 
                 vertices[verticesIndex++] = CreateVertex(vertPos, vertNorm, new Vector2(texCoordX, textureY));
             }
@@ -79,6 +83,11 @@ public class SplineMeshShape : SplineMesh
                 int nextShapeVert0 = nextShapeStartIndex + j;
                 int nextShapeVert1 = nextShapeVert0 + 1;
 
+                if (MeshFlipWinding)
+                {
+                    Utilities.Swap(ref currentShapeVert0, ref currentShapeVert1);
+                    Utilities.Swap(ref nextShapeVert0, ref nextShapeVert1);
+                }
                 indices[indicesIndex++] = currentShapeVert0;
                 indices[indicesIndex++] = nextShapeVert1;
                 indices[indicesIndex++] = nextShapeVert0;
@@ -93,7 +102,7 @@ public class SplineMeshShape : SplineMesh
         return new GeometricMeshData<VertexPositionNormalTexture>(vertices, indices, isLeftHanded: false);
     }
 
-    private float EnsureNonZero(float value)
+    private float GetNonZeroOrOne(float value)
     {
         return value == 0 ? 1 : value;
     }
