@@ -36,6 +36,16 @@ public class Spline
         }
     }
 
+    private Vector3 initialUpDirection = Vector3.UnitY;
+    public Vector3 InitialUpDirection
+    {
+        get => initialUpDirection;
+        set
+        {
+            SetField(ref initialUpDirection, value);
+        }
+    }
+
     private TrackingCollection<SplineControlPoint> controlPoints;
     [DataMember]
     [Display(Expand = ExpandRule.Once)]
@@ -52,7 +62,7 @@ public class Spline
 
     private void OnSplineControlPoints_CollectionChanged(object sender, TrackingCollectionChangedEventArgs e)
     {
-        SplineControlPoint newItem = (SplineControlPoint?)e.Item  ?? default;
+        SplineControlPoint newItem = (SplineControlPoint?)e.Item ?? default;
         SplineControlPoint oldItem = (SplineControlPoint?)e.OldItem ?? default;
         var eventArgs = new SplineControlPointsChangedEventArgs(e.Action, newItem, oldItem, index: e.Index, e.CollectionChanged);
         ControlPointsChanged?.Invoke(this, ref eventArgs);
@@ -75,23 +85,9 @@ public class Spline
 
     public int CurveCount => IsClosedLoop ? ControlPoints.Count : Math.Max(ControlPoints.Count - 1, 0);
 
-    private ISplineEvaluator splineEvaluator;
-    [DataMemberIgnore]
-    public ISplineEvaluator SplineEvaluator
-    {
-        get => splineEvaluator;
-        set
-        {
-            splineEvaluator?.UnregisterSpline();
-            splineEvaluator = value;
-            splineEvaluator?.RegisterSpline(this);
-        }
-    }
-
     public Spline()
     {
         ControlPoints = [];
-        SplineEvaluator = new SplineEvaluator();
     }
 
     public void Add(Vector3 position)
@@ -100,7 +96,8 @@ public class Spline
         {
             Position = position,
             TangentIn = Vector3.Zero,
-            TangentOut = Vector3.Zero
+            TangentOut = Vector3.Zero,
+            Type = SplineControlPointType.Auto,
         };
         Add(newControlPoint);
     }
@@ -108,19 +105,6 @@ public class Spline
     public void Add(SplineControlPoint controlPoint)
     {
         ControlPoints.Add(controlPoint);
-    }
-
-    public bool Remove(SplineControlPoint item)
-    {
-        int index = ControlPoints.IndexOf(item);
-        if (index < 0)
-        {
-            return false;
-        }
-
-        ControlPoints.RemoveAt(index);
-
-        return true;
     }
 
     public void RemoveAt(int index)
@@ -152,14 +136,6 @@ public class Spline
         var curve = new BezierCurve(controlPoints[curveIndex], controlPoints[nextCurveIndex]);
         return curve;
     }
-
-    public float GetTotalDistance() => SplineEvaluator.GetTotalDistance();
-
-    public SplineClosestPositionInfo GetClosestPointOnSpline(Vector3 position) => SplineEvaluator.FindClosestPoint(position);
-
-    public BoundingBox CalculateBoundingBox() => SplineEvaluator.CalculateBoundingBox();
-
-    public SplineSample EvaluateFromDistance(float distance) => SplineEvaluator.EvaluateFromDistance(distance);
 
     public Enumerator GetEnumerator() => new Enumerator(controlPoints);
 

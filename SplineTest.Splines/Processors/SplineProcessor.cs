@@ -80,7 +80,8 @@ public class SplineProcessor : EntityProcessor<SplineComponent, SplineProcessor.
         var renderSettings = splineComp.DebugRenderSettings;
         var graphicsDevice = graphicsDeviceService.GraphicsDevice;
 
-        if (renderSettings.ShowCurves)
+        var splineEval = splineComp.SplineEvaluator;
+        if (renderSettings.ShowCurves || renderSettings.ShowTangents || renderSettings.ShowUpDirections)
         {
             var splineEntity = splineComp.Entity;
             if (data.LineVisualizerComponent is null)
@@ -94,19 +95,48 @@ public class SplineProcessor : EntityProcessor<SplineComponent, SplineProcessor.
                 data.LineVisualizerComponent.Enabled = true;
                 data.LineVisualizerComponent.LineSet.Segments.Clear();
             }
+            data.LineVisualizerComponent.RenderGroup = renderSettings.RenderGroup;
 
-            var splineSamplePoints = new List<Vector3>();
-            SplineExtensions.CollectSplineSamplePoints(splineComp.Spline, splineSamplePoints);
+            var splineSamples = new List<SplineSample>();
+            SplineExtensions.CollectSplineSamplesByResolution(splineEval, splineSamples, renderSettings.SegmentsPerCurve);
 
             var lineSet = data.LineVisualizerComponent.LineSet;
-            var splineSamplePointsSpan = CollectionsMarshal.AsSpan(splineSamplePoints);
-            for (int i = 0; i < splineSamplePointsSpan.Length - 1; i++)
+            var splineSamplePointsSpan = CollectionsMarshal.AsSpan(splineSamples);
+            if (renderSettings.ShowCurves)
             {
-                var lineStartPos = splineSamplePointsSpan[i];
-                var lineNextPos = splineSamplePointsSpan[i + 1];
-
                 var lineColor = renderSettings.CurveColor.ToColor4();
-                lineSet.AddWorldLine(lineStartPos, lineNextPos, lineColor, lineThicknessPx: 3, emissiveScale: 1);
+                for (int i = 0; i < splineSamplePointsSpan.Length - 1; i++)
+                {
+                    var lineStartPos = splineSamplePointsSpan[i].Position;
+                    var lineNextPos = splineSamplePointsSpan[i + 1].Position;
+
+                    lineSet.AddWorldLine(lineStartPos, lineNextPos, lineColor, lineThicknessPx: 3, emissiveScale: 1);
+                }
+            }
+            if (renderSettings.ShowTangents)
+            {
+                var tangentColor = renderSettings.TangentColor.ToColor4();
+                for (int i = 0; i < splineSamplePointsSpan.Length - 1; i++)
+                {
+                    ref var samplePoint = ref splineSamplePointsSpan[i];
+                    var lineStartPos = samplePoint.Position;
+                    var lineNextPos = lineStartPos + samplePoint.Tangent * 0.25f;
+
+                    lineSet.AddWorldLine(lineStartPos, lineNextPos, tangentColor, lineThicknessPx: 2, emissiveScale: 1);
+                }
+            }
+            if (renderSettings.ShowUpDirections)
+            {
+                var tangentColor = renderSettings.UpDirectionColor.ToColor4();
+                for (int i = 0; i < splineSamplePointsSpan.Length - 1; i++)
+                {
+                    ref var samplePoint = ref splineSamplePointsSpan[i];
+                    var lineStartPos = samplePoint.Position;
+                    var upDir = samplePoint.Orientation * Vector3.UnitY;
+                    var lineNextPos = lineStartPos + upDir * 0.25f;
+
+                    lineSet.AddWorldLine(lineStartPos, lineNextPos, tangentColor, lineThicknessPx: 2, emissiveScale: 1);
+                }
             }
         }
         else
@@ -128,8 +158,9 @@ public class SplineProcessor : EntityProcessor<SplineComponent, SplineProcessor.
                 data.GizmoMarkerSetComponent.Enabled = true;
                 data.GizmoMarkerSetComponent.GizmoMarkerSet.Markers.Clear();
             }
+            data.GizmoMarkerSetComponent.RenderGroup = renderSettings.RenderGroup;
 
-            var controlPointFillColor = AddEmissiveScale(Color.White.ToColor4(), emissiveScale: 1);
+            var controlPointFillColor = AddEmissiveScale(renderSettings.ControlPointColor.ToColor4(), emissiveScale: 1);
             var controlPointOutlineColor = Color.Black.ToColor4();
             const float ShapeSize = 13;
             const float OutlineWidthPx = 1f;
@@ -178,12 +209,13 @@ public class SplineProcessor : EntityProcessor<SplineComponent, SplineProcessor.
             }
             else
             {
+                data.BoundingBoxEntity.Get<ModelComponent>().RenderGroup = renderSettings.RenderGroup;
                 UpdateColor(graphicsDevice, data.BoundingBoxMaterial, renderSettings.BoundingBoxColor, 0.75f);
             }
 
             // Update bounding box size
             {
-                var boundingBox = splineComp.Spline.CalculateBoundingBox();
+                var boundingBox = splineEval.CalculateBoundingBox();
                 var boxLengths = boundingBox.Maximum - boundingBox.Minimum;
                 data.BoundingBoxEntity.Transform.Scale = boxLengths;
                 data.BoundingBoxEntity.Transform.Position = boundingBox.Center;
@@ -258,6 +290,5 @@ public class SplineProcessor : EntityProcessor<SplineComponent, SplineProcessor.
 
         internal Entity? BoundingBoxEntity;
         internal Material? BoundingBoxMaterial;
-
     }
 }

@@ -5,7 +5,6 @@ using Stride.Input;
 
 namespace SplineTools
 {
-
     public class ClosestPointDemo : SyncScript
     {
         public float MoveSpeed = 4.0f;
@@ -32,7 +31,7 @@ namespace SplineTools
                 var splineRootPosition = SplineComponent.Entity.Transform.Position;
                 // Show closest point on spline
                 var splineLocalPos = Entity.Transform.Position - splineRootPosition;
-                var closestPositionInfo = SplineComponent.Spline.GetClosestPointOnSpline(splineLocalPos);
+                var closestPositionInfo = SplineComponent.SplineEvaluator.FindClosestPoint(splineLocalPos);
                 ClosestPointOrb.Transform.UseTRS = false;
                 ClosestPointOrb.Transform.WorldMatrix.TranslationVector = closestPositionInfo.Position + splineRootPosition;
                 ClosestPointOrb.Transform.UpdateLocalFromWorld();

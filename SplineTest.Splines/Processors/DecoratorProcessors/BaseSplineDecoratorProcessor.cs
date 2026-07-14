@@ -3,6 +3,7 @@
 
 using System;
 using Stride.Engine.Splines.Components;
+using Stride.Engine.Splines.Models;
 using Stride.Engine.Splines.Models.Decorators;
 
 namespace Stride.Engine.Splines.Processors.DecoratorProcessors;
@@ -17,7 +18,7 @@ public abstract class BaseSplineDecoratorProcessor
     /// <param name="component"></param>
     /// <param name="iteration"></param>
     /// <param name="splineT"></param>
-    protected void CreateInstance(SplineDecoratorComponent component, int iteration, float splineT, Random random)
+    protected void CreateInstance(SplineDecoratorComponent component, int iteration, ISplineEvaluator splineEvaluator, float splineT, Random random)
     {
         int count = component.DecoratorSettings.Decorations.Count;
         var prefabToInstantiate = component.DecoratorSettings.SpawnOrder == SplineDecoratorInstanceEnum.Sequential
@@ -29,8 +30,8 @@ public abstract class BaseSplineDecoratorProcessor
             return;
         }
 
-        var splineSample = component.SplineComponent.Spline.SplineEvaluator.Evaluate(splineT);
-        var instanceRoot = new Entity("Spline" + iteration);
+        var splineSample = splineEvaluator.Evaluate(splineT);
+        var instanceRoot = new Entity("SplineEvaluator" + iteration);
 
         var instanceEntities = prefabToInstantiate.Instantiate();
 

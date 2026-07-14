@@ -8,6 +8,7 @@ Hierarchy:
     RootParts:
         - ref!! 859093c3-0304-4a48-bd6f-88925175d1be
         - ref!! 96585e19-9f9d-4dbc-b376-286cfe5cc8ad
+        - ref!! ea9837c4-4898-4292-85b1-352bb94b2ec2
         - ref!! f4de0b33-627b-488e-ad66-4b8a4e0154ff
         - ref!! 6bab6356-63a2-4b89-b33e-15f1b2c2bb2e
         - ref!! f4bc42c2-e210-4a53-86b8-aa64c8ee678d
@@ -171,33 +172,58 @@ Hierarchy:
                         Children: {}
                     fbcece0d406274c0658a354078acb1a7: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: 33579629-bc84-4aa8-abc9-310ad7c6b26d
+                        DebugRenderSettings:
+                            ShowCurves: true
+                            ShowTangents: true
+                            ShowUpDirections: true
+                            ShowControlPoints: true
+                            ShowBoundingBox: true
                         Spline:
                             IsClosedLoop: true
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
                             ControlPoints:
                                 3eacfcf4719b1baf7606aef7c3f87f8f:
                                     Position: {X: 0.49458072, Y: 0.0, Z: -1.1704192}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                                     TangentIn: {X: 1.0, Y: 0.0, Z: 0.0}
                                     TangentOut: {X: -3.0, Y: 0.5, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
                                 b01eea0fd29a63703b40c8c829f3473d:
-                                    Position: {X: 0.31327638, Y: 0.80716646, Z: 0.59285104}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                                    Position: {X: 0.3132763, Y: 0.8071664, Z: 0.6043073}
                                     TangentIn: {X: -1.0, Y: 0.0, Z: -1.0}
                                     TangentOut: {X: 1.0, Y: 0.0, Z: 1.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
                                 26496d158ca5d8a2590e4ccf9db24db8:
                                     Position: {X: -1.2448148, Y: 0.37111193, Z: 2.105255}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                                     TangentIn: {X: 0.0, Y: 1.0, Z: 0.0}
                                     TangentOut: {X: 0.0, Y: -1.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    OverrideUpDirection: {X: 1.0, Y: 0.0, Z: 0.0}
+                                    Type: Free
                                 5c4cd4e56bc40b2524d286895153a60a:
                                     Position: {X: 0.9431991, Y: 0.0, Z: 2.2301557}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                                     TangentIn: {X: 0.0, Y: 0.0, Z: 0.0}
                                     TangentOut: {X: 1.0, Y: 0.0, Z: 0.0}
-                        DebugRenderSettings:
-                            ShowCurves: true
-                            ShowControlPoints: true
-                            ShowBoundingBox: true
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
+        -   Entity:
+                Id: ea9837c4-4898-4292-85b1-352bb94b2ec2
+                Name: Ambient light
+                Components:
+                    0932aee3630f93ab7e0fa3d569dd882d: !TransformComponent
+                        Id: 4ea33d0d-53e7-46bf-95af-34a64335b358
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    578b3bbd6d7146052ed5518b5a95d27d: !LightComponent
+                        Id: 5bf68671-4a0e-449a-8c9c-22d55df7c5a5
+                        Type: !LightAmbient
+                            Color: !ColorRgbProvider
+                                Value: {R: 1.0, G: 1.0, B: 1.0}
         -   Entity:
                 Id: f104574b-c7dd-44c5-b82d-182913e2eb90
                 Name: Forwards Traverser + RotatePlane

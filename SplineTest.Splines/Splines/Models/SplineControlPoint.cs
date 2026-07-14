@@ -3,66 +3,60 @@
 
 using Stride.Core;
 using Stride.Core.Mathematics;
+using System.ComponentModel;
 
 namespace Stride.Engine.Splines.Models;
 
 [DataContract]
 [Display(Expand = ExpandRule.Once)]
-public struct SplineControlPoint : IEquatable<SplineControlPoint>
+public struct SplineControlPoint
 {
     /// <summary>
     /// Local position relative to the spline.
     /// </summary>
     public Vector3 Position;
     /// <summary>
-    /// The orientation of this control point relative to the spline.
-    /// </summary>
-    [Display(Browsable = false)]    // TODO: Need to determine what to actually do with this
-    public Quaternion Rotation;
-    /// <summary>
-    /// Tangent vector, relative to the control point, that determines the direction and curvature of the curve entering this control point.
+    /// Tangent vector, in the spline's local space, relative to the control point, that determines the direction and curvature of the curve entering this control point.
     /// </summary>
     public Vector3 TangentIn;
     /// <summary>
-    /// Tangent vector, relative to the control point, that determines the direction and curvature of the curve leaving this control point.
+    /// Tangent vector, in the spline's local space, relative to the control point, that determines the direction and curvature of the curve leaving this control point.
     /// </summary>
     public Vector3 TangentOut;
 
     /// <summary>
+    /// Accumulated roll rotation offset (in degrees) along the forward vector.
+    /// Roll is applied after <see cref="OverrideUpDirection"/>, if it is set.
+    /// </summary>
+    [Display("Roll (degrees)")]
+    public AngleSingle Roll;
+
+    /// <summary>
+    /// Override up direction, in the spline's local space.
+    /// The curve's forward/tangent vector takes priority over this direction, if not perpendicular to the tangent.
+    /// </summary>
+    [DefaultValue(typeof(Vector3), "X:0 Y:0 Z:0")]
+    public Vector3 OverrideUpDirection;
+
+    /// <summary>
+    /// Scale relative to the control point's frame of reference, eg. Width, Height, Length for X, Y, Z, respectively.
+    /// </summary>
+    [DefaultValue(typeof(Vector3), "X:1 Y:1 Z:1")]
+    public Vector3 Scale = Vector3.One;
+
+    public SplineControlPointType Type = SplineControlPointType.Auto;
+
+    /// <summary>
     /// <see cref="TangentIn"/> position relative to the spline.
     /// </summary>
-    public Vector3 TangentInPosition => Rotation * (Position + TangentIn);
+    public readonly Vector3 TangentInPosition => Position + TangentIn;
 
     /// <summary>
     /// <see cref="TangentOut"/> position relative to the spline.
     /// </summary>
-    public Vector3 TangentOutPosition => Rotation * (Position + TangentOut);
+    public readonly Vector3 TangentOutPosition => Position + TangentOut;
 
     public SplineControlPoint()
     {
-        Rotation = Quaternion.Identity;
-    }
-
-    /// <inheritdoc />
-    public readonly bool Equals(SplineControlPoint other)
-    {
-        return Position == other.Position
-            && Rotation == other.Rotation
-            && TangentIn == other.TangentIn
-            && TangentOut == other.TangentOut;
-    }
-
-    /// <inheritdoc />
-    public readonly override bool Equals(object obj) => obj is SplineControlPoint other && Equals(other);
-
-    /// <inheritdoc />
-    public static bool operator ==(SplineControlPoint left, SplineControlPoint right) => Equals(left, right);
-
-    /// <inheritdoc />
-    public static bool operator !=(SplineControlPoint left, SplineControlPoint right) => !Equals(left, right);
-
-    public override readonly int GetHashCode()
-    {
-        return HashCode.Combine(Position, Rotation, TangentIn, TangentOut);
     }
 }

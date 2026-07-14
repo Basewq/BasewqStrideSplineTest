@@ -158,25 +158,33 @@ Hierarchy:
                         Children: {}
                     0e557c04a4dbb724b7e67c0b4017a429: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: 35da1b98-4c00-42df-967a-305316ada8b6
+                        DebugRenderSettings:
+                            ShowCurves: true
+                            ShowTangents: false
+                            ShowUpDirections: false
+                            ShowControlPoints: false
+                            ShowBoundingBox: true
                         Spline:
                             IsClosedLoop: true
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
                             ControlPoints:
                                 d6afa3d468be5b6f1dde1b6c6c3e9ec0:
                                     Position: {X: 1.5277814, Y: 0.0, Z: 0.018620372}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                                     TangentIn: {X: 0.0, Y: 0.0, Z: 0.0}
                                     TangentOut: {X: -4.0, Y: 0.0, Z: -4.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
                                 1948b66e28ecf0636a25610abb1926fc:
                                     Position: {X: -3.1938546, Y: 0.0, Z: 4.9048457}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                                     TangentIn: {X: 4.0, Y: 0.0, Z: 2.0}
                                     TangentOut: {X: -4.0, Y: 0.0, Z: -5.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
                                 bc87c064a92385fcfacd3cc4b0edf63d:
                                     Position: {X: 8.195596, Y: 0.0, Z: 7.3323054}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                                     TangentIn: {X: 0.0, Y: 0.0, Z: 0.0}
                                     TangentOut: {X: 6.0, Y: 0.0, Z: -4.0}
-                        DebugRenderSettings:
-                            ShowCurves: true
-                            ShowControlPoints: false
-                            ShowBoundingBox: true
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}

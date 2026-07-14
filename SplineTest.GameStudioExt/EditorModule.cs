@@ -1,16 +1,14 @@
 using SplineTest.GameStudioExt.StrideEditorExt;
-using SplineTest.Rendering;
 using Stride.Assets.Presentation.AssetEditors.EntityHierarchyEditor.Game;
+using Stride.Assets.Presentation.AssetEditors.GameEditor.Game;
 using Stride.Assets.Presentation.AssetEditors.SceneEditor.Game;
+using Stride.Assets.Presentation.AssetEditors.SceneEditor.Services;
 using Stride.Core;
-using Stride.Core.Assets.Editor.Services;
-using Stride.Core.Assets.Editor.ViewModel;
-using Stride.Core.Diagnostics;
 using Stride.Core.Extensions;
 using Stride.Core.Reflection;
-using Stride.Editor;
 using Stride.Engine;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace SplineTest.GameStudioExt;
 
@@ -60,14 +58,26 @@ internal class EditorModule
                 throw new Exception("ViewModelServiceProvider was not set.");
             }
 
-            var splineEditorService = new EditorGameSplineEditorService(strideEditorService);
+            // HACK: Take IEditorGameController/SceneEditorController from another service because we can't get it ourselves
+            var cameraService = sceneEditorGame.EditorServices.Get<IEditorGameCameraService>();
+            var getEditorController_PropertyInfo = typeof(EditorGameCameraService).GetProperty("Controller", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var getEditorController_MethodInfo = getEditorController_PropertyInfo.GetGetMethod(nonPublic: true);
+            var sceneEditorController = getEditorController_MethodInfo?.Invoke(cameraService, []) as SceneEditorController;
+
+            var splineEditorService = new EditorGameSplineEditorService(strideEditorService, sceneEditorController);
             sceneEditorGame.EditorServices.Add(splineEditorService);
             asyncDisposables.Add(splineEditorService);
+
+            var splineMeshCompChangeWatcherService = new EditorGameSplineMeshComponentChangeWatcherService(sceneEditorController);
+            sceneEditorGame.EditorServices.Add(splineMeshCompChangeWatcherService);
+            asyncDisposables.Add(splineMeshCompChangeWatcherService);
+
 
             // HACK: forced to do a late service registration
             sceneEditorGame.Script.AddTask(async () =>
             {
                 await splineEditorService.InitializeService(sceneEditorGame);
+                await splineMeshCompChangeWatcherService.InitializeService(sceneEditorGame);
             });
         }
     }

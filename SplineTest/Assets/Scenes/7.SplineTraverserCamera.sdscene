@@ -794,39 +794,50 @@ Hierarchy:
                         Children: {}
                     4b9ef57d62318e3d06aacf2eb7ec856e: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: ca0a28e5-0781-471e-989f-8cf9c0f4d51e
-                        Spline:
-                            IsClosedLoop: true
-                            ControlPoints:
-                                d3abad453d81a3c4aacb77983612a2ab:
-                                    Position: {X: -0.6980336, Y: 0.8207536, Z: 2.15112}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 4.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: -6.0, Y: 0.0, Z: 0.0}
-                                9e82e4dd2c86cebb9082e393efcdf582:
-                                    Position: {X: -5.136718, Y: 1.1483831, Z: 5.4437494}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 0.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: 0.2, Y: 0.0, Z: 2.0}
-                                7ec110d079e1841eb55a6966f295fb1b:
-                                    Position: {X: 3.6333284, Y: 1.22353, Z: 7.79498}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 0.0, Y: 0.0, Z: -2.0}
-                                    TangentOut: {X: 0.0, Y: 0.0, Z: 3.0}
-                                c3241c8d3681b7f2a089edf1ad96ef30:
-                                    Position: {X: -4.8340545, Y: 3.9971855, Z: 8.473149}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 0.0, Y: 0.0, Z: 4.0}
-                                    TangentOut: {X: 0.0, Y: 0.0, Z: -4.0}
-                                31e832acd9e82304b289614eb380dd83:
-                                    Position: {X: 3.93174, Y: 2.711413, Z: 4.489991}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 0.0, Y: 0.0, Z: 3.0}
-                                    TangentOut: {X: 0.0, Y: 0.0, Z: -2.0}
                         DebugRenderSettings:
+                            SegmentsPerCurve: 32
                             ShowCurves: true
+                            ShowTangents: true
+                            ShowUpDirections: false
                             ShowControlPoints: true
                             ControlPointColor: {R: 255, G: 255, B: 255, A: 128}
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: true
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                d3abad453d81a3c4aacb77983612a2ab:
+                                    Position: {X: -0.6980336, Y: 0.8207536, Z: 2.15112}
+                                    TangentIn: {X: 4.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -6.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                9e82e4dd2c86cebb9082e393efcdf582:
+                                    Position: {X: -5.136718, Y: 1.1483831, Z: 5.4437494}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 0.2, Y: 0.0, Z: 2.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                7ec110d079e1841eb55a6966f295fb1b:
+                                    Position: {X: 3.6333284, Y: 1.22353, Z: 7.79498}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: -2.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: 3.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                c3241c8d3681b7f2a089edf1ad96ef30:
+                                    Position: {X: -4.8340545, Y: 3.9971855, Z: 8.473149}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: 4.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: -4.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                31e832acd9e82304b289614eb380dd83:
+                                    Position: {X: 3.93174, Y: 2.711413, Z: 4.489991}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: 3.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: -2.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Folder: null
             Entity:
                 Id: 9e8c571f-8b29-451c-832e-88b58d6c9210

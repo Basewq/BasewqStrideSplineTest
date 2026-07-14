@@ -3,7 +3,6 @@
 
 using Stride.Core;
 using Stride.Core.Mathematics;
-using System.Diagnostics;
 
 namespace Stride.Engine.Splines.Models;
 
@@ -15,7 +14,7 @@ public class SplineTraverser
     private float splineTotalDistance = 0;
     private float currentTravelDistance = 0;
 
-    private Spline spline;
+    private ISplineEvaluator splineEvaluator;
     //public Entity entity;
     private float speed = 1.0f;
     private bool isMoving = false;
@@ -42,14 +41,14 @@ public class SplineTraverser
     /// The spline to traverse.
     /// No spline, no movement.
     /// </summary>
-    public Spline Spline
+    public ISplineEvaluator SplineEvaluator
     {
-        get => spline;
+        get => splineEvaluator;
         set
         {
-            spline = value;
+            splineEvaluator = value;
 
-            if (spline is null)
+            if (splineEvaluator is null)
             {
                 isMoving = false;
             }
@@ -73,7 +72,7 @@ public class SplineTraverser
 
     /// <summary>
     /// Determines whether the spline traver is moving.
-    /// For a traverser to work we require a Spline reference, a non-zero and IsMoving must be True.
+    /// For a traverser to work we require a SplineEvaluator reference, a non-zero and IsMoving must be True.
     /// </summary>
     public bool IsMoving
     {
@@ -86,7 +85,7 @@ public class SplineTraverser
 
     /// <summary>
     /// Determines whether the spline traver rotates along the spline.
-    /// For a traverse to work we require a Spline reference, a non-zero and IsMoving must be True.
+    /// For a traverse to work we require a SplineEvaluator reference, a non-zero and IsMoving must be True.
     /// </summary>
     public bool IsRotating
     {
@@ -109,7 +108,7 @@ public class SplineTraverser
 
     public void ForceUpdate()
     {
-        if (spline is null)
+        if (splineEvaluator is null)
         {
             return;
         }
@@ -119,7 +118,7 @@ public class SplineTraverser
 
     public void Update(float dt)
     {
-        if (spline is null)
+        if (splineEvaluator is null)
         {
             return;
         }
@@ -140,7 +139,7 @@ public class SplineTraverser
             return;
         }
 
-        splineTotalDistance = spline.GetTotalDistance();
+        splineTotalDistance = splineEvaluator.GetTotalDistance();
 
         currentTravelDistance = Math.Clamp(currentTravelDistance, min: 0, max: splineTotalDistance);
 
@@ -155,6 +154,7 @@ public class SplineTraverser
         float displacement = speed * dt;
         currentTravelDistance += displacement;
 
+        var spline = splineEvaluator.Spline;
         if (!spline.IsClosedLoop)
         {
             currentTravelDistance = Math.Clamp(currentTravelDistance, min: 0, max: splineTotalDistance);
@@ -166,7 +166,7 @@ public class SplineTraverser
 
             if (SplineControlPointReached is not null)
             {
-                (spline.SplineEvaluator as SplineEvaluator)?.CollectEncounteredControlPoints(previousTravelDistance, currentTravelDistance, controlPointIndicesEncountered);
+                (splineEvaluator as SplineEvaluator)?.CollectEncounteredControlPoints(previousTravelDistance, currentTravelDistance, controlPointIndicesEncountered);
                 for (int i = 0; i < controlPointIndicesEncountered.Count; i++)
                 {
                     var controlPointIndex = controlPointIndicesEncountered[i];
@@ -198,14 +198,13 @@ public class SplineTraverser
                     currentTravelDistance += splineTotalDistance;
                 }
             }
-            var prevPos = currentSplineSample.Position;
-            currentSplineSample = spline.EvaluateFromDistance(currentTravelDistance);
+            currentSplineSample = splineEvaluator.EvaluateFromDistance(currentTravelDistance);
         }
     }
 
     public void SnapPositionToSpline(Vector3 position)
     {
-        var splinePositionInfo = spline.GetClosestPointOnSpline(position);
-        currentSplineSample = spline.EvaluateFromDistance(splinePositionInfo.SplineDistance);
+        var splinePositionInfo = splineEvaluator.FindClosestPoint(position);
+        currentSplineSample = splineEvaluator.EvaluateFromDistance(splinePositionInfo.SplineDistance);
     }
 }

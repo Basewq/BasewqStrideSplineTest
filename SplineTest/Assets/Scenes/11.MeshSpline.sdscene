@@ -55,29 +55,41 @@ Hierarchy:
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: 72665805-228b-445a-9c78-1453c4655823:Materials/RoadMaterial
-                            Rotation: 0.0
                             CloseEnds: true
+                            MeshSamplingSettings:
+                                MaximumPositionError: 0.05
+                                MaximumAngleError: {Radians: 0.05235988}
+                                MaximumSegmentLength: 0.5
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 8
                         SplineComponent: ref!! b7973cf7-7f12-41a0-bb18-0d808d5861ee
                     5281be147cfef55093f1bca57a7ed04c: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: b7973cf7-7f12-41a0-bb18-0d808d5861ee
-                        Spline:
-                            IsClosedLoop: false
-                            ControlPoints:
-                                b5550793d13a0d3fc5f1794aaa6d1ae4:
-                                    Position: {X: -0.067720175, Y: 0.0, Z: 1.477}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 0.0, Y: 0.0, Z: -10.0}
-                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
-                                890b405cec333dfca4f9b8b2e166f5dc:
-                                    Position: {X: -7.8740573, Y: 0.0, Z: 13.571022}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: false
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                b5550793d13a0d3fc5f1794aaa6d1ae4:
+                                    Position: {X: -0.067720175, Y: 0.0, Z: 1.477}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: -10.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                890b405cec333dfca4f9b8b2e166f5dc:
+                                    Position: {X: -7.8740573, Y: 0.0, Z: 13.571022}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Entity:
                 Id: 0593fca2-393d-4f15-8217-9d9ba1755502
                 Name: CylinderTubeSpline-looped
@@ -102,31 +114,43 @@ Hierarchy:
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: 4c76c97e-b37b-42f7-8e14-ba08ab0fbf88:Materials/FuturaMaterial
-                            Rotation: 0.0
                             CloseEnds: true
+                            MeshSamplingSettings:
+                                MaximumPositionError: 0.05
+                                MaximumAngleError: {Radians: 0.05235988}
+                                MaximumSegmentLength: 0.5
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 8
                             Sides: 16
                             Radius: 1.0
                         SplineComponent: ref!! 58297db4-cdf5-4c34-8e2f-df0dad813a3e
                     83b65823e45b8877a923b91487dd1cef: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: 58297db4-cdf5-4c34-8e2f-df0dad813a3e
-                        Spline:
-                            IsClosedLoop: true
-                            ControlPoints:
-                                630519b868f4a4dc0717a92e0e9a0294:
-                                    Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
-                                3a4ed491ec78697825ec2ca884d34108:
-                                    Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: true
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
+                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Entity:
                 Id: 0b6a66ba-f524-40fc-b5ce-65cc8b60768a
                 Name: UVTestRoadSpline
@@ -151,29 +175,41 @@ Hierarchy:
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a355a68f-8949-4857-88cb-5caa189f2328:Materials/UVTestMaterial
-                            Rotation: 0.0
                             CloseEnds: true
+                            MeshSamplingSettings:
+                                MaximumPositionError: 0.5
+                                MaximumAngleError: {Radians: 0.2617994}
+                                MaximumSegmentLength: 2.0
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 8
                         SplineComponent: ref!! ebc71c19-f25f-4660-a101-c44451b77206
                     5281be147cfef55093f1bca57a7ed04c: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: ebc71c19-f25f-4660-a101-c44451b77206
-                        Spline:
-                            IsClosedLoop: false
-                            ControlPoints:
-                                b5550793d13a0d3fc5f1794aaa6d1ae4:
-                                    Position: {X: -0.067720175, Y: 0.0, Z: 1.477}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 0.0, Y: 0.0, Z: -10.0}
-                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
-                                890b405cec333dfca4f9b8b2e166f5dc:
-                                    Position: {X: -7.8740573, Y: 0.0, Z: 13.571022}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: false
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                b5550793d13a0d3fc5f1794aaa6d1ae4:
+                                    Position: {X: -0.067720175, Y: 0.0, Z: 1.477}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: -10.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                890b405cec333dfca4f9b8b2e166f5dc:
+                                    Position: {X: -7.8740573, Y: 0.0, Z: 13.571022}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Entity:
                 Id: 12139075-6b32-4a96-8f64-c86e4e669b79
                 Name: BoxSpline-looped
@@ -198,29 +234,41 @@ Hierarchy:
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a1daa7bb-a33f-4c1d-a204-3ef5f36157e1:Materials/RedBrickMaterial
-                            Rotation: 0.0
                             CloseEnds: false
+                            MeshSamplingSettings:
+                                MaximumPositionError: 0.05
+                                MaximumAngleError: {Radians: 0.05235988}
+                                MaximumSegmentLength: 0.5
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 8
                         SplineComponent: ref!! 77b0edc3-942a-478e-a13d-ec5a66f5c76c
                     d09c7b35c0eceb09d51afdacee19d842: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: 77b0edc3-942a-478e-a13d-ec5a66f5c76c
-                        Spline:
-                            IsClosedLoop: true
-                            ControlPoints:
-                                630519b868f4a4dc0717a92e0e9a0294:
-                                    Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
-                                3a4ed491ec78697825ec2ca884d34108:
-                                    Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: true
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
+                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Entity:
                 Id: 15a0040d-1ae0-40e5-9166-f3d007a4c224
                 Name: MeshShapeSplineXZ
@@ -245,34 +293,52 @@ Hierarchy:
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a355a68f-8949-4857-88cb-5caa189f2328:Materials/UVTestMaterial
-                            Rotation: 0.0
                             CloseEnds: true
+                            MeshSamplingSettings:
+                                MaximumPositionError: 0.05
+                                MaximumAngleError: {Radians: 0.05235988}
+                                MaximumSegmentLength: 0.5
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 8
                             ShapeSplineComponent: ref!! 5708c777-ade0-4413-a57c-f0eb48429b91
                             ShapeProfilePlane: XZ
                             ShapeProfileFlipAxis: Z
                             ShapeProfileInvertNormals: false
                             MeshFlipWinding: false
+                            ShapeSamplingSettings:
+                                MaximumPositionError: 0.05
+                                MaximumAngleError: {Radians: 0.05235988}
+                                MaximumSegmentLength: 0.5
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 8
                         SplineComponent: ref!! ec13c485-2a8d-4e7c-bb80-2fb12c82505b
                     83b65823e45b8877a923b91487dd1cef: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: ec13c485-2a8d-4e7c-bb80-2fb12c82505b
-                        Spline:
-                            IsClosedLoop: true
-                            ControlPoints:
-                                630519b868f4a4dc0717a92e0e9a0294:
-                                    Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
-                                3a4ed491ec78697825ec2ca884d34108:
-                                    Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: true
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
+                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Entity:
                 Id: 31538e2b-b1fc-466a-8f1c-a4c37f5980d2
                 Name: Ambient light
@@ -305,29 +371,37 @@ Hierarchy:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
                     83b65823e45b8877a923b91487dd1cef: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: ce0f003c-b61e-4f9c-bc2d-a252db6df14b
-                        Spline:
-                            IsClosedLoop: true
-                            ControlPoints:
-                                630519b868f4a4dc0717a92e0e9a0294:
-                                    Position: {X: -0.76260376, Y: 1.4999999, Z: 0.0}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: -2.0, Y: -0.0, Z: 0.0}
-                                    TangentOut: {X: 2.0, Y: 0.0, Z: 0.0}
-                                3a4ed491ec78697825ec2ca884d34108:
-                                    Position: {X: 0.6765938, Y: 0.018047452, Z: 0.0}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: -1.8994179, Y: 0.48979062, Z: 0.0}
-                                    TangentOut: {X: 1.8994179, Y: -0.48979062, Z: -0.0}
-                                209f2943a922266b3161876cf5da13fb:
-                                    Position: {X: -1.823494, Y: -1.5, Z: 0.0}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 1.0, Y: -0.0, Z: 0.0}
-                                    TangentOut: {X: -1.0, Y: 0.0, Z: 0.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: true
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: -0.76260376, Y: 1.4999999, Z: 0.0}
+                                    TangentIn: {X: -2.0, Y: -0.0, Z: 0.0}
+                                    TangentOut: {X: 2.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: 0.6765938, Y: 0.018047452, Z: 0.0}
+                                    TangentIn: {X: -1.8994179, Y: 0.48979062, Z: 0.0}
+                                    TangentOut: {X: 1.8994179, Y: -0.48979062, Z: -0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                209f2943a922266b3161876cf5da13fb:
+                                    Position: {X: -1.823494, Y: -1.5, Z: 0.0}
+                                    TangentIn: {X: 1.0, Y: -0.0, Z: 0.0}
+                                    TangentOut: {X: -1.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Entity:
                 Id: 39c6e7e1-3823-4fc2-a3bc-d2b3936680d7
                 Name: CyllinderSpline_MediumPoly
@@ -352,31 +426,43 @@ Hierarchy:
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: 4c76c97e-b37b-42f7-8e14-ba08ab0fbf88:Materials/FuturaMaterial
-                            Rotation: 0.0
                             CloseEnds: true
+                            MeshSamplingSettings:
+                                MaximumPositionError: 0.05
+                                MaximumAngleError: {Radians: 0.05235988}
+                                MaximumSegmentLength: 0.5
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 8
                             Sides: 16
                             Radius: 1.0
                         SplineComponent: ref!! 5e08b967-c158-4336-bc59-3079514a733d
                     376bcda5426455fa656fa75e39ab915b: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: 5e08b967-c158-4336-bc59-3079514a733d
-                        Spline:
-                            IsClosedLoop: false
-                            ControlPoints:
-                                630519b868f4a4dc0717a92e0e9a0294:
-                                    Position: {X: -0.43491513, Y: 0.044731244, Z: 1.9411129}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 0.0, Y: 0.0, Z: -10.0}
-                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
-                                3a4ed491ec78697825ec2ca884d34108:
-                                    Position: {X: -7.5213814, Y: 0.0, Z: 13.336444}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: false
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: -0.43491513, Y: 0.044731244, Z: 1.9411129}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: -10.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -7.5213814, Y: 0.0, Z: 13.336444}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Entity:
                 Id: 3a8da8ee-5413-4804-bd14-a33a9ce75a2f
                 Name: Camera
@@ -437,29 +523,41 @@ Hierarchy:
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a355a68f-8949-4857-88cb-5caa189f2328:Materials/UVTestMaterial
-                            Rotation: 0.0
                             CloseEnds: true
+                            MeshSamplingSettings:
+                                MaximumPositionError: 0.05
+                                MaximumAngleError: {Radians: 0.05235988}
+                                MaximumSegmentLength: 0.5
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 8
                         SplineComponent: ref!! a24f2134-3755-4262-8a0a-32904b0f35a9
                     9b972c4c2dbb879f0daf66d57b0fb094: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: a24f2134-3755-4262-8a0a-32904b0f35a9
-                        Spline:
-                            IsClosedLoop: true
-                            ControlPoints:
-                                630519b868f4a4dc0717a92e0e9a0294:
-                                    Position: {X: 0.0, Y: 0.0, Z: 2.0}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
-                                3a4ed491ec78697825ec2ca884d34108:
-                                    Position: {X: -5.0, Y: 0.0, Z: 15.0}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: true
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 0.0, Y: 0.0, Z: 2.0}
+                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -5.0, Y: 0.0, Z: 15.0}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Folder: null
             Entity:
                 Id: 496d904a-97d4-4ce9-b029-39b9c0d93f6f
@@ -485,31 +583,43 @@ Hierarchy:
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a355a68f-8949-4857-88cb-5caa189f2328:Materials/UVTestMaterial
-                            Rotation: 0.0
                             CloseEnds: true
+                            MeshSamplingSettings:
+                                MaximumPositionError: 0.05
+                                MaximumAngleError: {Radians: 0.05235988}
+                                MaximumSegmentLength: 0.5
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 8
                             Sides: 16
                             Radius: 1.0
                         SplineComponent: ref!! 788c59b8-ffaa-467b-b1f6-209879890393
                     9b972c4c2dbb879f0daf66d57b0fb094: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: 788c59b8-ffaa-467b-b1f6-209879890393
-                        Spline:
-                            IsClosedLoop: false
-                            ControlPoints:
-                                630519b868f4a4dc0717a92e0e9a0294:
-                                    Position: {X: 0.0, Y: 0.0, Z: 2.0}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
-                                3a4ed491ec78697825ec2ca884d34108:
-                                    Position: {X: -5.0, Y: 0.0, Z: 15.0}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: false
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 0.0, Y: 0.0, Z: 2.0}
+                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -5.0, Y: 0.0, Z: 15.0}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Entity:
                 Id: 4e218d94-49f5-4f7e-a33e-9cf8887734fa
                 Name: CyllinderTubeSpline
@@ -534,31 +644,43 @@ Hierarchy:
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a1daa7bb-a33f-4c1d-a204-3ef5f36157e1:Materials/RedBrickMaterial
-                            Rotation: 0.0
                             CloseEnds: true
+                            MeshSamplingSettings:
+                                MaximumPositionError: 0.05
+                                MaximumAngleError: {Radians: 0.05235988}
+                                MaximumSegmentLength: 0.5
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 8
                             Sides: 16
                             Radius: {X: 0.5, Y: 1.0}
                         SplineComponent: ref!! 81b23b38-e6d1-47d7-b439-8546511203ad
                     0629fde360ceb603dfe517a61e262c05: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: 81b23b38-e6d1-47d7-b439-8546511203ad
-                        Spline:
-                            IsClosedLoop: false
-                            ControlPoints:
-                                630519b868f4a4dc0717a92e0e9a0294:
-                                    Position: {X: 2.5980828, Y: 0.044731244, Z: 1.0635667}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 0.0, Y: 0.0, Z: -10.0}
-                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
-                                3a4ed491ec78697825ec2ca884d34108:
-                                    Position: {X: -7.5213814, Y: 0.0, Z: 13.336444}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: false
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 2.5980828, Y: 0.044731244, Z: 1.0635667}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: -10.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -7.5213814, Y: 0.0, Z: 13.336444}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Entity:
                 Id: 80de15f9-c67f-4d9b-a678-a4ae26f677f9
                 Name: UVTestBoxSpline
@@ -583,29 +705,41 @@ Hierarchy:
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a355a68f-8949-4857-88cb-5caa189f2328:Materials/UVTestMaterial
-                            Rotation: 0.0
                             CloseEnds: true
+                            MeshSamplingSettings:
+                                MaximumPositionError: 0.05
+                                MaximumAngleError: {Radians: 0.05235988}
+                                MaximumSegmentLength: 0.5
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 8
                         SplineComponent: ref!! ca16748c-fb63-4590-93a4-c174ca718200
                     9b972c4c2dbb879f0daf66d57b0fb094: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: ca16748c-fb63-4590-93a4-c174ca718200
-                        Spline:
-                            IsClosedLoop: false
-                            ControlPoints:
-                                630519b868f4a4dc0717a92e0e9a0294:
-                                    Position: {X: 0.0, Y: 0.0, Z: 2.0}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
-                                3a4ed491ec78697825ec2ca884d34108:
-                                    Position: {X: -5.0, Y: 0.0, Z: 15.0}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: false
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 0.0, Y: 0.0, Z: 2.0}
+                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -5.0, Y: 0.0, Z: 15.0}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.7853982}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Folder: null
             Entity:
                 Id: 8aac7a2e-3fd2-48af-923e-24d35312a3de
@@ -631,34 +765,52 @@ Hierarchy:
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a355a68f-8949-4857-88cb-5caa189f2328:Materials/UVTestMaterial
-                            Rotation: 0.0
                             CloseEnds: false
+                            MeshSamplingSettings:
+                                MaximumPositionError: 0.1
+                                MaximumAngleError: {Radians: 0.08726646}
+                                MaximumSegmentLength: 2.0
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 5
                             ShapeSplineComponent: ref!! ce0f003c-b61e-4f9c-bc2d-a252db6df14b
                             ShapeProfilePlane: XY
                             ShapeProfileFlipAxis: None
                             ShapeProfileInvertNormals: false
                             MeshFlipWinding: false
+                            ShapeSamplingSettings:
+                                MaximumPositionError: 0.5
+                                MaximumAngleError: {Radians: 0.05235988}
+                                MaximumSegmentLength: 1.0
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 6
                         SplineComponent: ref!! 14a614b5-9f52-43b6-8d2f-3007e1efeb8c
                     83b65823e45b8877a923b91487dd1cef: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: 14a614b5-9f52-43b6-8d2f-3007e1efeb8c
-                        Spline:
-                            IsClosedLoop: false
-                            ControlPoints:
-                                630519b868f4a4dc0717a92e0e9a0294:
-                                    Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
-                                3a4ed491ec78697825ec2ca884d34108:
-                                    Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: false
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
+                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Folder: null
             Entity:
                 Id: 8afcd270-48c2-4b7e-b5cf-847faab9ac4e
@@ -684,31 +836,43 @@ Hierarchy:
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a355a68f-8949-4857-88cb-5caa189f2328:Materials/UVTestMaterial
-                            Rotation: 0.0
                             CloseEnds: true
+                            MeshSamplingSettings:
+                                MaximumPositionError: 0.05
+                                MaximumAngleError: {Radians: 0.05235988}
+                                MaximumSegmentLength: 0.5
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 8
                             Sides: 16
                             Radius: {X: 0.2, Y: 1.0}
                         SplineComponent: ref!! d05140b4-dbab-4fe3-9fd5-362495f68f84
                     9b972c4c2dbb879f0daf66d57b0fb094: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: d05140b4-dbab-4fe3-9fd5-362495f68f84
-                        Spline:
-                            IsClosedLoop: false
-                            ControlPoints:
-                                630519b868f4a4dc0717a92e0e9a0294:
-                                    Position: {X: 0.0, Y: 0.0, Z: 2.0}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
-                                3a4ed491ec78697825ec2ca884d34108:
-                                    Position: {X: -5.0, Y: 0.0, Z: 15.0}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: false
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 0.0, Y: 0.0, Z: 2.0}
+                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -5.0, Y: 0.0, Z: 15.0}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Entity:
                 Id: 9b6b991c-b2b3-4746-81a8-a84a12b9d9cc
                 Name: MeshShapeTargetXZ
@@ -726,29 +890,37 @@ Hierarchy:
                             b6ef819d97a7accaeaec0204511c0478~0: c5a1e74d-7d1d-4bcd-ae06-419617d21618:Materials/Green
                     83b65823e45b8877a923b91487dd1cef: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: 5708c777-ade0-4413-a57c-f0eb48429b91
-                        Spline:
-                            IsClosedLoop: true
-                            ControlPoints:
-                                38c97b04674d6c668bc42f23b4a8d27f:
-                                    Position: {X: -0.76260376, Y: 0.0, Z: -1.5}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: -2.0, Y: -0.0, Z: 0.0}
-                                    TangentOut: {X: 2.0, Y: 0.0, Z: 0.0}
-                                4ea01a0d7862ea8482051f54eff391ea:
-                                    Position: {X: 0.677, Y: 0.0, Z: -0.018}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: -1.8994179, Y: 0.0, Z: -0.49}
-                                    TangentOut: {X: 1.8994179, Y: 0.0, Z: 0.49}
-                                b7b51256761b76f3f222da2e2228c163:
-                                    Position: {X: -1.823494, Y: 0.0, Z: 1.5}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 1.0, Y: -0.0, Z: 0.0}
-                                    TangentOut: {X: -1.0, Y: 0.0, Z: 0.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: true
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                38c97b04674d6c668bc42f23b4a8d27f:
+                                    Position: {X: -0.76260376, Y: 0.0, Z: -1.5}
+                                    TangentIn: {X: -2.0, Y: -0.0, Z: 0.0}
+                                    TangentOut: {X: 2.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                4ea01a0d7862ea8482051f54eff391ea:
+                                    Position: {X: 0.677, Y: 0.0, Z: -0.018}
+                                    TangentIn: {X: -1.8994179, Y: 0.0, Z: -0.49}
+                                    TangentOut: {X: 1.8994179, Y: 0.0, Z: 0.49}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                b7b51256761b76f3f222da2e2228c163:
+                                    Position: {X: -1.823494, Y: 0.0, Z: 1.5}
+                                    TangentIn: {X: 1.0, Y: -0.0, Z: 0.0}
+                                    TangentOut: {X: -1.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Entity:
                 Id: a3186170-0839-4471-b74d-67a8a5d7333a
                 Name: Camera
@@ -823,31 +995,43 @@ Hierarchy:
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a355a68f-8949-4857-88cb-5caa189f2328:Materials/UVTestMaterial
-                            Rotation: 0.0
                             CloseEnds: false
+                            MeshSamplingSettings:
+                                MaximumPositionError: 0.05
+                                MaximumAngleError: {Radians: 0.05235988}
+                                MaximumSegmentLength: 0.5
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 8
                             Sides: 16
                             Radius: 1.0
                         SplineComponent: ref!! 5c7a944b-a8d4-4016-ae0d-159a1ecf64e9
                     9b972c4c2dbb879f0daf66d57b0fb094: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: 5c7a944b-a8d4-4016-ae0d-159a1ecf64e9
-                        Spline:
-                            IsClosedLoop: true
-                            ControlPoints:
-                                630519b868f4a4dc0717a92e0e9a0294:
-                                    Position: {X: 0.0, Y: 0.0, Z: 2.0}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
-                                3a4ed491ec78697825ec2ca884d34108:
-                                    Position: {X: -5.0, Y: 0.0, Z: 15.0}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: true
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 0.0, Y: 0.0, Z: 2.0}
+                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -5.0, Y: 0.0, Z: 15.0}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Entity:
                 Id: bf40ae0e-15b0-4d2b-95f3-6a5c232e48f0
                 Name: DemoController
@@ -884,31 +1068,43 @@ Hierarchy:
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: 4c76c97e-b37b-42f7-8e14-ba08ab0fbf88:Materials/FuturaMaterial
-                            Rotation: 0.0
                             CloseEnds: false
+                            MeshSamplingSettings:
+                                MaximumPositionError: 0.05
+                                MaximumAngleError: {Radians: 0.05235988}
+                                MaximumSegmentLength: 0.5
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 8
                             Sides: 16
                             Radius: 1.0
                         SplineComponent: ref!! 9c3edd86-7688-40b8-93bc-61c35fd071f2
                     612a4fcd8f613ce08599cdda10671784: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: 9c3edd86-7688-40b8-93bc-61c35fd071f2
-                        Spline:
-                            IsClosedLoop: true
-                            ControlPoints:
-                                630519b868f4a4dc0717a92e0e9a0294:
-                                    Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
-                                3a4ed491ec78697825ec2ca884d34108:
-                                    Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: true
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
+                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Entity:
                 Id: cdce7073-b5eb-4a4c-b660-fda1de108c23
                 Name: RoadSpline-looped
@@ -933,29 +1129,41 @@ Hierarchy:
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: 72665805-228b-445a-9c78-1453c4655823:Materials/RoadMaterial
-                            Rotation: 0.0
                             CloseEnds: false
+                            MeshSamplingSettings:
+                                MaximumPositionError: 0.05
+                                MaximumAngleError: {Radians: 0.05235988}
+                                MaximumSegmentLength: 0.5
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 8
                         SplineComponent: ref!! 1527caa2-44c4-41fd-9bf4-01dbd730921e
                     25550c5baf4a8111b66dfd07065c14e6: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: 1527caa2-44c4-41fd-9bf4-01dbd730921e
-                        Spline:
-                            IsClosedLoop: true
-                            ControlPoints:
-                                630519b868f4a4dc0717a92e0e9a0294:
-                                    Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
-                                3a4ed491ec78697825ec2ca884d34108:
-                                    Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: true
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 0.55946493, Y: 0.0, Z: 2.9149172}
+                                    TangentIn: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -1.4368844, Y: 0.0, Z: 11.265936}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Entity:
                 Id: d9e17211-c72c-4cd3-a7aa-11203f81701f
                 Name: CyllinderSpline_LowPoly
@@ -980,31 +1188,43 @@ Hierarchy:
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: 4c76c97e-b37b-42f7-8e14-ba08ab0fbf88:Materials/FuturaMaterial
-                            Rotation: 0.0
                             CloseEnds: true
+                            MeshSamplingSettings:
+                                MaximumPositionError: 0.05
+                                MaximumAngleError: {Radians: 0.05235988}
+                                MaximumSegmentLength: 0.5
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 8
                             Sides: 4
                             Radius: 1.0
                         SplineComponent: ref!! b72f4d2c-02d4-4439-8747-2ec81675c9de
                     f57df7b6ad4c1f89ac0e06a2e64737f4: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: b72f4d2c-02d4-4439-8747-2ec81675c9de
-                        Spline:
-                            IsClosedLoop: false
-                            ControlPoints:
-                                630519b868f4a4dc0717a92e0e9a0294:
-                                    Position: {X: -0.43491513, Y: 0.044731244, Z: 1.9411129}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 0.0, Y: 0.0, Z: -10.0}
-                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
-                                3a4ed491ec78697825ec2ca884d34108:
-                                    Position: {X: -7.5213814, Y: 0.0, Z: 13.336444}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: false
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: -0.43491513, Y: 0.044731244, Z: 1.9411129}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: -10.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -7.5213814, Y: 0.0, Z: 13.336444}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Entity:
                 Id: dc1d4c92-1327-47c1-93a4-0de1590c88fa
                 Name: BoxSpline
@@ -1029,29 +1249,41 @@ Hierarchy:
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a1daa7bb-a33f-4c1d-a204-3ef5f36157e1:Materials/RedBrickMaterial
-                            Rotation: 0.0
                             CloseEnds: true
+                            MeshSamplingSettings:
+                                MaximumPositionError: 0.05
+                                MaximumAngleError: {Radians: 0.05235988}
+                                MaximumSegmentLength: 0.5
+                                MinimumSegmentLength: 0.01
+                                MaximumSubdivisionDepth: 8
                         SplineComponent: ref!! d6f24d47-7979-42e9-91bc-703bc97a5d3b
                     9b972c4c2dbb879f0daf66d57b0fb094: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: d6f24d47-7979-42e9-91bc-703bc97a5d3b
-                        Spline:
-                            IsClosedLoop: false
-                            ControlPoints:
-                                630519b868f4a4dc0717a92e0e9a0294:
-                                    Position: {X: 0.28495574, Y: 0.0, Z: 1.243}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 0.0, Y: 0.0, Z: -10.0}
-                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
-                                3a4ed491ec78697825ec2ca884d34108:
-                                    Position: {X: -7.5213814, Y: 0.0, Z: 13.336444}
-                                    Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
-                                    TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
                         DebugRenderSettings:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
+                            ShowTangents: false
+                            ShowUpDirections: false
                             ShowControlPoints: false
                             ShowBoundingBox: false
+                        Spline:
+                            IsClosedLoop: false
+                            InitialUpDirection: {X: 0.0, Y: 1.0, Z: 0.0}
+                            ControlPoints:
+                                630519b868f4a4dc0717a92e0e9a0294:
+                                    Position: {X: 0.28495574, Y: 0.0, Z: 1.243}
+                                    TangentIn: {X: 0.0, Y: 0.0, Z: -10.0}
+                                    TangentOut: {X: -10.0, Y: 0.0, Z: 0.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                                3a4ed491ec78697825ec2ca884d34108:
+                                    Position: {X: -7.5213814, Y: 0.0, Z: 13.336444}
+                                    TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
+                                    TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
+                                    Roll: {Radians: 0.0}
+                                    Type: Free
+                        SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
+                            MaximumAngleError: {Radians: 0.05235988}
         -   Entity:
                 Id: e436febe-4c37-4096-95ba-b8fa067cd95b
                 Name: Directional light

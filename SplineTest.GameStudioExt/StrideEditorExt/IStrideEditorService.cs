@@ -1,3 +1,4 @@
+using Stride.Assets.Presentation.ViewModel;
 using Stride.Core.Assets;
 using Stride.Core.Assets.Editor.ViewModel;
 using Stride.Core.Mathematics;

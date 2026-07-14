@@ -26,7 +26,7 @@ public class SplineMeshTube : SplineMesh
     protected override GeometricMeshData<VertexPositionNormalTexture> CreatePrimitiveMeshData()
     {
         var splinePoints = new List<Vector3>();
-        SplineExtensions.CollectSplineSamplePoints(Spline, splinePoints);
+        SplineExtensions.CollectSplineSamplePositionsByResolution(Spline, splinePoints);
         var splinePointsSpan = CollectionsMarshal.AsSpan(splinePoints);
         int splinePointCount = splinePointsSpan.Length;
 

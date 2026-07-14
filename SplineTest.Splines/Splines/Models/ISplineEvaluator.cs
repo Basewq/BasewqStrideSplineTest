@@ -22,10 +22,11 @@ public interface ISplineEvaluator
 
     SplineSample Evaluate(float splineT);
     SplineSample EvaluateFromDistance(float distance);
+    SplineSample EvaluateFromCurve(int curveIndex, float curveLocalT = 0);
 
     Vector3 EvaluatePosition(float splineT);
     Vector3 EvaluateTangent(float splineT);
-    Quaternion EvaluateRotation(float splineT);
+    Quaternion EvaluateOrientation(float splineT);
 
     /// <summary>
     /// Returns the position on the spline curve closest to <paramref name="position"/>.

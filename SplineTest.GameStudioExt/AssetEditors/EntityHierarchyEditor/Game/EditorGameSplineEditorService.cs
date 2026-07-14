@@ -1,23 +1,34 @@
 // Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
+using SplineTest.GameStudioExt.Assets;
 using SplineTest.GameStudioExt.StrideEditorExt;
+using SplineTest.GameStudioExt.StrideEditorExt.StrideAssetTransaction;
 using SplineTest.Rendering;
 using SplineTest.Splines.Rendering.GizmoMarker;
 using SplineTest.Splines.Rendering.LineVisualizer;
 using Stride.Assets.Presentation.AssetEditors.GameEditor.Game;
+using Stride.Assets.Presentation.AssetEditors.GameEditor.Services;
 using Stride.Assets.Presentation.AssetEditors.Gizmos;
 using Stride.Assets.Presentation.AssetEditors.Gizmos.Splines;
 using Stride.Assets.Presentation.AssetEditors.SceneEditor.Game;
+using Stride.Assets.Presentation.AssetEditors.SceneEditor.Services;
+using Stride.Assets.Presentation.ViewModel;
 using Stride.Core;
 using Stride.Core.Annotations;
+using Stride.Core.Assets.Editor.ViewModel;
+using Stride.Core.Assets.Quantum;
 using Stride.Core.Mathematics;
+using Stride.Core.Presentation.Services;
+using Stride.Core.Quantum;
 using Stride.Editor.EditorGame.Game;
 using Stride.Engine;
 using Stride.Engine.Splines.Components;
 using Stride.Engine.Splines.Models;
+using Stride.Games;
 using Stride.Input;
 using Stride.Rendering;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace Stride.Assets.Presentation.AssetEditors.EntityHierarchyEditor.Game;
@@ -30,13 +41,20 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
     private static readonly Color4 CurveColor = Color.Aqua.ToColor4();
 
     private readonly StrideEditorService strideEditorService;
+    private readonly SceneEditorController sceneEditorController;
+    private Interaction inputInteraction;
+    private bool isInputInteractionFinished;
 
     private EntityHierarchyEditorGame game;
     private Scene editorScene;
+    private IUndoRedoService undoRedoService;
+    private AssetPropertyGraph scenePropertyGraph;
+
     private InputManager inputManager;
     private IEditorGameEntitySelectionService entitySelectionService;
     private IStrideEditorMouseService editorMouseService;
     private IEditorGameCameraService cameraService;
+    private IEditorGameComponentGizmoService editorGameComponentGizmoService;
 
     private TranslationGizmo pointTransformGizmo;
 
@@ -63,12 +81,14 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
     internal SplineComponent? ActiveSplineComponent => activeSplineComponent;
 
     public override IEnumerable<Type> Dependencies => [
-        typeof(IEditorGameCameraService)
+        typeof(IEditorGameCameraService),
+        typeof(IEditorGameComponentGizmoService)
     ];
 
-    public EditorGameSplineEditorService(StrideEditorService strideEditorService)
+    public EditorGameSplineEditorService(StrideEditorService strideEditorService, SceneEditorController sceneEditorController)
     {
         this.strideEditorService = strideEditorService;
+        this.sceneEditorController = sceneEditorController;
     }
 
     protected override Task<bool> Initialize([NotNull] EditorServiceGame editorGame)
@@ -76,15 +96,16 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
         game = (EntityHierarchyEditorGame)editorGame;
         editorScene = game.EditorScene;
 
+        undoRedoService = SessionViewModel.Instance.UndoRedoService;
         inputManager = game.Services.GetService<InputManager>();
         entitySelectionService = game.EditorServices.Get<IEditorGameEntitySelectionService>();
         entitySelectionService?.SelectionUpdated += OnEntitySelectionService_SelectionUpdated;
         editorMouseService = StrideEditorMouseService.GetOrCreate(game.Services);
 
-        splineEditingGizmoRootEntity = new Entity("spline Editing Root");
+        splineEditingGizmoRootEntity = new Entity("Spline Editing Root");
         editorScene.Entities.Add(splineEditingGizmoRootEntity);
 
-        activePointAnchorEntity = new Entity("Edit spline Point Anchor");     // Entity to be moved by the TranslationGizmo
+        activePointAnchorEntity = new Entity("Edit Spline Point Anchor");     // Entity to be moved by the TranslationGizmo
         activePointAnchorEntityList.Add(activePointAnchorEntity);
         activePointAnchorEntity.Scene = editorScene;
 
@@ -96,6 +117,16 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
         pointTransformGizmo.ModifiedEntities = activePointAnchorEntityList;
 
         game.Script.AddTask(OnGameUpdate, priority: 1000);
+
+        // HACK: Take AssetViewModel/SceneViewModel from game controller because we can't get it ourselves
+        {
+            var getAssetViewModel_FieldInfo = typeof(EditorGameController<EntityHierarchyEditorGame>).GetField("Asset", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var sceneViewModel = getAssetViewModel_FieldInfo.GetValue(sceneEditorController) as SceneViewModel;
+
+            scenePropertyGraph = sceneViewModel.PropertyGraph;
+            scenePropertyGraph.Changed += OnScenePropertyGraphChanged;
+            scenePropertyGraph.ItemChanged += OnScenePropertyGraphItemChanged;
+        }
 
         return Task.FromResult(true);
     }
@@ -127,14 +158,270 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
     {
         strideEditorService.Invoke(() =>
         {
-            using (strideEditorService.CreateUndoRedoTransaction("Update Tangent Position"))
+            using (strideEditorService.CreateUndoRedoTransaction("Update Spline " + activePointEditingSelectionType.ToString()))
             {
-                var splineEntityId = activeSplineComponent.Entity.Id;
+                var runtimeSpline = activeSplineComponent.Spline;
+                var assetSplineComp = strideEditorService.GetAssetComponent(activeSplineComponent);
+                var assetSpline = assetSplineComp.Spline;
 
-                var controlPoint = activeSplineComponent.Spline[activeControlPointIndex];
-                strideEditorService.UpdateAssetComponentArrayDataByEntityId<SplineComponent>(splineEntityId, nameof(SplineComponent.Spline), nameof(Engine.Splines.Models.Spline.ControlPoints), controlPoint, activeControlPointIndex);
+                var assetTransactionBuilder = AssetTransactionBuilder.Begin(assetSplineComp);
+
+                if (runtimeSpline.TryGetPreviousControlPointIndex(activeControlPointIndex, out int prevIndex))
+                {
+                    assetSpline[prevIndex] = runtimeSpline[prevIndex];
+                }
+                assetSpline[activeControlPointIndex] = runtimeSpline[activeControlPointIndex];
+                if (runtimeSpline.TryGetNextControlPointIndex(activeControlPointIndex, out int nextIndex))
+                {
+                    assetSpline[nextIndex] = runtimeSpline[nextIndex];
+                }
+
+                var nodeContainer = SessionViewModel.Instance.AssetNodeContainer;
+                var assetTransaction = assetTransactionBuilder.CreateTransaction(nodeContainer);
+                assetTransactionBuilder.RevertAssetState(nodeContainer);
+                assetTransaction.Execute();
             }
         });
+    }
+
+    private void OnScenePropertyGraphChanged(object sender, AssetMemberNodeChangeEventArgs e)
+    {
+        if (undoRedoService.TransactionInProgress)
+        {
+            string memberName = e.Member.Name;
+            if (e.ChangeType == ContentChangeType.ValueChange)
+            {
+                if (IsControlPointModification(e.Member, out var assetSplineComp, out int controlPointIndex))
+                {
+                    if (memberName == nameof(SplineControlPoint.Position))
+                    {
+                        var assetTransactionBuilder = AssetTransactionBuilder.Begin(assetSplineComp);
+
+                        bool hasChanged = TryUpdateAutoTangents(assetSplineComp.Spline, controlPointIndex);
+                        if (hasChanged)
+                        {
+                            var nodeContainer = SessionViewModel.Instance.AssetNodeContainer;
+                            var assetTransaction = assetTransactionBuilder.CreateTransaction(nodeContainer);
+                            assetTransactionBuilder.RevertAssetState(nodeContainer);
+                            assetTransaction.Execute();
+                        }
+                    }
+                    else if (memberName == nameof(SplineControlPoint.TangentIn)
+                        || memberName == nameof(SplineControlPoint.TangentOut))
+                    {
+                        var assetTransactionBuilder = AssetTransactionBuilder.Begin(assetSplineComp);
+
+                        var spline = assetSplineComp.Spline;
+                        bool isTangentIn = memberName == nameof(SplineControlPoint.TangentIn);
+                        bool hasChanged = TryUpdateTangentsConstraint(isTangentIn, spline, controlPointIndex);
+                        if (hasChanged)
+                        {
+                            var nodeContainer = SessionViewModel.Instance.AssetNodeContainer;
+                            var assetTransaction = assetTransactionBuilder.CreateTransaction(nodeContainer);
+                            assetTransactionBuilder.RevertAssetState(nodeContainer);
+                            assetTransaction.Execute();
+                        }
+                    }
+                    else if (memberName == nameof(SplineControlPoint.Roll)
+                        || memberName == nameof(SplineControlPoint.OverrideUpDirection))
+                    {
+                        // No real additional modifications, just reevaluated the curve
+                        isSplineChangedUpdateRequired = true;
+                    }
+                    else if (memberName == nameof(SplineControlPoint.Type))
+                    {
+                        var assetTransactionBuilder = AssetTransactionBuilder.Begin(assetSplineComp);
+
+                        var spline = assetSplineComp.Spline;
+                        var newControlPointType = (SplineControlPointType)e.NewValue;
+                        bool hasChanged = false;
+                        switch (newControlPointType)
+                        {
+                            case SplineControlPointType.Auto:
+                                hasChanged = TryUpdateAutoTangentsSingleControlPoint(spline, controlPointIndex);
+                                break;
+                            case SplineControlPointType.Linear:
+                                hasChanged = TryUpdateLinearTangents(spline, controlPointIndex);
+                                break;
+                            case SplineControlPointType.Mirrored:
+                            case SplineControlPointType.Aligned:
+                                bool isTangentIn = false;       // Arbitrary handle to pick...
+                                hasChanged = TryUpdateTangentsConstraint(isTangentIn, spline, controlPointIndex);
+                                break;
+                            case SplineControlPointType.Free:
+                            default:
+                                // Nothing
+                                break;
+                        }
+                        if (hasChanged)
+                        {
+                            var nodeContainer = SessionViewModel.Instance.AssetNodeContainer;
+                            var assetTransaction = assetTransactionBuilder.CreateTransaction(nodeContainer);
+                            assetTransactionBuilder.RevertAssetState(nodeContainer);
+                            assetTransaction.Execute();
+                        }
+                        isSplineChangedUpdateRequired = true;
+                    }
+                }
+            }
+        }
+    }
+
+    // HACK: AssetPropertyGraph gets invoked twice for some reason...
+    private bool suppressCollectionRemove = false;
+    private bool suppressCollectionAdd = false;
+    private void OnScenePropertyGraphItemChanged(object sender, AssetItemNodeChangeEventArgs e)
+    {
+        if (undoRedoService.TransactionInProgress)
+        {
+            if (e.ChangeType == ContentChangeType.CollectionRemove)
+            {
+                if (e.OldValue is SplineControlPoint
+                    && TryGetSplineByModifiedControlPoints(e.Collection, e.Index, out var assetSplineComp, out int removedControlPointIndex))
+                {
+                    if (suppressCollectionRemove)
+                    {
+                        suppressCollectionRemove = false;
+                        return;
+                    }
+                    suppressCollectionRemove = true;
+
+                    var assetTransactionBuilder = AssetTransactionBuilder.Begin(assetSplineComp);
+
+                    var spline = assetSplineComp.Spline;
+                    bool hasChanged = false;
+                    if (spline.TryGetPreviousControlPointIndex(removedControlPointIndex, out int prevIndex))
+                    {
+                        if (spline[prevIndex].Type == SplineControlPointType.Auto)
+                        {
+                            hasChanged = TryUpdateAutoTangentsSingleControlPoint(spline, prevIndex) || hasChanged;
+                        }
+                    }
+                    if (spline.TryGetNextControlPointIndex(removedControlPointIndex - 1, out int nextIndex) && nextIndex != prevIndex)
+                    {
+                        if (spline[nextIndex].Type == SplineControlPointType.Auto)
+                        {
+                            hasChanged = TryUpdateAutoTangentsSingleControlPoint(spline, nextIndex) || hasChanged;
+                        }
+                    }
+                    if (hasChanged)
+                    {
+                        var nodeContainer = SessionViewModel.Instance.AssetNodeContainer;
+                        var assetTransaction = assetTransactionBuilder.CreateTransaction(nodeContainer);
+                        assetTransactionBuilder.RevertAssetState(nodeContainer);
+                        assetTransaction.Execute();
+                    }
+                }
+            }
+            else if (e.ChangeType == ContentChangeType.CollectionAdd)
+            {
+                if (e.NewValue is SplineControlPoint
+                    && TryGetSplineByModifiedControlPoints(e.Collection, e.Index, out var assetSplineComp, out int addedControlPointIndex))
+                {
+                    if (suppressCollectionAdd)
+                    {
+                        suppressCollectionAdd = false;
+                        return;
+                    }
+                    suppressCollectionAdd = true;
+
+                    var assetTransactionBuilder = AssetTransactionBuilder.Begin(assetSplineComp);
+
+                    var spline = assetSplineComp.Spline;
+                    bool hasChanged = TryUpdateAutoTangents(spline, addedControlPointIndex);
+                    if (hasChanged)
+                    {
+                        var nodeContainer = SessionViewModel.Instance.AssetNodeContainer;
+                        var assetTransaction = assetTransactionBuilder.CreateTransaction(nodeContainer);
+                        assetTransactionBuilder.RevertAssetState(nodeContainer);
+                        assetTransaction.Execute();
+                    }
+                }
+            }
+        }
+    }
+
+    private bool IsControlPointModification(
+        IMemberNode memberNode,
+        [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out SplineComponent? assetSplineComponent,
+        out int controlPointIndex)
+    {
+        assetSplineComponent = null;
+        controlPointIndex = -1;
+
+        if (memberNode.Parent.Type != typeof(SplineControlPoint))
+        {
+            return false;
+        }
+        string memberName = memberNode.Name;
+        if (memberName != nameof(SplineControlPoint.Position)
+            && memberName != nameof(SplineControlPoint.TangentIn)
+            && memberName != nameof(SplineControlPoint.TangentOut)
+            && memberName != nameof(SplineControlPoint.Roll)
+            && memberName != nameof(SplineControlPoint.OverrideUpDirection)
+            && memberName != nameof(SplineControlPoint.Scale)
+            && memberName != nameof(SplineControlPoint.Type))
+        {
+            return false;
+        }
+
+        var nodePathFinderGraphVisitor = new NodePathFinderGraphVisitor(memberNode);
+        nodePathFinderGraphVisitor.Visit(scenePropertyGraph.RootNode);
+        if (nodePathFinderGraphVisitor.FoundPath is null)
+        {
+            return false;
+        }
+        var subPaths = nodePathFinderGraphVisitor.FoundPath.Decompose();
+        // SplineComponent.Spline.ControlPoints[i].Position -> at least 5 sub-paths required
+        if (subPaths.Count < 5 || subPaths[^1].MemberDescriptor?.DeclaringType != typeof(SplineControlPoint))
+        {
+            return false;
+        }
+        // This really is SplineControlPoint.Property being edited
+        var splineCompObjPath = nodePathFinderGraphVisitor.FoundPath.Clone();
+        splineCompObjPath.Pop();    // SplineComponent.Spline.ControlPoints[i]
+        controlPointIndex = (int)splineCompObjPath.GetIndex();
+        splineCompObjPath.Pop();    // SplineComponent.Spline.ControlPoints
+        splineCompObjPath.Pop();    // SplineComponent.Spline
+        splineCompObjPath.Pop();    // SplineComponent
+
+        assetSplineComponent = splineCompObjPath.GetValue(scenePropertyGraph.RootNode.Retrieve()) as SplineComponent;
+        return assetSplineComponent is not null;
+    }
+
+    private bool TryGetSplineByModifiedControlPoints(
+        IObjectNode collection, NodeIndex nodeIndex,
+        [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out SplineComponent? assetSplineComponent,
+        out int controlPointIndex)
+    {
+        assetSplineComponent = null;
+        controlPointIndex = -1;
+
+        if (!nodeIndex.IsInt)
+        {
+            return false;
+        }
+        controlPointIndex = nodeIndex.Int;
+
+        var nodePathFinderGraphVisitor = new NodePathFinderGraphVisitor(collection);
+        nodePathFinderGraphVisitor.Visit(scenePropertyGraph.RootNode);
+        if (nodePathFinderGraphVisitor.FoundPath is null)
+        {
+            return false;
+        }
+        var subPaths = nodePathFinderGraphVisitor.FoundPath.Decompose();
+        // SplineComponent.Spline.ControlPoints -> at least 3 sub-paths required
+        if (subPaths.Count < 3 || subPaths[^1].MemberDescriptor?.Name != nameof(Spline.ControlPoints))
+        {
+            return false;
+        }
+        // This really is SplineComponent.Spline.ControlPoints
+        var splineCompObjPath = nodePathFinderGraphVisitor.FoundPath.Clone();
+        splineCompObjPath.Pop();    // SplineComponent.Spline
+        splineCompObjPath.Pop();    // SplineComponent
+
+        assetSplineComponent = splineCompObjPath.GetValue(scenePropertyGraph.RootNode.Retrieve()) as SplineComponent;
+        return assetSplineComponent is not null;
     }
 
     public override ValueTask DisposeAsync()
@@ -151,6 +438,9 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
             splineEditingGizmoRootEntity.Dispose();
             splineEditingGizmoRootEntity = null;
         }
+        scenePropertyGraph?.Changed -= OnScenePropertyGraphChanged;
+        scenePropertyGraph?.ItemChanged -= OnScenePropertyGraphItemChanged;
+        scenePropertyGraph = null;
 
         return base.DisposeAsync();
     }
@@ -244,9 +534,18 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
                         }
                         else if (activeControlPointIndex >= 0)
                         {
-                            refreshAnchorPosition = true;   // Refresh changes in the next update
+                            var activeCtrlPoint = activeSplineComponent.Spline.ControlPoints[activeControlPointIndex];
+                            bool isEditingTangent = activePointEditingSelectionType == SplinePointEditingSelectionType.TangentIn
+                                                    || activePointEditingSelectionType == SplinePointEditingSelectionType.TangentOut;
+                            if (isEditingTangent && !activeCtrlPoint.Type.IsTangentUserControllable())
+                            {
+                                DeactivateEditSpline(deselectSpline: false);
+                            }
+                            else
+                            {
+                                refreshAnchorPosition = true;   // Refresh changes in the next update
+                            }
                         }
-
                     }
                     RegenerateSplineVisualizer();
 
@@ -313,7 +612,7 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
         splineSamplePoints.Clear();
         if (activeSplineComponent is not null)
         {
-            SplineExtensions.CollectSplineSamplePoints(activeSplineComponent.Spline, splineSamplePoints, sampleResolutionPerCurve: 64);
+            SplineExtensions.CollectSplineSamplePositionsByResolution(activeSplineComponent.Spline, splineSamplePoints, sampleResolutionPerCurve: 64);
         }
 
         var lineVisualizerComponent = splineEditingGizmoRootEntity.Get<LineVisualizerComponent>();
@@ -344,6 +643,12 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
             };
             lineVisualizerComponent.LineSet.Segments.Add(instData);
         }
+
+        for (int i = 0; i < controlPointGizmos.Count; i++)
+        {
+            var controlPointGizmo = controlPointGizmos[i];
+            controlPointGizmo.InvalidateVisual();
+        }
     }
 
     private void UpdateControlPointEditingState()
@@ -357,9 +662,10 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
         // Lazy get camera service for TryGetMouseRay
         cameraService ??= Services.Get<IEditorGameCameraService>();
 
+        bool isShiftKeyDown = inputManager.IsKeyDown(Keys.LeftShift) || inputManager.IsKeyDown(Keys.RightShift);
         bool isAltKeyDown = inputManager.IsKeyDown(Keys.LeftAlt) || inputManager.IsKeyDown(Keys.RightAlt);
         bool isCtrlKeyDown = inputManager.IsKeyDown(Keys.LeftCtrl) || inputManager.IsKeyDown(Keys.RightCtrl);
-        if (!inputManager.IsMouseButtonDown(MouseButton.Left))
+        // Hover
         {
             SplineControlPointGizmo? raycastHitControlPointGizmo = null;
             int raycastHitControlPointIndex = -1;
@@ -375,7 +681,6 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
                 {
                     raycastFilterFlags = SplinePointRaycastFilterFlags.Tangents;
                 }
-                bool raycastOnControlPointOnly = isAltKeyDown;
                 float minHitDistance = float.PositiveInfinity;
                 for (int i = 0; i < controlPointGizmos.Count; i++)
                 {
@@ -397,57 +702,43 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
 
                 mouseHoverControlPointGizmo?.EditingSelectionType = raycastHitControlPointEditingSelectionType;
             }
+            else if (mouseHoverControlPointGizmo is not null
+                && mouseHoverControlPointGizmo.EditingSelectionType != raycastHitControlPointEditingSelectionType)
+            {
+                mouseHoverControlPointGizmo.EditingSelectionType = raycastHitControlPointEditingSelectionType;
+                mouseHoverControlPointGizmo.InvalidateVisual();
+            }
         }
 
-        bool isShiftKeyDown = inputManager.IsKeyDown(Keys.LeftShift) || inputManager.IsKeyDown(Keys.RightShift);
         bool canControlMouse = editorMouseService.IsMouseAvailable;
         bool isControllingMouse = canControlMouse && (isShiftKeyDown || isAltKeyDown || isCtrlKeyDown);
 
         if (canControlMouse && inputManager.IsMouseButtonPressed(MouseButton.Left))
         {
-            if (isShiftKeyDown)
-            {
-                if (!isAddingControlPoint && TryGetMouseRay(out var mouseRay))
-                {
-                    // Plane = Ax + By + Cz + D = 0 => Positive Height = Negative D
-                    Plane plane;
-                    if (spline.Count == 0)
-                    {
-                        // No existing control points, so just raycast on XZ plane where height is the same as the spline
-                        plane = new Plane(Vector3.UnitY, d: -activeSplineComponent.Entity.Transform.Position.Y);
-                    }
-                    else
-                    {
-                        // Raycast on XZ plane where height is the same as the last control point's height
-                        var controlPoint = spline[spline.Count - 1];
-                        plane = new Plane(Vector3.UnitY, d: -controlPoint.Position.Y);
-                    }
-                    if (CollisionHelper.RayIntersectsPlane(in mouseRay, in plane, out Vector3 hitPoint))
-                    {
-                        AddControlPoint(hitPoint);
-                        isAddingControlPoint = true;
-                    }
-                    isControllingMouse = true;
-                }
-            }
-            else if (mouseHoverControlPointGizmo is not null)
-            {
-                ActivateSplinePointEditing(activeSplineComponent, mouseHoverControlPointIndex, mouseHoverControlPointGizmo.EditingSelectionType);
-                isControllingMouse = true;
-            }
-        }
-        if (!inputManager.IsMouseButtonDown(MouseButton.Left))
-        {
-            isAddingControlPoint = false;
-        }
-        if (editorMouseService.IsControllingMouseByOwner(this)
-            && (inputManager.IsMouseButtonDown(MouseButton.Left) || inputManager.IsMouseButtonReleased(MouseButton.Left)))
-        {
-            isControllingMouse = true;  // Continue controlling
-        }
+            editorGameComponentGizmoService ??= Services.Get<IEditorGameComponentGizmoService>();
+            var gizmoCompEnity = editorGameComponentGizmoService.GetContentEntityUnderMouse();
 
-        editorMouseService.SetIsControllingMouse(isControllingMouse, owner: this);
-        System.Diagnostics.Debug.WriteLineIf(isControllingMouse, $"{GetType().Name} isControllingMouse");
+            if (gizmoCompEnity is null && inputInteraction is null && !isAddingControlPoint)
+            {
+                inputInteraction = new Interaction(this);
+                inputInteraction.Start();
+            }
+        }
+        if (isInputInteractionFinished)
+        {
+            inputInteraction = null;
+            isInputInteractionFinished = false;
+            editorMouseService.SetIsControllingMouse(false, owner: this);
+        }
+        if (inputInteraction is not null)
+        {
+            bool isContinuing = inputInteraction.Update(game.UpdateTime);
+            if (!isContinuing)
+            {
+                inputInteraction.End();
+                isInputInteractionFinished = true;
+            }
+        }
 
         for (int i = 0; i < controlPointGizmos.Count; i++)
         {
@@ -464,7 +755,8 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
             return;
         }
 
-        var controlPoint = activeSplineComponent.Spline[activeControlPointIndex];
+        var spline = activeSplineComponent.Spline;
+        var controlPoint = spline[activeControlPointIndex];
         if (refreshAnchorPosition)
         {
             UpdateAnchorEntityPosition(controlPoint);
@@ -476,33 +768,187 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
         var anchorEntityPos = activePointAnchorEntity.Transform.Position;
         Matrix.Invert(ref activeSplineComponent.Entity.Transform.WorldMatrix, out var splineWorldInverseMatrix);
         Vector3.Transform(in anchorEntityPos, in splineWorldInverseMatrix, out Vector3 anchorLocalPos);
+
         if (activePointEditingSelectionType == SplinePointEditingSelectionType.ControlPoint)
         {
             if (controlPoint.Position != anchorLocalPos)
             {
-                controlPoint.Position = anchorLocalPos;
-                activeSplineComponent.Spline[activeControlPointIndex] = controlPoint;
+                TryMoveControlPoint(spline, activeControlPointIndex, anchorLocalPos);
             }
         }
         else if (activePointEditingSelectionType == SplinePointEditingSelectionType.TangentIn)
         {
             if (controlPoint.TangentInPosition != anchorLocalPos)
             {
-                controlPoint.TangentIn = anchorLocalPos - controlPoint.Position;
-                // Mirror the other handle
-                controlPoint.TangentOut = -controlPoint.TangentIn;
-                activeSplineComponent.Spline[activeControlPointIndex] = controlPoint;
+                var newPosition = anchorLocalPos - controlPoint.Position;
+                TryMoveTangentHandle(isTangentIn: true, spline, activeControlPointIndex, newPosition);
             }
         }
         else if (activePointEditingSelectionType == SplinePointEditingSelectionType.TangentOut)
         {
             if (controlPoint.TangentOutPosition != anchorLocalPos)
             {
-                controlPoint.TangentOut = anchorLocalPos - controlPoint.Position;
-                // Mirror the other handle
-                controlPoint.TangentIn = -controlPoint.TangentOut;
-                activeSplineComponent.Spline[activeControlPointIndex] = controlPoint;
+                var newPosition = anchorLocalPos - controlPoint.Position;
+                TryMoveTangentHandle(isTangentIn: false, spline, activeControlPointIndex, newPosition);
             }
+        }
+    }
+
+    private static bool TryMoveControlPoint(Spline spline, int controlPointIndex, Vector3 newPosition)
+    {
+        var controlPoint = spline[controlPointIndex];
+        bool hasChanged = false;
+        SetIfChanged(ref controlPoint.Position, newPosition, ref hasChanged);
+        if (!hasChanged)
+        {
+            return false;
+        }
+
+        spline[controlPointIndex] = controlPoint;
+        TryUpdateAutoTangents(spline, controlPointIndex);
+        return true;
+    }
+
+    private static bool TryMoveTangentHandle(bool isTangentIn, Spline spline, int controlPointIndex, Vector3 newPosition)
+    {
+        var controlPoint = spline[controlPointIndex];
+        bool hasChanged = false;
+        if (isTangentIn)
+        {
+            SetIfChanged(ref controlPoint.TangentIn, newPosition, ref hasChanged);
+        }
+        else
+        {
+            SetIfChanged(ref controlPoint.TangentOut, newPosition, ref hasChanged);
+        }
+        if (hasChanged)
+        {
+            spline[controlPointIndex] = controlPoint;
+            TryUpdateTangentsConstraint(isTangentIn, spline, controlPointIndex);
+        }
+        return hasChanged;
+    }
+
+    private static bool TryUpdateAutoTangents(Spline spline, int centerControlPointIndex)
+    {
+        bool hasChanged = false;
+        if (spline.TryGetPreviousControlPointIndex(centerControlPointIndex, out int prevIndex))
+        {
+            if (spline[prevIndex].Type == SplineControlPointType.Auto)
+            {
+                hasChanged = TryUpdateAutoTangentsSingleControlPoint(spline, prevIndex) || hasChanged;
+            }
+        }
+        if (spline[centerControlPointIndex].Type == SplineControlPointType.Auto)
+        {
+            hasChanged = TryUpdateAutoTangentsSingleControlPoint(spline, centerControlPointIndex) || hasChanged;
+        }
+        if (spline.TryGetNextControlPointIndex(centerControlPointIndex, out int nextIndex))
+        {
+            if (spline[nextIndex].Type == SplineControlPointType.Auto)
+            {
+                hasChanged = TryUpdateAutoTangentsSingleControlPoint(spline, nextIndex) || hasChanged;
+            }
+        }
+        return hasChanged;
+    }
+
+    private static bool TryUpdateAutoTangentsSingleControlPoint(Spline spline, int controlPointIndex)
+    {
+        Vector3? prevCtrlPointPosition = null;
+        Vector3? nextCtrlPointPosition = null;
+
+        if (spline.TryGetPreviousControlPointIndex(controlPointIndex, out int prevCtrlPointIndex))
+        {
+            prevCtrlPointPosition = spline[prevCtrlPointIndex].Position;
+        }
+        if (spline.TryGetNextControlPointIndex(controlPointIndex, out int nextCtrlPointIndex))
+        {
+            nextCtrlPointPosition = spline[nextCtrlPointIndex].Position;
+        }
+        var controlPoint = spline[controlPointIndex];
+
+        SplineUtil.CalculateAutoTangents(
+            controlPoint.Position, prevCtrlPointPosition, nextCtrlPointPosition, strength: SplineUtil.DefaultAutoTangentStrength,
+            out var newTangentIn, out var newTangentOut);
+
+        bool hasChanged = false;
+        SetIfChanged(ref controlPoint.TangentIn, newTangentIn, ref hasChanged);
+        SetIfChanged(ref controlPoint.TangentOut, newTangentOut, ref hasChanged);
+        if (hasChanged)
+        {
+            spline[controlPointIndex] = controlPoint;
+        }
+        return hasChanged;
+    }
+
+    private static bool TryUpdateLinearTangents(Spline spline, int controlPointIndex)
+    {
+        var controlPoint = spline[controlPointIndex];
+        bool hasChanged = false;
+        // Tangents are not relevant for linear type, so just set to zero
+        SetIfChanged(ref controlPoint.TangentIn, Vector3.Zero, ref hasChanged);
+        SetIfChanged(ref controlPoint.TangentOut, Vector3.Zero, ref hasChanged);
+        if (hasChanged)
+        {
+            spline[controlPointIndex] = controlPoint;
+        }
+        return hasChanged;
+    }
+
+    private static bool TryUpdateTangentsConstraint(bool isTangentInModified, Spline spline, int controlPointIndex)
+    {
+        bool hasChanged = false;
+        var controlPoint = spline[controlPointIndex];
+        switch (controlPoint.Type)
+        {
+            case SplineControlPointType.Mirrored:
+                // Mirror the other handle
+                if (isTangentInModified)
+                {
+                    SetIfChanged(ref controlPoint.TangentOut, -controlPoint.TangentIn, ref hasChanged);
+                }
+                else
+                {
+                    SetIfChanged(ref controlPoint.TangentIn, -controlPoint.TangentOut, ref hasChanged);
+                }
+                break;
+
+            case SplineControlPointType.Aligned:
+                if (isTangentInModified)
+                {
+                    var newTangentPosition = SplineUtil.CalculateAlignedHandle(controlPoint.TangentIn, controlPoint.TangentOut);
+                    SetIfChanged(ref controlPoint.TangentOut, newTangentPosition, ref hasChanged);
+                }
+                else
+                {
+                    var newTangentPosition = SplineUtil.CalculateAlignedHandle(controlPoint.TangentOut, controlPoint.TangentIn);
+                    SetIfChanged(ref controlPoint.TangentIn, newTangentPosition, ref hasChanged);
+                }
+                break;
+
+            case SplineControlPointType.Auto:
+            case SplineControlPointType.Linear:
+            case SplineControlPointType.Free:
+            default:
+                // Not applicable
+                return false;
+        }
+
+        if (hasChanged)
+        {
+            spline[controlPointIndex] = controlPoint;
+        }
+        return hasChanged;
+    }
+
+    private static void SetIfChanged<T>(ref T backingField, T newValue, ref bool hasChanged)
+        where T : IEquatable<T>
+    {
+        if (!backingField.Equals(newValue))
+        {
+            backingField = newValue;
+            hasChanged = true;
         }
     }
 
@@ -563,7 +1009,7 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
         isSplineChangedUpdateRequired = true;
     }
 
-    private void UpdateAnchorEntityPosition(Engine.Splines.Models.SplineControlPoint controlPoint)
+    private void UpdateAnchorEntityPosition(SplineControlPoint controlPoint)
     {
         if (activePointEditingSelectionType == SplinePointEditingSelectionType.ControlPoint)
         {
@@ -592,20 +1038,38 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
 
     private void AddControlPoint(Vector3 controlPointPosition)
     {
+        isAddingControlPoint = true;
         strideEditorService.Invoke(() =>
         {
-            using (strideEditorService.CreateUndoRedoTransaction("Add spline Control Point"))
+            using (strideEditorService.CreateUndoRedoTransaction("Add Spline Control Point"))
             {
-                var splineEntityId = activeSplineComponent.Entity.Id;
+                // HACK: AssetTransactionBuilder is used to handle the asset change into the quantum system.
+                // We do this by doing the following:
+                // 1. Save the initial state of the *asset side* spline
+                // 2. Modify the changes we want in the asset side data
+                // 3. Create the transaction that will actually modify the asset (done by diff'ing the initial state from current state)
+                // 4. Revert back to the initial state (required so it can be properly modified by the quantum system)
+                // 5. Execute the transaction to participate properly within the quantum system
+                var assetSplineComp = strideEditorService.GetAssetComponent(activeSplineComponent);
+                var assetTransactionBuilder = AssetTransactionBuilder.Begin(assetSplineComp);
 
-                var controlPoint = new Engine.Splines.Models.SplineControlPoint
+                var spline = assetSplineComp.Spline;
+                var controlPoint = new SplineControlPoint
                 {
                     Position = controlPointPosition,
-                    TangentIn = Vector3.Zero,
-                    TangentOut = Vector3.Zero,
+                    Type = SplineControlPointType.Auto,
                 };
-                strideEditorService.AddAssetComponentArrayDataByEntityId<SplineComponent>(splineEntityId, nameof(SplineComponent.Spline), "ControlPoints", controlPoint);
+                int controlPointIndex = assetSplineComp.Spline.Count;
+                assetSplineComp.Spline.Add(controlPoint);
+                TryUpdateAutoTangents(assetSplineComp.Spline, controlPointIndex);
+
+                var nodeContainer = SessionViewModel.Instance.AssetNodeContainer;
+                var assetTransaction = assetTransactionBuilder.CreateTransaction(nodeContainer);
+                assetTransactionBuilder.RevertAssetState(nodeContainer);
+                assetTransaction.Execute();
             }
+
+            isAddingControlPoint = false;
         });
     }
 
@@ -627,5 +1091,73 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
 
         mouseRay = EditorGameHelper.CalculateRayFromMousePosition(cameraService.Component, inputManager.MousePosition, gizmoWorldViewInverse);
         return true;
+    }
+
+
+    private class Interaction(EditorGameSplineEditorService EditorService) /*: IInputInteraction*/
+    {
+        public object Owner => EditorService;
+
+        public void Start()
+        {
+            EditorService.editorMouseService.SetIsControllingMouse(true, owner: EditorService);
+        }
+
+        public bool Update(GameTime gameTime)
+        {
+            var inputManager = EditorService.inputManager;
+            if (inputManager.IsMouseButtonDown(MouseButton.Left))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public void End()
+        {
+            System.Diagnostics.Debug.WriteLine($"{GetType().Name} End - {GetHashCode()}");
+            var mouseHoverControlPointGizmo = EditorService.mouseHoverControlPointGizmo;
+
+            var inputManager = EditorService.inputManager;
+            bool isShiftKeyDown = inputManager.IsKeyDown(Keys.LeftShift) || inputManager.IsKeyDown(Keys.RightShift);
+
+            var spline = EditorService.activeSplineComponent.Spline;
+            if (isShiftKeyDown)
+            {
+                // Add new spline node
+                if (EditorService.TryGetMouseRay(out var mouseRay))
+                {
+                    // Plane = Ax + By + Cz + D = 0 => Positive Height = Negative D
+                    Plane plane;
+                    if (spline.Count > 0)
+                    {
+                        // Raycast on XZ plane where height is the same as the last control point's height
+                        var controlPoint = spline[spline.Count - 1];
+                        plane = new Plane(Vector3.UnitY, d: -controlPoint.Position.Y);
+                    }
+                    else
+                    {
+                        // Raycast on XZ plane where height is the same as the last control point's height
+                        var controlPoint = spline[spline.Count - 1];
+                        plane = new Plane(Vector3.UnitY, d: -controlPoint.Position.Y);
+                    }
+                    if (CollisionHelper.RayIntersectsPlane(in mouseRay, in plane, out Vector3 hitPoint))
+                    {
+                        EditorService.AddControlPoint(hitPoint);
+                    }
+                }
+            }
+            else if (mouseHoverControlPointGizmo is not null)
+            {
+                // Try select existing spline node
+                EditorService.ActivateSplinePointEditing(EditorService.activeSplineComponent, EditorService.mouseHoverControlPointIndex, mouseHoverControlPointGizmo.EditingSelectionType);
+            }
+
+            // HACK: we don't release mouse control yet
+        }
+
+        //public void Cancel()
+        //{
+        //}
     }
 }

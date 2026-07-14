@@ -12,9 +12,9 @@ public struct SplineSample : IEquatable<SplineSample>
     /// </summary>
     public Vector3 Position;
     /// <summary>
-    /// Local rotation relative to the spline.
+    /// Local orientation relative to the spline.
     /// </summary>
-    public Quaternion Rotation;
+    public Quaternion Orientation;
     /// <summary>
     /// Normalized tangent vector relative to the spline.
     /// </summary>
@@ -22,19 +22,20 @@ public struct SplineSample : IEquatable<SplineSample>
 
     public float SplineT;
 
-    public SplineSample(Vector3 position, Quaternion rotation, Vector3 tangent, float splineT)
+    public SplineSample(Vector3 position, Quaternion orientation, Vector3 tangent, float splineT)
     {
         Position = position;
-        Rotation = rotation;
+        Orientation = orientation;
         Tangent = tangent;
         SplineT = splineT;
     }
 
-    public bool Equals(SplineSample other)
+    public readonly bool Equals(SplineSample other)
     {
         bool isEqual = Position.Equals(other.Position)
-            && Rotation.Equals(other.Rotation)
-            && Tangent.Equals(other.Tangent);
+            && Orientation.Equals(other.Orientation)
+            && Tangent.Equals(other.Tangent)
+            && SplineT.Equals(other.SplineT);
         return isEqual;
     }
 }

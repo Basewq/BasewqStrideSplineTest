@@ -103,7 +103,7 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
         // If the spline editor is active, we let it render the curve instead
         if (Component.Spline is not null && splineEditorService.ActiveSplineComponent != Component)
         {
-            SplineExtensions.CollectSplineSamplePoints(Component.Spline, splineSamplePoints, sampleResolutionPerCurve: 64);
+            SplineExtensions.CollectSplineSamplePositionsByResolution(Component.Spline, splineSamplePoints, sampleResolutionPerCurve: 64);
         }
 
         var lineVisualizerComponent = GizmoRootEntity.Get<LineVisualizerComponent>();
@@ -158,11 +158,11 @@ public class SplineGizmo : BillboardingGizmo<SplineComponent>
             boundingBoxEntity.SetParent(GizmoRootEntity);
         }
 
-        bool hasBoundingBox = Component.Spline?.CurveCount > 0;
+        bool hasBoundingBox = Component.Spline?.CurveCount > 0 && Component.SplineEvaluator is not null;
         boundingBoxModelComponent.Enabled = hasBoundingBox;
         if (hasBoundingBox)
         {
-            var boundingBox = Component.Spline.CalculateBoundingBox();
+            var boundingBox = Component.SplineEvaluator.CalculateBoundingBox();
             var boxLengths = boundingBox.Maximum - boundingBox.Minimum;
             boundingBoxEntity.Transform.Scale = boxLengths;
             boundingBoxEntity.Transform.Position = boundingBox.Center;

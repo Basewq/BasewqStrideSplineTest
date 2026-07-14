@@ -24,6 +24,8 @@ It is possible to prevent this via inheriting `EditorGameMouseServiceBase` and s
 Need to establish deterministic rules/order of execution around editor controls.
 May also need some clearer mechanism on blocking/consuming inputs (both mouse input & keyboard input).
 
+A proposed solution is for an 'interaction capture request service' that tools submits to, which can accept or reject based on prioritized context.
+
 Most likely place to add registration is in inheriting `StrideAssetsPlugin` then `AssetsPlugin.RegisterPlugin(typeof(MyEditorPlugin))` in a `[ModuleInitializer]` method, eg. see [EditorModule.cs](SplineTest.GameStudioExt/EditorModule.cs)
 
 ---

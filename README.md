@@ -35,7 +35,7 @@ While the entity is selected, the spline editor tool should (mostly) be active.
 > Note a current bug is that clicking within the scene may select another entity or deselect when clicking into an empty space.
 
 Editor controls within the scene:
-- Selecting a control point or tangent handle: standard left click.
+- Selecting a control point or tangent handle: standard left click when over a highlighted point.
 - If control point & tangents are overlapping: Hold Alt to only select control points, hold Ctrl to only select tangent handles.
 - To append new control points, hold Shift then left click in the scene.
 - To delete a control point, you must use the component properties sidebar to remove from the list.
@@ -56,6 +56,11 @@ Editor controls within the scene:
   - [LineVisualizerRenderFeature.cs](SplineTest.Splines/Rendering/LineVisualizer/LineVisualizerRenderFeature.cs): Required by `LineVisualizerComponent` to render the spline lines. **Must be registered in the Graphics Compositor.**
   - [GizmoMarkerSetComponent.cs](SplineTest.Splines/Rendering/GizmoMarkerSetComponent.cs)
   - [GizmoMarkerRenderFeature.cs](SplineTest.Splines/Rendering/GizmoMarker/GizmoMarkerRenderFeature.cs): Required by `GizmoMarkerSetComponent` to render the control points & tangent points in the editor. **Must be registered in the Graphics Compositor.**
+
+---
+### Known issues
+- Adding control points through the property grid throws an error - Only use `Shift + Left Click` to add new control points.
+- `Ctrl`/`Shift`/`Alt` doesn't get detected when scene is not in focus. You will need to click within the scene first before pressing a modifier key down.
 
 ---
 ## Credits/Thanks

@@ -15,7 +15,7 @@ public class SplineMeshBox : SplineMesh
     protected override GeometricMeshData<VertexPositionNormalTexture> CreatePrimitiveMeshData()
     {
         var splinePoints = new List<Vector3>();
-        SplineExtensions.CollectSplineSamplePoints(Spline, splinePoints);
+        SplineExtensions.CollectSplineSamplePositionsByResolution(Spline, splinePoints);
         var splinePointsSpan = CollectionsMarshal.AsSpan(splinePoints);
         int splinePointCount = splinePointsSpan.Length;
         int vertexCount = splinePointCount * 4 * 2;         // 4 vertPosOffset * 2 per corner - don't share vertices because we want hard normals/texture coords for each face

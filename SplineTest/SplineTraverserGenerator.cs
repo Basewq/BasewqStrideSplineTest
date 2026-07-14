@@ -80,7 +80,6 @@ namespace SplineTools
         private void DestroyEntity(Entity clone)
         {
             Entity.Scene.Entities.Remove(clone);
-            clone = null;
         }
     }
 }

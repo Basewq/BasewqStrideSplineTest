@@ -14,12 +14,12 @@ public class SplineMeshPlane : SplineMesh
 {
     protected override GeometricMeshData<VertexPositionNormalTexture> CreatePrimitiveMeshData()
     {
-        var splinePoints = new List<Vector3>();
-        SplineExtensions.CollectSplineSamplePoints(Spline, splinePoints);
-        var splinePointsSpan = CollectionsMarshal.AsSpan(splinePoints);
-        int splinePointCount = splinePointsSpan.Length;
-        int vertexCount = splinePointCount * 2;         // 2 vertices to form a single edge
-        int indexCount = (splinePointCount - 1) * 6;    // 6 indices = 2 tris * 3 indices => 1 quad
+        var splineSamples = new List<SplineSample>();
+        SplineExtensions.CollectSplineSamples(SplineEvaluator, MeshSamplingSettings, splineSamples);
+        var splineSamplesSpan = CollectionsMarshal.AsSpan(splineSamples);
+        int splineSamplesCount = splineSamplesSpan.Length;
+        int vertexCount = splineSamplesCount * 2;         // 2 vertices to form a single edge
+        int indexCount = (splineSamplesCount - 1) * 6;    // 6 indices = 2 tris * 3 indices => 1 quad
 
         var vertices = new VertexPositionNormalTexture[vertexCount];
         var indices = new int[indexCount];
@@ -29,10 +29,10 @@ public class SplineMeshPlane : SplineMesh
         int triangleIndex = 0;
         float splineDistance = 0.0f;
 
-        for (int i = 0; i < splinePointCount - 1; i++)
+        for (int i = 0; i < splineSamplesCount - 1; i++)
         {
-            var startPoint = splinePointsSpan[i];
-            var targetPoint = splinePointsSpan[i + 1];
+            var startPoint = splineSamplesSpan[i].Position;
+            var targetPoint = splineSamplesSpan[i + 1].Position;
             var forward = Vector3.Normalize(targetPoint - startPoint);
 
             var left = Vector3.Cross(forward, Vector3.UnitY) * halfWidth;

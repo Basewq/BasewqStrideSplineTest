@@ -12,14 +12,26 @@ namespace Stride.Engine.Splines.Models.Mesh;
 [DataContract("Spline mesh")]
 public abstract class SplineMesh : PrimitiveProceduralModelBase
 {
-    [DataMemberIgnore] public Spline Spline;
-
-    public float Rotation;
+    /// <summary>
+    /// Spline used to generate the mesh.
+    /// </summary>
+    [DataMemberIgnore]
+    protected internal Spline Spline { get; set; }
+    /// <summary>
+    /// Spline Evaluator used to generate the mesh.
+    /// </summary>
+    [DataMemberIgnore]
+    protected internal ISplineEvaluator SplineEvaluator { get; set; }
 
     /// <summary>
     /// Generate geometry for endings
     /// </summary>
-    public bool CloseEnds;
+    public bool CloseEnds { get; set; }
+
+    /// <summary>
+    /// The sampling settings for the mesh spline.
+    /// </summary>
+    public SplineSamplingSettings MeshSamplingSettings { get; set; } = new();
 
     protected abstract override GeometricMeshData<VertexPositionNormalTexture> CreatePrimitiveMeshData();
 
@@ -47,10 +59,12 @@ public abstract class SplineMesh : PrimitiveProceduralModelBase
     /// <summary>
     /// Builds the profile vertices from the given spline that will be orientated from the spline's orientation to XY plane.
     /// </summary>
-    public static ProfileVertex[] BuildProfileVertices(Spline spline, ShapeProfilePlane profilePlane, ShapeProfileFlipAxis profileFlipAxis, bool invertNormals)
+    public static ProfileVertex[] BuildProfileVertices(
+        Spline spline, ISplineEvaluator splineEvaluator, SplineSamplingSettings samplingSettings,
+        ShapeProfilePlane profilePlane, ShapeProfileFlipAxis profileFlipAxis, bool invertNormals)
     {
         var splineSamples = new List<SplineSample>();
-        SplineExtensions.CollectSplineSamples(spline, splineSamples, sampleStepDistance: 0.5f);     // TODO adaptive
+        SplineExtensions.CollectSplineSamples(splineEvaluator, samplingSettings, splineSamples);
         var splineSamplesSpan = CollectionsMarshal.AsSpan(splineSamples);
         int splineSamplesCount = splineSamplesSpan.Length;
 
@@ -101,7 +115,7 @@ public abstract class SplineMesh : PrimitiveProceduralModelBase
             var sample = splineSamplesSpan[i];
 
             var profileForward = profileRotation * sample.Tangent;
-            var profileUp = sample.Rotation * profileRotation * splineUpVec;
+            var profileUp = sample.Orientation * profileRotation * splineUpVec;
             var profileRight = Vector3.Normalize(Vector3.Cross(profileForward, profileUp));
             var orthoProfileUp = Vector3.Normalize(Vector3.Cross(profileRight, profileForward));
 

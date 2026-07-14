@@ -91,6 +91,22 @@ public class StrideEditorService : IStrideEditorService
         });
     }
 
+    public Task InvokeAsync(Action actionAsync)
+    {
+        var editorVm = EditorViewModel.Instance;
+        if (!IsValid(editorVm))
+        {
+            return Task.CompletedTask;
+        }
+        var task = StrideAssetsViewModel.Instance.Dispatcher.InvokeTask(async () =>
+        {
+            _editorViewModels = EditorViewModels.Create();
+            actionAsync();
+            _editorViewModels = null;
+        });
+        return task;
+    }
+
     public Task InvokeAsync(Func<Task> actionAsync)
     {
         var editorVm = EditorViewModel.Instance;

@@ -3,10 +3,12 @@
 
 using Stride.Core;
 using Stride.Core.Mathematics;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 
 namespace Stride.Engine.Splines.Models;
 
+[DataContract]
 public class SplineEvaluator : ISplineEvaluator
 {
     private readonly List<CurveTToDistanceTable> curveTToDistanceLookupTable = [];
@@ -14,10 +16,67 @@ public class SplineEvaluator : ISplineEvaluator
 
     private bool isRebuildLookupTableRequired = true;
 
-    public int SampleResolutionPerCurve { get; set; } = 64;
-    public float MinimumSampleSpacing { get; set; } = 0.25f;
+    private float maximumPositionError = 0.05f;
+    [DefaultValue(0.05f)]
+    public float MaximumPositionError
+    {
+        get => maximumPositionError;
+        set => SetField(ref maximumPositionError, value);
+    }
+
+    private float maximumArcLengthError = 0.01f;
+    [DefaultValue(0.01f)]
+    public float MaximumArcLengthError
+    {
+        get => maximumArcLengthError;
+        set => SetField(ref maximumArcLengthError, value);
+    }
+
+    private AngleSingle maximumAngleError = new AngleSingle(3f, AngleType.Degree);
+    public AngleSingle MaximumAngleError
+    {
+        get => maximumAngleError;
+        set => SetField(ref maximumAngleError, value);
+    }
+
+    private float maximumSegmentLength = 1;
+    [DefaultValue(1f)]
+    public float MaximumSegmentLength
+    {
+        get => maximumSegmentLength;
+        set => SetField(ref maximumSegmentLength, value);
+    }
+
+    private float minimumSegmentLength = 0.01f;
+    [DefaultValue(0.01f)]
+    public float MinimumSegmentLength
+    {
+        get => minimumSegmentLength;
+        set => SetField(ref minimumSegmentLength, value);
+    }
+
+    private int maximumSubdivisionDepth = 8;
+    [DefaultValue(8)]
+    public int MaximumSubdivisionDepth
+    {
+        get => maximumSubdivisionDepth;
+        set => SetField(ref maximumSubdivisionDepth, value);
+    }
+
+    protected void SetField<T>(ref T backingField, T newValue)
+    {
+        backingField = newValue;
+        isRebuildLookupTableRequired = true;
+    }
 
     public Spline Spline { get; private set; }
+
+    public SplineEvaluator() { }
+
+    public SplineEvaluator(Spline spline)
+    {
+        RegisterSpline(spline);
+    }
 
     public void RegisterSpline(Spline spline)
     {
@@ -36,8 +95,8 @@ public class SplineEvaluator : ISplineEvaluator
 
     public void UnregisterSpline()
     {
-        Spline.SplinePropertyChanged -= OnSplinePropertyChanged;
-        Spline.ControlPointsChanged -= OnControlPointsChanged;
+        Spline?.SplinePropertyChanged -= OnSplinePropertyChanged;
+        Spline?.ControlPointsChanged -= OnControlPointsChanged;
         Spline = null;
     }
 
@@ -68,7 +127,7 @@ public class SplineEvaluator : ISplineEvaluator
     public float GetTFromDistance(float distance)
     {
         float totalDistance = GetTotalDistance();
-        float splineT = distance /  totalDistance;
+        float splineT = distance / totalDistance;
         return splineT;
     }
 
@@ -78,15 +137,13 @@ public class SplineEvaluator : ISplineEvaluator
         var curveTToDistanceLookupTableSpan = CollectionsMarshal.AsSpan(curveTToDistanceLookupTable);
         var lookupResult = FindTableValueFromT(curveTToDistanceLookupTableSpan, splineT);
 
-        var curTableValue = curveTToDistanceLookupTableSpan[lookupResult.LookupTableIndex];
-        var nextTableValue = curveTToDistanceLookupTableSpan[lookupResult.NextLookupTableIndex];
+        ref readonly var curTableValue = ref curveTToDistanceLookupTableSpan[lookupResult.LookupTableIndex];
+        ref readonly var nextTableValue = ref curveTToDistanceLookupTableSpan[lookupResult.NextLookupTableIndex];
 
         var position = Vector3.Lerp(curTableValue.Position, nextTableValue.Position, lookupResult.LookupTableLocalT);
-        var rotation = CalculateRotation(lookupResult.CurveIndex, lookupResult.CurveLocalT);            // Too expensive?
-        var curve = Spline.GetCurve(lookupResult.CurveIndex);
-        var tangent = curve.GetTangent(lookupResult.CurveLocalT);     // Too expensive?
-
-        return new SplineSample(position, rotation, tangent, splineT);
+        var orientation = Quaternion.Slerp(curTableValue.Orientation, nextTableValue.Orientation, lookupResult.LookupTableLocalT);
+        var tangent = orientation * Vector3.UnitZ;
+        return new SplineSample(position, orientation, tangent, splineT);
     }
 
     public SplineSample EvaluateFromDistance(float distance)
@@ -95,47 +152,49 @@ public class SplineEvaluator : ISplineEvaluator
         var curveTToDistanceLookupTableSpan = CollectionsMarshal.AsSpan(curveTToDistanceLookupTable);
         var lookupResult = FindTableValueFromDistance(curveTToDistanceLookupTableSpan, distance);
 
-        var curTableValue = curveTToDistanceLookupTableSpan[lookupResult.LookupTableIndex];
-        var nextTableValue = curveTToDistanceLookupTableSpan[lookupResult.NextLookupTableIndex];
+        ref readonly var curTableValue = ref curveTToDistanceLookupTableSpan[lookupResult.LookupTableIndex];
+        ref readonly var nextTableValue = ref curveTToDistanceLookupTableSpan[lookupResult.NextLookupTableIndex];
 
         var position = Vector3.Lerp(curTableValue.Position, nextTableValue.Position, lookupResult.LookupTableLocalT);
-        var rotation = CalculateRotation(lookupResult.CurveIndex, lookupResult.CurveLocalT);            // Too expensive?
-        var curve = Spline.GetCurve(lookupResult.CurveIndex);
-        var tangent = curve.GetTangent(lookupResult.CurveLocalT);     // Too expensive?
+        var orientation = Quaternion.Slerp(curTableValue.Orientation, nextTableValue.Orientation, lookupResult.LookupTableLocalT);
+        var tangent = orientation * Vector3.UnitZ;
 
         float splineT = GetTFromDistance(distance);
-        return new SplineSample(position, rotation, tangent, splineT);
+        return new SplineSample(position, orientation, tangent, splineT);
     }
 
-    private Quaternion CalculateRotation(int controlPointStartIndex, float curveT)
+    public SplineSample EvaluateFromCurve(int curveIndex, float curveLocalT = 0)
     {
-        // TODO?
-        var controlPoint1 = Spline[controlPointStartIndex];
-        if (curveT == 0)
-        {
-            return controlPoint1.Rotation;
-        }
+        EnsureLookupTables();
+        var curveTToDistanceLookupTableSpan = CollectionsMarshal.AsSpan(curveTToDistanceLookupTable);
 
-        int controlPointEndIndex = controlPointStartIndex + 1;
-        if (Spline.IsClosedLoop)
+        if (curveLocalT == 0)
         {
-            if (controlPointEndIndex >= Spline.Count)
-            {
-                controlPointEndIndex -= Spline.Count;
-            }
+            int tableIndex = FindTableValueStartIndexByControlPoint(curveTToDistanceLookupTableSpan, curveIndex, curveLocalT: 0);
+            ref readonly var curTableValue = ref curveTToDistanceLookupTableSpan[tableIndex];
+
+            var position = curTableValue.Position;
+            var orientation = curTableValue.Orientation;
+            var tangent = curTableValue.Tangent;
+
+            float splineT = GetTFromDistance(curTableValue.TotalSplineDistance);
+            return new SplineSample(position, orientation, tangent, splineT);
         }
         else
         {
-            controlPointEndIndex = Math.Min(controlPointEndIndex, Spline.Count - 1);
-        }
-        var controlPoint2 = Spline[controlPointEndIndex];
-        if (curveT == 1)
-        {
-            return controlPoint2.Rotation;
-        }
+            var lookupResult = FindTableValueFromControlPoint(curveTToDistanceLookupTableSpan, curveIndex, curveLocalT);
 
-        var rotation = Quaternion.Slerp(controlPoint1.Rotation, controlPoint2.Rotation, curveT);
-        return rotation;
+            ref readonly var curTableValue = ref curveTToDistanceLookupTableSpan[lookupResult.LookupTableIndex];
+            ref readonly var nextTableValue = ref curveTToDistanceLookupTableSpan[lookupResult.NextLookupTableIndex];
+
+            var position = Vector3.Lerp(curTableValue.Position, nextTableValue.Position, lookupResult.LookupTableLocalT);
+            var orientation = Quaternion.Slerp(curTableValue.Orientation, nextTableValue.Orientation, lookupResult.LookupTableLocalT);
+            var tangent = orientation * Vector3.UnitZ;
+
+            float distance = MathUtil.Lerp(curTableValue.TotalSplineDistance, nextTableValue.TotalSplineDistance, lookupResult.LookupTableLocalT);
+            float splineT = GetTFromDistance(distance);
+            return new SplineSample(position, orientation, tangent, splineT);
+        }
     }
 
     public Vector3 EvaluatePosition(float splineT)
@@ -144,37 +203,30 @@ public class SplineEvaluator : ISplineEvaluator
         var curveTToDistanceLookupTableSpan = CollectionsMarshal.AsSpan(curveTToDistanceLookupTable);
         var lookupResult = FindTableValueFromT(curveTToDistanceLookupTableSpan, splineT);
 
-        var curTableValue = curveTToDistanceLookupTableSpan[lookupResult.LookupTableIndex];
-        var nextTableValue = curveTToDistanceLookupTableSpan[lookupResult.NextLookupTableIndex];
+        ref readonly var curTableValue = ref curveTToDistanceLookupTableSpan[lookupResult.LookupTableIndex];
+        ref readonly var nextTableValue = ref curveTToDistanceLookupTableSpan[lookupResult.NextLookupTableIndex];
 
         var position = Vector3.Lerp(curTableValue.Position, nextTableValue.Position, lookupResult.LookupTableLocalT);
         return position;
     }
 
-    public Quaternion EvaluateRotation(float splineT)
+    public Quaternion EvaluateOrientation(float splineT)
     {
         EnsureLookupTables();
         var curveTToDistanceLookupTableSpan = CollectionsMarshal.AsSpan(curveTToDistanceLookupTable);
         var lookupResult = FindTableValueFromT(curveTToDistanceLookupTableSpan, splineT);
 
-        var curTableValue = curveTToDistanceLookupTableSpan[lookupResult.LookupTableIndex];
-        var nextTableValue = curveTToDistanceLookupTableSpan[lookupResult.NextLookupTableIndex];
+        ref readonly var curTableValue = ref curveTToDistanceLookupTableSpan[lookupResult.LookupTableIndex];
+        ref readonly var nextTableValue = ref curveTToDistanceLookupTableSpan[lookupResult.NextLookupTableIndex];
 
-        var rotation = CalculateRotation(lookupResult.CurveIndex, lookupResult.CurveLocalT);            // Too expensive?
-        return rotation;
+        var orientation = Quaternion.Slerp(curTableValue.Orientation, nextTableValue.Orientation, lookupResult.LookupTableLocalT);
+        return orientation;
     }
 
     public Vector3 EvaluateTangent(float splineT)
     {
-        EnsureLookupTables();
-        var curveTToDistanceLookupTableSpan = CollectionsMarshal.AsSpan(curveTToDistanceLookupTable);
-        var lookupResult = FindTableValueFromT(curveTToDistanceLookupTableSpan, splineT);
-
-        var curTableValue = curveTToDistanceLookupTableSpan[lookupResult.LookupTableIndex];
-        var nextTableValue = curveTToDistanceLookupTableSpan[lookupResult.NextLookupTableIndex];
-
-        var curve = Spline.GetCurve(lookupResult.CurveIndex);
-        var tangent = curve.GetTangent(lookupResult.CurveLocalT);     // Too expensive?
+        var orientation = EvaluateOrientation(splineT);
+        var tangent = orientation * Vector3.UnitZ;
         return tangent;
     }
 
@@ -256,7 +308,7 @@ public class SplineEvaluator : ISplineEvaluator
             }
         }
 
-        int startControlPointIndex = curveIndex;      // Curve tableIndex is the same as Control point tableIndex
+        int startControlPointIndex = curveIndex;      // Curve tableIndex is the same as control point tableIndex
         int nextControlPointIndex = Spline.IsClosedLoop
             ? (startControlPointIndex + 1) % Spline.Count
             : Math.Max(startControlPointIndex + 1, Spline.Count - 1);
@@ -272,22 +324,13 @@ public class SplineEvaluator : ISplineEvaluator
         return closestPosInfo;
 
         static (Vector3 Position, float LocalT) ProjectPointOntoCurve(
-            Vector3 point,
+            in Vector3 point,
             in CurveTToDistanceTable value1,
             in CurveTToDistanceTable value2)
         {
-            // Vector projection of [point to table1 point] onto [table2 point to table1 point]
-            // to determine how much 'point' lies on the line [table2 point to table1 point]
-            var curveLine = value2.Position - value1.Position;
-            var pointVector = point - value1.Position;
-
-            float denom = Math.Max(curveLine.LengthSquared(), MathUtil.ZeroTolerance);    // Avoid division by zero
-            float tableT = Vector3.Dot(pointVector, curveLine) / denom;
-            tableT = MathUtil.Clamp(tableT, min: 0, max: 1);
-
-            var closestPointOnLine = value1.Position + (curveLine * tableT);
+            var (closestPointOnLine, tableT) = SplineUtil.GetClosestPointOnLineSegment(point, value1.Position, value2.Position);
             float nextLocalT = value2.CurveLocalT;
-            // Edge case check:
+            // Edge case check: second table value is the start of the next control point
             if (value1.CurveIndex != value2.CurveIndex)
             {
                 nextLocalT = 1;
@@ -315,15 +358,45 @@ public class SplineEvaluator : ISplineEvaluator
         return new BoundingBox(min, max);
     }
 
-    private static int FindTableValueIndexByDistance(
+    private static int FindTableValueStartIndexByDistance(
         ReadOnlySpan<CurveTToDistanceTable> lookupTable,
         float distance)
     {
         var lookupValue = new CurveTToDistanceTable
         {
             TotalSplineDistance = distance,
+            CurveIndex = int.MaxValue,                // Note: we priority the NEXT curve for the same distance
+            CurveLocalT = float.MaxValue,
+            // Defaulted fields - not used for binary search
+            Position = default,
+            Tangent = default,
+            Orientation = default,
         };
         int index = lookupTable.BinarySearch(lookupValue, DistanceLookupComparer.Instance);
+        if (index < 0)
+        {
+            int closestIndex = ~index;
+            closestIndex = Math.Max(closestIndex - 1, 0);
+            return closestIndex;
+        }
+        return index;
+    }
+
+    private static int FindTableValueStartIndexByControlPoint(
+        ReadOnlySpan<CurveTToDistanceTable> lookupTable,
+        int controlPointIndex, float curveLocalT)
+    {
+        var lookupValue = new CurveTToDistanceTable
+        {
+            CurveIndex = controlPointIndex,
+            CurveLocalT = curveLocalT,
+            // Defaulted fields - not used for binary search
+            TotalSplineDistance = default,
+            Position = default,
+            Tangent = default,
+            Orientation = default,
+        };
+        int index = lookupTable.BinarySearch(lookupValue, ControlPointLookupComparer.Instance);
         if (index < 0)
         {
             int closestIndex = ~index;
@@ -346,7 +419,7 @@ public class SplineEvaluator : ISplineEvaluator
         ReadOnlySpan<CurveTToDistanceTable> curveTToDistanceLookupTable,
         float targetDistance)
     {
-        int tableIndex = FindTableValueIndexByDistance(curveTToDistanceLookupTable, targetDistance);
+        int tableIndex = FindTableValueStartIndexByDistance(curveTToDistanceLookupTable, targetDistance);
 
         ref readonly var curTableValue = ref curveTToDistanceLookupTable[tableIndex];
         int nextTableIndex = Math.Min(tableIndex + 1, curveTToDistanceLookupTable.Length - 1);
@@ -370,7 +443,7 @@ public class SplineEvaluator : ISplineEvaluator
         {
             float lookupTableLocalT = (targetDistance - curTableValue.TotalSplineDistance) / curveLength;
             float nextLocalT = nextTableValue.CurveLocalT;
-            // Edge case check:
+            // Edge case check: Next table value is actually start of next curve
             if (curTableValue.CurveIndex != nextTableValue.CurveIndex)
             {
                 nextLocalT = 1;
@@ -379,6 +452,51 @@ public class SplineEvaluator : ISplineEvaluator
             {
                 CurveIndex = curTableValue.CurveIndex,
                 CurveLocalT = MathUtil.Lerp(curTableValue.CurveLocalT, nextLocalT, lookupTableLocalT),
+                LookupTableIndex = tableIndex,
+                NextLookupTableIndex = nextTableIndex,
+                LookupTableLocalT = lookupTableLocalT,
+            };
+            return result;
+        }
+    }
+
+    private static LookupTableResult FindTableValueFromControlPoint(
+        ReadOnlySpan<CurveTToDistanceTable> curveTToDistanceLookupTable,
+        int controlPointIndex, float curveLocalT)
+    {
+        int tableIndex = FindTableValueStartIndexByControlPoint(curveTToDistanceLookupTable, controlPointIndex, curveLocalT);
+
+        ref readonly var curTableValue = ref curveTToDistanceLookupTable[tableIndex];
+        int nextTableIndex = Math.Min(tableIndex + 1, curveTToDistanceLookupTable.Length - 1);
+        ref readonly var nextTableValue = ref curveTToDistanceLookupTable[nextTableIndex];
+
+        float curveLength = nextTableValue.TotalSplineDistance - curTableValue.TotalSplineDistance;
+        if (MathUtil.IsZero(curveLength))
+        {
+            // Same point
+            var result = new LookupTableResult
+            {
+                CurveIndex = curTableValue.CurveIndex,
+                CurveLocalT = curTableValue.CurveLocalT,
+                LookupTableIndex = tableIndex,
+                NextLookupTableIndex = nextTableIndex,
+                LookupTableLocalT = 0,
+            };
+            return result;
+        }
+        else
+        {
+            float nextLocalT = nextTableValue.CurveLocalT;
+            // Edge case check:
+            if (curTableValue.CurveIndex != nextTableValue.CurveIndex)
+            {
+                nextLocalT = 1;
+            }
+            float lookupTableLocalT = MathUtil.InverseLerp(curTableValue.CurveLocalT, nextLocalT, curveLocalT);
+            var result = new LookupTableResult
+            {
+                CurveIndex = curTableValue.CurveIndex,
+                CurveLocalT = curveLocalT,
                 LookupTableIndex = tableIndex,
                 NextLookupTableIndex = nextTableIndex,
                 LookupTableLocalT = lookupTableLocalT,
@@ -419,7 +537,7 @@ public class SplineEvaluator : ISplineEvaluator
         // Find initial curve this spline sits on
         var curveRangeTableSpan = CollectionsMarshal.AsSpan(curveRangeTable);
         int curveStartIndex = FindCurveRangeIndexFromDistance(curveRangeTableSpan, startSplineDistance);
-        lastEncounteredControlPointIndex = curveStartIndex;    // Curve index is the same as the same as the control point index
+        lastEncounteredControlPointIndex = curveStartIndex;    // Curve index is the same as the control point index
 
         // Collect all control points we passed
         float curEndSplineDistance = endSplineDistance;
@@ -428,7 +546,7 @@ public class SplineEvaluator : ISplineEvaluator
             // Find end curve this spline sits on
             for (int i = curveStartIndex; i < curveRangeTableSpan.Length; i++)
             {
-                int controlPointIndex = i;      // Curve index is the same as the same as the control point index
+                int controlPointIndex = i;      // Curve index is the same as the control point index
                 if (lastEncounteredControlPointIndex != controlPointIndex)
                 {
                     controlPointIndicesEncounteredOutput.Add(controlPointIndex);
@@ -470,9 +588,10 @@ public class SplineEvaluator : ISplineEvaluator
     {
         var lookupValue = new CurveRange
         {
-            CurveIndex = -1,    // Doesn'tableT matter
             StartDistance = targetDistance,
             EndDistance = targetDistance,
+            // Defaulted fields - not used for binary search
+            CurveIndex = default,
         };
         int index = curveRangeTable.BinarySearch(lookupValue, CurveRangeLookupComparer.Instance);
         if (index < 0)
@@ -493,68 +612,137 @@ public class SplineEvaluator : ISplineEvaluator
         // Build CurveT to Distance table
         curveTToDistanceLookupTable.Clear();
 
-        var totalControlPointCount = Spline.ControlPoints.Count;
-        if (totalControlPointCount <= 1)
+        int totalCurveCount = Spline.CurveCount;
+        if (totalCurveCount < 1)
         {
             isRebuildLookupTableRequired = false;
             return;     // Nothing to build
         }
 
-        // TODO add additional sampling thresholds (eg. angle change)?
-        curveTToDistanceLookupTable.EnsureCapacity(totalControlPointCount * SampleResolutionPerCurve);
-        float totalCurveDistance = 0;
-        var previousPos = Spline.GetCurve(0).StartPosition;
-        int totalCurveCount = Spline.CurveCount;
+        curveTToDistanceLookupTable.EnsureCapacity(1 << Math.Max(MaximumSubdivisionDepth - 1, 0));     // Estimate 2^(MaxSubdivision - 1)
         for (int curveIndex = 0; curveIndex < totalCurveCount; curveIndex++)
         {
+            int tableValueStartIndex = curveTToDistanceLookupTable.Count;
             var curve = Spline.GetCurve(curveIndex);
-            totalCurveDistance += (curve.StartPosition - previousPos).Length();
-            previousPos = curve.StartPosition;
-            // First position is always just the initial value of the curve
-            curveTToDistanceLookupTable.Add(new CurveTToDistanceTable
-            {
-                CurveIndex = curveIndex,
-                CurveLocalT = 0,
-                TotalSplineDistance = totalCurveDistance,
-                Position = curve.StartPosition
-            });
+            BuildTableValuesFromGeometry(curve, curveIndex, curveTToDistanceLookupTable);
 
-            float nextSampleDistanceOffset = MinimumSampleSpacing;
-            float nextSampleDistanceThreshold = totalCurveDistance + nextSampleDistanceOffset;
-            int sampleStepCount = SampleResolutionPerCurve;
-            for (int i = 1; i < sampleStepCount; i++)
+            if (tableValueStartIndex > 0)
             {
-                float currentT = i / (float)sampleStepCount;
-                var currentPos = curve.GetPosition(currentT);
-                totalCurveDistance += (currentPos - previousPos).Length();
-                previousPos = currentPos;
-
-                if (totalCurveDistance >= nextSampleDistanceThreshold)
+                var startTableValue = curveTToDistanceLookupTable[tableValueStartIndex];
+                var prevTableValue = curveTToDistanceLookupTable[tableValueStartIndex - 1];
+                if (startTableValue.Position == prevTableValue.Position && startTableValue.Tangent == prevTableValue.Tangent)
                 {
-                    curveTToDistanceLookupTable.Add(new CurveTToDistanceTable
-                    {
-                        CurveIndex = curveIndex,
-                        CurveLocalT = currentT,
-                        TotalSplineDistance = totalCurveDistance,
-                        Position = currentPos
-                    });
-
-                    nextSampleDistanceThreshold = totalCurveDistance + nextSampleDistanceOffset;
+                    // Remove duplicate point as it is continuous
+                    curveTToDistanceLookupTable.RemoveAt(tableValueStartIndex - 1);
                 }
             }
         }
+        // Note that we don't remove 'duplicate' point for closed loops since the final value also represents the full distance
 
-        // Add the final position (this is included even when Spline.IsClosedLoop = true, because it contains the full TotalCurveDistance)
-        int lastCurveIndex = totalCurveCount - 1;
-        var finalPos = Spline.GetCurve(lastCurveIndex).EndPosition;
-        totalCurveDistance += (finalPos - previousPos).Length();
-        curveTToDistanceLookupTable.Add(new CurveTToDistanceTable
+        var curveTToDistanceLookupTableSpan = CollectionsMarshal.AsSpan(curveTToDistanceLookupTable);
+        UpdateCurveDistances(curveTToDistanceLookupTableSpan);
+
+        // Build orientations with Parallel Transport algorithm
+        var previousTangentDir = curveTToDistanceLookupTableSpan[0].Tangent;
+        var previousUpDir = Vector3.UnitY;
         {
-            CurveIndex = lastCurveIndex,
-            CurveLocalT = 1,
-            TotalSplineDistance = totalCurveDistance,
-            Position = finalPos
-        });
+            // Assign the correct initial 'up' direction
+            var initialCtrlPoint = Spline[0];
+            var initialTangentDir = previousTangentDir;
+            var initialUpDir = previousUpDir;
+            if (!initialCtrlPoint.OverrideUpDirection.Equals(Vector3.Zero))
+            {
+                initialUpDir = initialCtrlPoint.OverrideUpDirection;
+            }
+            else if (!Spline.InitialUpDirection.Equals(Vector3.Zero))
+            {
+                initialUpDir = Spline.InitialUpDirection;
+            }
+            initialUpDir = GetOrthogonalUpVector(initialUpDir, initialTangentDir);
+            previousUpDir = initialUpDir;
+
+            var initialUpDirWithRoll = ApplyRoll(initialTangentDir, initialUpDir, initialCtrlPoint.Roll);
+            var initialOrientation = Quaternion.LookRotation(initialTangentDir, initialUpDirWithRoll);
+
+            ref var tableValue = ref curveTToDistanceLookupTableSpan[0];
+            tableValue.Orientation = initialOrientation;
+        }
+        for (int i = 1; i < curveTToDistanceLookupTableSpan.Length; i++)
+        {
+            ref var tableValue = ref curveTToDistanceLookupTableSpan[i];
+
+            float currentT = tableValue.CurveLocalT;
+            int controlPointIndex = tableValue.CurveIndex;      // Curve index is the same as the control point index
+            var currentCtrlPoint = Spline[controlPointIndex];
+
+            var currentTangentDir = tableValue.Tangent;
+            var curveRotation = GetOrientationRotation(previousTangentDir, currentTangentDir, previousUpDir);
+            var currentUpDir = curveRotation * previousUpDir;
+
+            var nextCtrlPoint = GetNextControlPoint(Spline, controlPointIndex);
+            if (!nextCtrlPoint.OverrideUpDirection.Equals(Vector3.Zero))
+            {
+                var targetUp = GetOrthogonalUpVector(nextCtrlPoint.OverrideUpDirection, currentTangentDir);
+                float blendWeight = MathUtil.SmoothStep(currentT);
+                currentUpDir = GetVectorSlerp(currentUpDir, targetUp, blendWeight, -currentTangentDir);
+            }
+            currentUpDir = GetOrthogonalUpVector(currentUpDir, currentTangentDir);
+            var currentUpDirWithRoll = currentUpDir;
+            if (!MathUtil.IsZero(nextCtrlPoint.Roll.Radians) || !MathUtil.IsZero(currentCtrlPoint.Roll.Radians))
+            {
+                float blendedRollRadians = MathUtil.Lerp(currentCtrlPoint.Roll.Radians, nextCtrlPoint.Roll.Radians, currentT);
+                currentUpDirWithRoll = ApplyRoll(currentTangentDir, currentUpDir, new AngleSingle(blendedRollRadians, AngleType.Radian));
+            }
+            var currentOrientation = Quaternion.LookRotation(currentTangentDir, currentUpDirWithRoll);
+            tableValue.Orientation = currentOrientation;
+
+            previousTangentDir = currentTangentDir;
+            previousUpDir = currentUpDir;
+        }
+
+        if (Spline.IsClosedLoop)
+        {
+            // Holonomy loop correction - ensure the orientation at the end of the loop matches the start's
+            ref var tableValueStart = ref curveTToDistanceLookupTableSpan[0];
+            ref var tableValueEnd = ref curveTToDistanceLookupTableSpan[^1];
+
+            var rotationDiff = tableValueStart.Orientation * Quaternion.Invert(tableValueEnd.Orientation);
+            float angleDiff = rotationDiff.Angle;
+
+            if (!MathUtil.IsZero(angleDiff))
+            {
+                // Ensure this is the shortest rotation
+                if (angleDiff > MathUtil.Pi || angleDiff < -MathUtil.Pi)
+                {
+                    rotationDiff = -rotationDiff;
+                }
+
+                // If there are any user overridden Up directions, we need to start the correction after it
+                int lastExplicitUpControlPointIndex = 0;
+                for (int i = Spline.Count - 1; i > 0; i--)
+                {
+                    var ctrlPoint = Spline[i];
+                    if (!ctrlPoint.OverrideUpDirection.Equals(Vector3.Zero))
+                    {
+                        lastExplicitUpControlPointIndex = i;
+                        break;
+                    }
+                }
+
+                int tableIndex = FindTableValueStartIndexByControlPoint(curveTToDistanceLookupTableSpan, lastExplicitUpControlPointIndex, curveLocalT: 0);
+                int tableValueCorrectionStartIndex = tableIndex + 1;
+                int tableValueCorrectionCount = curveTToDistanceLookupTableSpan.Length - tableValueCorrectionStartIndex;
+
+                for (int i = 1; i <= tableValueCorrectionCount; i++)
+                {
+                    float slerpT = i / (float)tableValueCorrectionCount;
+                    var correctionRotation = Quaternion.Slerp(Quaternion.Identity, rotationDiff, slerpT);
+
+                    ref var tableValue = ref curveTToDistanceLookupTableSpan[i];
+                    tableValue.Orientation = correctionRotation * tableValue.Orientation;
+                }
+            }
+        }
 
         // Build Curve Range table
         curveRangeTable.Clear();
@@ -563,7 +751,6 @@ public class SplineEvaluator : ISplineEvaluator
             CurveIndex = 0,
             StartDistance = 0,
         };
-        var curveTToDistanceLookupTableSpan = CollectionsMarshal.AsSpan(curveTToDistanceLookupTable);
         for (int i = 0; i < curveTToDistanceLookupTableSpan.Length; i++)
         {
             int curCurveIndex = curveTToDistanceLookupTableSpan[i].CurveIndex;
@@ -580,10 +767,289 @@ public class SplineEvaluator : ISplineEvaluator
             }
         }
         // Add last range
-        nextCurveRange.EndDistance = totalCurveDistance;
+        nextCurveRange.EndDistance = curveTToDistanceLookupTableSpan[^1].TotalSplineDistance;
         curveRangeTable.Add(nextCurveRange);
 
         isRebuildLookupTableRequired = false;
+    }
+
+    private void BuildTableValuesFromGeometry(BezierCurve curve, int curveIndex, List<CurveTToDistanceTable> tableValuesOutput)
+    {
+        var settings = new TableSubdivisionSettings
+        {
+            MaximumPositionError = Math.Max(MaximumPositionError, MathUtil.ZeroTolerance),
+            MinimumAngleCosineError = MathF.Cos(MaximumAngleError.Radians),
+            MaximumSegmentLength = Math.Max(MaximumSegmentLength, MathUtil.ZeroTolerance),
+            MinimumSegmentLength = Math.Max(MinimumSegmentLength, MathUtil.ZeroTolerance),
+            MaximumSubdivisionDepth = Math.Max(MaximumSubdivisionDepth, 0),
+        };
+
+        var fallbackTangent = Vector3.UnitX;        // Arbitrary default, pick 'right' direction
+        var firstTableValue = EvaluateCurveValue(curve, curveIndex, curveT: 0, fallbackTangent);
+        var lastTableValue = EvaluateCurveValue(curve, curveIndex, curveT: 1, fallbackTangent);
+        var context = new TableSubdivisionContext
+        {
+            CurveIndex = curveIndex,
+            TableValue0 = firstTableValue,
+            TableValue1 = lastTableValue,
+            CurrentDepth = 0,
+        };
+        tableValuesOutput.EnsureCapacity(1 << Math.Max(settings.MaximumSubdivisionDepth - 1, 0));     // Estimate 2^(MaxSubdivision - 1)
+        tableValuesOutput.Add(firstTableValue);
+
+        CollectSubdividedTableValues(curve, settings, context, tableValuesOutput);
+    }
+
+    private static CurveTToDistanceTable EvaluateCurveValue(BezierCurve curve, int curveIndex, float curveT, Vector3 previousTangent)
+    {
+        var value = new CurveTToDistanceTable
+        {
+            CurveIndex = curveIndex,
+            CurveLocalT = curveT,
+            Position = curve.GetPosition(curveT),
+            Tangent = curve.GetTangent(curveT),
+            // Not set yet
+            TotalSplineDistance = 0,
+            Orientation = Quaternion.Identity,
+        };
+        if (value.Tangent.Equals(Vector3.Zero))
+        {
+            value.Tangent = previousTangent;
+        }
+        return value;
+    }
+
+    private static void CollectSubdividedTableValues(
+        BezierCurve curve, in TableSubdivisionSettings subdivisionSettings, TableSubdivisionContext context,
+        List<CurveTToDistanceTable> tableValuesOutput)
+    {
+        if (context.CurrentDepth >= subdivisionSettings.MaximumSubdivisionDepth)
+        {
+            // Can't subdivide further
+            tableValuesOutput.Add(context.TableValue1);
+            return;
+        }
+
+        var tableValue0 = context.TableValue0;
+        var tableValue1 = context.TableValue1;
+        ref readonly var p0 = ref tableValue0.Position;
+        ref readonly var p1 = ref tableValue1.Position;
+        float segmentLength = Vector3.Distance(p0, p1);
+        if (segmentLength <= subdivisionSettings.MinimumSegmentLength)
+        {
+            // Can't subdivide further
+            tableValuesOutput.Add(context.TableValue1);
+            return;
+        }
+
+        float midT = (tableValue0.CurveLocalT + tableValue1.CurveLocalT) * 0.5f;
+        var midTableValue = EvaluateCurveValue(curve, context.CurveIndex, midT, tableValue0.Tangent);
+
+        bool isSplitRequired = false;
+        if (segmentLength > subdivisionSettings.MaximumSegmentLength)
+        {
+            // Force subdivision on long segments
+            isSplitRequired = true;
+        }
+        else
+        {
+            isSplitRequired = IsSplitOnMaxPositionError(subdivisionSettings, midTableValue.Position, p0, p1)
+                || IsSplitOnMaxArcLengthError(subdivisionSettings, midTableValue.Position, p0, p1)
+                || IsSplitOnMaxAngleError(subdivisionSettings, midTableValue.Tangent, Vector3.Normalize(p1 - p0));
+        }
+
+        if (isSplitRequired)
+        {
+            var leftContext = context with
+            {
+                TableValue1 = midTableValue,
+                CurrentDepth = context.CurrentDepth + 1
+            };
+            CollectSubdividedTableValues(
+                curve, subdivisionSettings, leftContext,
+                tableValuesOutput);
+
+            var rightContext = context with
+            {
+                TableValue0 = midTableValue,
+                CurrentDepth = context.CurrentDepth + 1
+            };
+            CollectSubdividedTableValues(
+                curve, subdivisionSettings, rightContext,
+                tableValuesOutput);
+        }
+        else
+        {
+            tableValuesOutput.Add(tableValue1);
+        }
+
+        static bool IsSplitOnMaxPositionError(in TableSubdivisionSettings samplingSettings, in Vector3 midPointPosition, in Vector3 p0, in Vector3 p1)
+        {
+            var (closestPointOnLine, _) = SplineUtil.GetClosestPointOnLineSegment(midPointPosition, p0, p1);
+            float positionDifference = Vector3.Distance(midPointPosition, closestPointOnLine);
+            return positionDifference > samplingSettings.MaximumPositionError;
+        }
+
+        static bool IsSplitOnMaxArcLengthError(in TableSubdivisionSettings samplingSettings, in Vector3 midPointPosition, in Vector3 p0, in Vector3 p1)
+        {
+            float chordLength = Vector3.Distance(p0, p1);
+            float curveLength = Vector3.Distance(p0, midPointPosition) + Vector3.Distance(midPointPosition, p1);
+
+            float lengthDifference = curveLength - chordLength;
+            return lengthDifference > samplingSettings.MaximumArcLengthError;
+        }
+
+        static bool IsSplitOnMaxAngleError(in TableSubdivisionSettings samplingSettings, in Vector3 midPointTangent, in Vector3 lineDirection)
+        {
+            if (samplingSettings.MinimumAngleCosineError == 0)
+            {
+                // Not set
+                return false;
+            }
+            float dotValue = Vector3.Dot(midPointTangent, lineDirection);
+            float cosine = Math.Clamp(dotValue, min: -1, max: 1);
+            return cosine < samplingSettings.MinimumAngleCosineError;
+        }
+    }
+
+    private static void UpdateCurveDistances(Span<CurveTToDistanceTable> curveTToDistanceLookupTableSpan)
+    {
+        if (curveTToDistanceLookupTableSpan.Length <= 0)
+        {
+            return;
+        }
+
+        curveTToDistanceLookupTableSpan[0].TotalSplineDistance = 0;
+
+        var previousPos = curveTToDistanceLookupTableSpan[0].Position;
+        float currentTotalCurveDistance = 0;
+        for (int i = 1; i < curveTToDistanceLookupTableSpan.Length; i++)
+        {
+            var currentPos = curveTToDistanceLookupTableSpan[i].Position;
+            currentTotalCurveDistance += Vector3.Distance(currentPos, previousPos);
+            curveTToDistanceLookupTableSpan[i].TotalSplineDistance = currentTotalCurveDistance;
+
+            previousPos = currentPos;
+        }
+    }
+
+    private static Vector3 GetVectorSlerp(Vector3 fromDirection, Vector3 toDirection, float slerpT, in Vector3 upDirection)
+    {
+        float dotValue = Vector3.Dot(fromDirection, toDirection);
+
+        if (MathUtil.IsZero(dotValue + 1f))
+        {
+            // The two vectors are in the opposite directions, so rotate 180 degrees around the given up-axis
+            var rotation = Quaternion.RotationAxis(upDirection, MathUtil.Pi * slerpT);
+            var rotatedVec = rotation * fromDirection;
+            return rotatedVec;
+        }
+        else if (MathUtil.IsZero(dotValue - 1f))
+        {
+            // Same direction
+            return toDirection;
+        }
+
+        float rotAngle = MathF.Acos(dotValue);
+        float sinTheta = MathF.Sin(rotAngle);
+
+        float a = MathF.Sin((1f - slerpT) * rotAngle) / sinTheta;
+        float b = MathF.Sin(slerpT * rotAngle) / sinTheta;
+
+        var slerpedVec = fromDirection * a + toDirection * b;
+        return slerpedVec;
+    }
+
+    private static Quaternion GetOrientationRotation(Vector3 fromDirection, Vector3 toDirection, Vector3 upDirection)
+    {
+        float dotValue = Vector3.Dot(fromDirection, toDirection);
+
+        if (MathUtil.IsZero(dotValue + 1f))
+        {
+            // The two vectors are in the opposite directions, so rotate 180 degrees around the given up-axis
+            return Quaternion.RotationAxis(upDirection, MathUtil.Pi);
+        }
+        else if (MathUtil.IsZero(dotValue - 1f))
+        {
+            // Same direction
+            return Quaternion.Identity;
+        }
+
+        float rotAngle = MathF.Acos(dotValue);
+        var rotAxis = Vector3.Cross(fromDirection, toDirection);
+        rotAxis.Normalize();
+        return Quaternion.RotationAxis(rotAxis, rotAngle);
+    }
+
+    private static SplineControlPoint GetNextControlPoint(Spline spline, int controlPointIndex)
+    {
+        int nextCtrlPointIndex;
+        if (spline.IsClosedLoop)
+        {
+            nextCtrlPointIndex = (controlPointIndex + 1) % spline.Count;
+        }
+        else
+        {
+            nextCtrlPointIndex = Math.Min(controlPointIndex + 1, spline.Count - 1);
+        }
+        return spline[nextCtrlPointIndex];
+    }
+
+    private static Vector3 GetOrthogonalUpVector(Vector3 upDir, Vector3 tangentDir)
+    {
+        // Ensure the up direction is orthogonal to the tangent by treating tangent direction as the normal of a plane
+        // then make the up vector sit direction on the plane.
+        var plane = new Plane(Vector3.Zero, tangentDir);
+        var projectedUp = Plane.Project(plane, upDir);
+        if (MathUtil.IsZero(projectedUp.LengthSquared()))
+        {
+            var defaultUpDir = GetDefaultUpDirection(tangentDir);
+            return defaultUpDir;
+        }
+        projectedUp.Normalize();
+        return projectedUp;
+    }
+
+    private static Vector3 GetDefaultUpDirection(Vector3 tangentDir)
+    {
+        if (MathUtil.IsZero(1 - Vector3.Dot(tangentDir, Vector3.UnitY)))
+        {
+            // If tangent is pointing up, then pick left direction
+            return -Vector3.UnitX;
+        }
+        else
+        {
+            return Vector3.UnitY;
+        }
+    }
+
+    private static Vector3 ApplyRoll(Vector3 forwardDir, Vector3 currentUpDir, AngleSingle roll)
+    {
+        if (MathUtil.IsZero(roll.Radians))
+        {
+            return currentUpDir;
+        }
+
+        var rotation = Quaternion.RotationAxis(forwardDir, roll.Radians);
+        return rotation * currentUpDir;
+    }
+
+    private readonly struct TableSubdivisionSettings
+    {
+        public float MaximumPositionError { get; init; }
+        public float MaximumArcLengthError { get; init; }
+        public float MinimumAngleCosineError { get; init; }
+        public float MaximumSegmentLength { get; init; }
+        public float MinimumSegmentLength { get; init; }
+        public int MaximumSubdivisionDepth { get; init; }
+    }
+
+    private struct TableSubdivisionContext
+    {
+        public int CurveIndex;
+        public CurveTToDistanceTable TableValue0;
+        public CurveTToDistanceTable TableValue1;
+        public int CurrentDepth;
     }
 
     private struct CurveTToDistanceTable
@@ -591,19 +1057,21 @@ public class SplineEvaluator : ISplineEvaluator
         /// <summary>
         /// The curve curve this belongs to.
         /// </summary>
-        public int CurveIndex;
+        public required int CurveIndex;
         /// <summary>
         /// Value 0 to 1 on the curve.
         /// </summary>
-        public float CurveLocalT;
+        public required float CurveLocalT;
         /// <summary>
         /// Travel distance on the spline to this position.
         /// </summary>
-        public float TotalSplineDistance;
+        public required float TotalSplineDistance;
         /// <summary>
         /// Local position relative to the spline.
         /// </summary>
-        public Vector3 Position;
+        public required Vector3 Position;
+        public required Vector3 Tangent;    // Redundant field, but used for fast table building
+        public required Quaternion Orientation;
     }
 
     private struct LookupTableResult
@@ -616,13 +1084,38 @@ public class SplineEvaluator : ISplineEvaluator
         public float CurveLocalT;
     }
 
+    private struct ControlPointLookupComparer : IComparer<CurveTToDistanceTable>
+    {
+        public static ControlPointLookupComparer Instance => new();
+
+        public readonly int Compare(CurveTToDistanceTable x, CurveTToDistanceTable y)
+        {
+            int compareValue = x.CurveIndex.CompareTo(y.CurveIndex);
+            if (compareValue != 0)
+            {
+                return compareValue;
+            }
+            return x.CurveLocalT.CompareTo(y.CurveLocalT);
+        }
+    }
+
     private struct DistanceLookupComparer : IComparer<CurveTToDistanceTable>
     {
         public static DistanceLookupComparer Instance => new();
 
         public readonly int Compare(CurveTToDistanceTable x, CurveTToDistanceTable y)
         {
-            return x.TotalSplineDistance.CompareTo(y.TotalSplineDistance);
+            int compareValue = x.TotalSplineDistance.CompareTo(y.TotalSplineDistance);
+            if (compareValue != 0)
+            {
+                return compareValue;
+            }
+            compareValue = x.CurveIndex.CompareTo(y.CurveIndex);
+            if (compareValue != 0)
+            {
+                return compareValue;
+            }
+            return x.CurveLocalT.CompareTo(y.CurveLocalT);
         }
     }
 

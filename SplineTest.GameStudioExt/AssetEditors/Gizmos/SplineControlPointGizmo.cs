@@ -33,8 +33,10 @@ public class SplineControlPointGizmo : GizmoBase
     private const float GizmoDefaultSize = 48; // the default size of the gizmo on the screen in pixels.
 
     private static readonly Color4 ControlPointFillColor = Color.White.ToColor4();
+    private static readonly Color4 FirstControlPointFillColor = Color.SkyBlue.ToColor4();
     private static readonly Color4 ControlPointOrientationLineColor = Color.Aqua.ToColor4();
     private static readonly Color4 ControlPointNormalLineColor = Color.Aqua.ToColor4();
+    private static readonly Color4 TangentDisabledFillColor = Color.LightGray.ToColor4();
     private static readonly Color4 TangentInHandleFillColor = Color.LightCoral.ToColor4();
     private static readonly Color4 TangentOutHandleFillColor = Color.LightGreen.ToColor4();
     private static readonly Color4 TangentLineColor = Color.WhiteSmoke.ToColor4();
@@ -105,17 +107,18 @@ public class SplineControlPointGizmo : GizmoBase
     {
         var splineEntity = splineComponent.Entity;
         var spline = splineComponent.Spline;
-        if (splineEntity is null || controlPointIndex >= spline.Count || spline.Count == 0)
+        if (splineEntity is null || spline is null
+            || controlPointIndex >= spline.Count || spline.Count == 0)
         {
             return;
         }
+        var splineEval = splineComponent.SplineEvaluator ?? new SplineEvaluator(spline);
 
         var controlPoint = spline[controlPointIndex];
 
         controlPointRootGizmoEntity.Transform.Position = controlPoint.Position;
 
         cameraService ??= Game.EditorServices.Get<IEditorGameCameraService>();
-        float targetedScale = GetTargetedScale(cameraService);
 
         var upVec = splineEntity.Transform.WorldMatrix.Up;
         UpdateTangentTransformation(ref tangentInEntityData, controlPoint, controlPoint.TangentInPosition, upVec);
@@ -136,15 +139,19 @@ public class SplineControlPointGizmo : GizmoBase
             const float TangentLineThicknessPx = 3;
             const float SelectedGlowWidthPx = 5;
 
+            int curveIndex = controlPointIndex;     // Same index
+            var sample = splineEval.EvaluateFromCurve(curveIndex);
+
             var markerSet = controlPointGizmoMarkerSetComponent.GizmoMarkerSet;
             markerSet.Markers.Clear();
+            // Control Point visuals
             var ctrlPointMarker = new GizmoMarkerData
             {
                 Shape = GizmoMarkerShape.Circle,
                 OrientationMode = GizmoMarkerOrientationMode.Billboard,
                 ScaleMode = GizmoMarkerScaleMode.FixedScreenSize,
                 Position = Vector3.Zero,
-                FillColor = ControlPointFillColor,
+                FillColor = controlPointIndex == 0 ? FirstControlPointFillColor : ControlPointFillColor,
                 SizePx = new Vector2(ShapeSize),
                 OutlineWidthPx = OutlineWidthPx,
                 OutlineColor = Color.Black.ToColor4(),
@@ -159,14 +166,13 @@ public class SplineControlPointGizmo : GizmoBase
 
             var lineSet = controlPointLineVisualizerComponent.LineSet;
             lineSet.Segments.Clear();
-            // Control Point visuals
             var ctrlPointOrientationMarker = new GizmoMarkerData
             {
                 Shape = GizmoMarkerShape.Circle,
                 OrientationMode = GizmoMarkerOrientationMode.World,
                 ScaleMode = GizmoMarkerScaleMode.FixedScreenSize,
                 Position = Vector3.Zero,
-                Rotation = Quaternion.RotationX(MathUtil.PiOverTwo),
+                Rotation = Quaternion.RotationX(MathUtil.PiOverTwo) * sample.Orientation,
                 FillColor = Color.Transparent.ToColor4(),
                 SizePx = new Vector2(60),
                 OutlineWidthPx = 1.5f,
@@ -179,53 +185,59 @@ public class SplineControlPointGizmo : GizmoBase
             }
             markerSet.Markers.Add(ctrlPointOrientationMarker);
 
-            var ctrlPointUpVec = Vector3.UnitY;             // TODO
+            var ctrlPointUpVec = sample.Orientation * Vector3.UnitY;
             var ctrlPointUpVecColor = EditingSelectionType == SplinePointEditingSelectionType.ControlPoint
                 ? SelectedLineColor
                 : ControlPointNormalLineColor;
             lineSet.AddViewScaledLengthLine(Vector3.Zero, ctrlPointUpVec, fixedLengthPx: 60, ctrlPointUpVecColor, ControlPointUpVectorThicknessPx);
 
             // Tangent In visuals
-            lineSet.AddWorldLine(Vector3.Zero, tangentInEntityData.CurrentLocalPosition, TangentLineColor, TangentLineThicknessPx);
-            var tangentInMarker = new GizmoMarkerData
+            if (controlPoint.Type.IsTangentVisible())
             {
-                Shape = GizmoMarkerShape.Diamond,
-                OrientationMode = GizmoMarkerOrientationMode.Billboard,
-                ScaleMode = GizmoMarkerScaleMode.FixedScreenSize,
-                Position = tangentInEntityData.CurrentLocalPosition,
-                FillColor = TangentInHandleFillColor,
-                SizePx = new Vector2(ShapeSize),
-                OutlineWidthPx = OutlineWidthPx,
-                OutlineColor = Color.Black.ToColor4(),
-            };
-            if (EditingSelectionType == SplinePointEditingSelectionType.TangentIn)
-            {
-                tangentInMarker.FillColor = SelectedFillColor;
-                tangentInMarker.GlowColor = SelectedFillColor;
-                tangentInMarker.GlowWidthPx = SelectedGlowWidthPx;
+                lineSet.AddWorldLine(Vector3.Zero, tangentInEntityData.CurrentLocalPosition, TangentLineColor, TangentLineThicknessPx);
+                var tangentInMarker = new GizmoMarkerData
+                {
+                    Shape = GizmoMarkerShape.Diamond,
+                    OrientationMode = GizmoMarkerOrientationMode.Billboard,
+                    ScaleMode = GizmoMarkerScaleMode.FixedScreenSize,
+                    Position = tangentInEntityData.CurrentLocalPosition,
+                    FillColor = controlPoint.Type.IsTangentUserControllable() ? TangentInHandleFillColor : TangentDisabledFillColor,
+                    SizePx = new Vector2(ShapeSize),
+                    OutlineWidthPx = OutlineWidthPx,
+                    OutlineColor = Color.Black.ToColor4(),
+                };
+                if (EditingSelectionType == SplinePointEditingSelectionType.TangentIn)
+                {
+                    tangentInMarker.FillColor = SelectedFillColor;
+                    tangentInMarker.GlowColor = SelectedFillColor;
+                    tangentInMarker.GlowWidthPx = SelectedGlowWidthPx;
+                }
+                markerSet.Markers.Add(tangentInMarker);
             }
-            markerSet.Markers.Add(tangentInMarker);
 
             // Tangent Out visuals
-            lineSet.AddWorldLine(Vector3.Zero, tangentOutEntityData.CurrentLocalPosition, TangentLineColor, TangentLineThicknessPx);
-            var tangentOutMarker = new GizmoMarkerData
+            if (controlPoint.Type.IsTangentVisible())
             {
-                Shape = GizmoMarkerShape.Diamond,
-                OrientationMode = GizmoMarkerOrientationMode.Billboard,
-                ScaleMode = GizmoMarkerScaleMode.FixedScreenSize,
-                Position = tangentOutEntityData.CurrentLocalPosition,
-                FillColor = TangentOutHandleFillColor,
-                SizePx = new Vector2(ShapeSize),
-                OutlineWidthPx = OutlineWidthPx,
-                OutlineColor = Color.Black.ToColor4(),
-            };
-            if (EditingSelectionType == SplinePointEditingSelectionType.TangentOut)
-            {
-                tangentOutMarker.FillColor = SelectedFillColor;
-                tangentOutMarker.GlowColor = SelectedFillColor;
-                tangentOutMarker.GlowWidthPx = SelectedGlowWidthPx;
+                lineSet.AddWorldLine(Vector3.Zero, tangentOutEntityData.CurrentLocalPosition, TangentLineColor, TangentLineThicknessPx);
+                var tangentOutMarker = new GizmoMarkerData
+                {
+                    Shape = GizmoMarkerShape.Diamond,
+                    OrientationMode = GizmoMarkerOrientationMode.Billboard,
+                    ScaleMode = GizmoMarkerScaleMode.FixedScreenSize,
+                    Position = tangentOutEntityData.CurrentLocalPosition,
+                    FillColor = controlPoint.Type.IsTangentUserControllable() ? TangentOutHandleFillColor : TangentDisabledFillColor,
+                    SizePx = new Vector2(ShapeSize),
+                    OutlineWidthPx = OutlineWidthPx,
+                    OutlineColor = Color.Black.ToColor4(),
+                };
+                if (EditingSelectionType == SplinePointEditingSelectionType.TangentOut)
+                {
+                    tangentOutMarker.FillColor = SelectedFillColor;
+                    tangentOutMarker.GlowColor = SelectedFillColor;
+                    tangentOutMarker.GlowWidthPx = SelectedGlowWidthPx;
+                }
+                markerSet.Markers.Add(tangentOutMarker);
             }
-            markerSet.Markers.Add(tangentOutMarker);
 
             isMarkersAndLinesUpdateRequired = false;
         }
@@ -280,7 +292,8 @@ public class SplineControlPointGizmo : GizmoBase
             }
         }
 
-        if ((raycastFilterFlags & SplinePointRaycastFilterFlags.Tangents) != 0)
+        if ((raycastFilterFlags & SplinePointRaycastFilterFlags.Tangents) != 0
+            && controlPoint.Type.IsTangentUserControllable())
         {
             var tangentOutPos = tangentOutEntityData.CurrentLocalPosition + controlPoint.Position;
             var tangentOutHitSphere = new BoundingSphere(tangentOutPos, controlHitRadius);
@@ -308,6 +321,11 @@ public class SplineControlPointGizmo : GizmoBase
         }
 
         return isHit;
+    }
+
+    internal void InvalidateVisual()
+    {
+        isMarkersAndLinesUpdateRequired = true;
     }
 
     private struct TangentEntityData

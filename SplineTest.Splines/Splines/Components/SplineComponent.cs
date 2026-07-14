@@ -3,6 +3,7 @@
 
 using Stride.Engine.Splines.Processors;
 using Stride.Core;
+using Stride.Core.Annotations;
 using Stride.Engine.Design;
 using Stride.Engine.Splines.Models;
 
@@ -28,9 +29,49 @@ public class SplineComponent : EntityComponent
 
     internal bool HasDebugRenderSettingsChanged = true;
 
+    private SplineDebugRenderSettings debugRenderSettings;
+    /// <summary>
+    /// A spline renderer is used to visualise the spline.
+    /// </summary>
+    [DataMember(0)]
+    [Display(0, "Debug renderer")]
+    public SplineDebugRenderSettings DebugRenderSettings
+    {
+        get => debugRenderSettings;
+        internal set
+        {
+            debugRenderSettings?.RenderSettingsChanged -= OnDebugRenderSettingsChanged;
+            debugRenderSettings = value;
+            debugRenderSettings?.RenderSettingsChanged += OnDebugRenderSettingsChanged;
+        }
+    }
+
+    private void OnDebugRenderSettingsChanged(SplineDebugRenderSettings renderSettings)
+    {
+        HasDebugRenderSettingsChanged = true;
+    }
+
+    private ISplineEvaluator splineEvaluator;
+    [Display(49)]
+    [NotNull]
+    public ISplineEvaluator SplineEvaluator
+    {
+        get => splineEvaluator;
+        set
+        {
+            splineEvaluator?.UnregisterSpline();
+            splineEvaluator = value;
+            if (Spline is not null)
+            {
+                splineEvaluator?.RegisterSpline(Spline);
+            }
+        }
+    }
+
     private Spline spline;
-    [DataMember(10)]
-    [Display(10, Expand = ExpandRule.Once)]
+    [DataMember(50)]
+    [Display(50, Expand = ExpandRule.Once)]
+    [NotNull]
     public Spline Spline
     {
         get => spline;
@@ -41,6 +82,11 @@ public class SplineComponent : EntityComponent
             spline = value;
             spline?.SplinePropertyChanged += OnSplinePropertyChanged;
             spline?.ControlPointsChanged += OnSplineControlPointsChanged;
+
+            if (spline is not null)
+            {
+                splineEvaluator?.RegisterSpline(spline);
+            }
         }
     }
 
@@ -55,31 +101,10 @@ public class SplineComponent : EntityComponent
         ControlPointsChanged?.Invoke(this);
     }
 
-    private SplineDebugRenderSettings debugRenderSettings;
-    /// <summary>
-    /// A spline renderer is used to visualise the spline.
-    /// </summary>
-    [DataMember(50)]
-    [Display(50, "Debug renderer")]
-    public SplineDebugRenderSettings DebugRenderSettings
-    {
-        get => debugRenderSettings;
-        internal set
-        {
-            debugRenderSettings?.RenderSettingsChanged -= OnRenderSettingsChanged;
-            debugRenderSettings = value;
-            debugRenderSettings?.RenderSettingsChanged += OnRenderSettingsChanged;
-        }
-    }
-
-    private void OnRenderSettingsChanged(SplineDebugRenderSettings renderSettings)
-    {
-        HasDebugRenderSettingsChanged = true;
-    }
-
     public SplineComponent()
     {
         Spline = new();
+        SplineEvaluator = new SplineEvaluator();
         DebugRenderSettings = new();
     }
 }

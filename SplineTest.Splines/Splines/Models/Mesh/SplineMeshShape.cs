@@ -14,6 +14,9 @@ namespace Stride.Engine.Splines.Models.Mesh;
 public class SplineMeshShape : SplineMesh
 {
     public SplineComponent ShapeSplineComponent;
+
+    public SplineSamplingSettings ShapeSamplingSettings { get; set; } = new();
+
     public ShapeProfilePlane ShapeProfilePlane = ShapeProfilePlane.XZ;
     public ShapeProfileFlipAxis ShapeProfileFlipAxis = ShapeProfileFlipAxis.Z;      // In the editor spline would most likely be drawn X right, Z down
     public bool ShapeProfileInvertNormals;
@@ -27,9 +30,9 @@ public class SplineMeshShape : SplineMesh
         }
 
         var splineSamples = new List<SplineSample>();
-        SplineExtensions.CollectSplineSamples(Spline, splineSamples, sampleStepDistance: 0.5f);     // TODO adaptive
+        SplineExtensions.CollectSplineSamples(SplineEvaluator, MeshSamplingSettings, splineSamples);
         var splineSamplesSpan = CollectionsMarshal.AsSpan(splineSamples);
-        var shapeProfileVertices = BuildProfileVertices(ShapeSplineComponent.Spline, ShapeProfilePlane, ShapeProfileFlipAxis, ShapeProfileInvertNormals);
+        var shapeProfileVertices = BuildProfileVertices(ShapeSplineComponent.Spline, ShapeSplineComponent.SplineEvaluator, ShapeSamplingSettings, ShapeProfilePlane, ShapeProfileFlipAxis, ShapeProfileInvertNormals);
 
         int splinePointCount = splineSamplesSpan.Length;
         int shapeProfileVerticesCount = shapeProfileVertices.Length;
@@ -48,11 +51,9 @@ public class SplineMeshShape : SplineMesh
         var prevSplinePosition = splineSamplesSpan[0].Position;
         for (int i = 0; i < splinePointCount; i++)
         {
-            var sample = splineSamplesSpan[i];
+            ref readonly var sample = ref splineSamplesSpan[i];
             var splinePosition = sample.Position;
-            var forward = sample.Tangent;
-
-            var profileLocalRotation = Quaternion.BetweenDirections(Vector3.UnitZ, forward);
+            var splineRotation = sample.Orientation;
 
             splineDistance += Vector3.Distance(prevSplinePosition, splinePosition);
             prevSplinePosition = splinePosition;
@@ -61,14 +62,13 @@ public class SplineMeshShape : SplineMesh
             {
                 ref readonly var profVert = ref shapeProfileVertices[profIdx];
 
-                var vertPos = profileLocalRotation * profVert.Position;
+                var vertPos = splineRotation * profVert.Position;
                 vertPos += splinePosition;
-                var vertNorm = profileLocalRotation * profVert.Normal;
-                var texCoordX = profVert.ProfileT / GetNonZeroOrOne(UvScale.X);
+                var vertNorm = splineRotation * profVert.Normal;
+                float texCoordX = profVert.ProfileT / GetNonZeroOrOne(UvScale.X);
 
                 vertices[verticesIndex++] = CreateVertex(vertPos, vertNorm, new Vector2(texCoordX, textureY));
             }
-
         }
 
         for (int i = 0; i < splinePointCount - 1; i++)
@@ -102,7 +102,7 @@ public class SplineMeshShape : SplineMesh
         return new GeometricMeshData<VertexPositionNormalTexture>(vertices, indices, isLeftHanded: false);
     }
 
-    private float GetNonZeroOrOne(float value)
+    private static float GetNonZeroOrOne(float value)
     {
         return value == 0 ? 1 : value;
     }

@@ -53,7 +53,7 @@ public sealed class SplineTraverserComponent : EntityComponent
 
             if (splineComponent is null)
             {
-                SplineTraverser.Spline = null;
+                SplineTraverser.SplineEvaluator = null;
             }
         }
     }
@@ -75,7 +75,7 @@ public sealed class SplineTraverserComponent : EntityComponent
 
     /// <summary>
     /// Determines whether the spline traver is moving
-    /// For a traverser to work we require a Spline reference, a non-zero and IsMoving must be True
+    /// For a traverser to work we require a SplineEvaluator reference, a non-zero and IsMoving must be True
     /// </summary>
     [Display(40, "Moving")]
     public bool IsMoving
@@ -92,7 +92,7 @@ public sealed class SplineTraverserComponent : EntityComponent
 
     /// <summary>
     /// Determines whether the spline traver rotates along the spline
-    /// For a traverse to work we require a Spline reference, a non-zero and IsMoving must be True
+    /// For a traverse to work we require a SplineEvaluator reference, a non-zero and IsMoving must be True
     /// </summary>
     [Display(50, "Rotate")]
     public bool IsRotating
@@ -115,9 +115,8 @@ public sealed class SplineTraverserComponent : EntityComponent
         if (IsRotating)
         {
             System.Diagnostics.Debug.WriteLineIf(false, $"Rot\t{splineSample.Tangent}");
-            var splineWorldRotation = splineRotation * splineSample.Rotation;
+            var splineWorldRotation = splineRotation * splineSample.Orientation;
             var splineUp = splineWorldRotation * Vector3.UnitY;
-            var splineWorldTangent = splineWorldRotation * splineSample.Tangent;
             var forwardRotation = Quaternion.LookRotation(splineSample.Tangent, splineUp);
             transformComponent.Rotation = forwardRotation;
         }

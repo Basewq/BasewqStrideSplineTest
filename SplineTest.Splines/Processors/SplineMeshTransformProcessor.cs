@@ -107,6 +107,7 @@ public class SplineMeshTransformProcessor : EntityProcessor<SplineMeshComponent,
 
             // Create a model and generate its mesh
             splineMeshComponent.SplineMesh.Spline = splineMeshComponent.SplineComponent.Spline;
+            splineMeshComponent.SplineMesh.SplineEvaluator = splineMeshComponent.SplineComponent.SplineEvaluator;
             var model = new Model();
             splineMeshComponent.SplineMesh.Generate(Services, model);
             data.ModelResource.AddFromModel(model);

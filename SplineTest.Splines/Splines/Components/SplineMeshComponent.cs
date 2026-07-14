@@ -42,7 +42,7 @@ public sealed class SplineMeshComponent : EntityComponent
 
             if (splineMesh is not null)
             {
-                InvokeMeshRequiresUpdate();
+                InvalidateMesh();
             }
         }
     }
@@ -64,22 +64,22 @@ public sealed class SplineMeshComponent : EntityComponent
             splineComponent?.Spline?.ControlPointsChanged += OnControlPointsChanged;
             if (splineComponent is not null && oldValue != splineComponent)
             {
-                InvokeMeshRequiresUpdate();
+                InvalidateMesh();
             }
         }
     }
 
     private void OnSplinePropertyChanged(object sender)
     {
-        InvokeMeshRequiresUpdate();
+        InvalidateMesh();
     }
 
     private void OnControlPointsChanged(object sender, ref SplineControlPointsChangedEventArgs e)
     {
-        InvokeMeshRequiresUpdate();
+        InvalidateMesh();
     }
 
-    private void InvokeMeshRequiresUpdate()
+    public void InvalidateMesh()
     {
         if (SplineMesh is null)
         {

@@ -15,6 +15,7 @@ public class SplinesPerformanceTest : SyncScript
 {
     public int SplineAmount = 1000;
     public int SplineControlPointsPerSpline = 1000;
+    [Obsolete("Subdivision value?")]
     public int SplineCurveCount = 100;
     public Vector3 SplineGenerationArea = new(1000, 200, 1000);
     public Vector3 TangentOffet = new(2, 2, 2);
@@ -46,7 +47,7 @@ public class SplinesPerformanceTest : SyncScript
         stopwatch.Start();
 
         ClearSplines();
-        for (var i = 0; i < SplineAmount; i++)
+        for (int i = 0; i < SplineAmount; i++)
         {
             GenerateSpline(i);
         }
@@ -58,7 +59,7 @@ public class SplinesPerformanceTest : SyncScript
     {
         var controlPointPositions = new Vector3[SplineControlPointsPerSpline];
         var division = SplineGenerationArea / SplineControlPointsPerSpline;
-        for (var i = 0; i < SplineControlPointsPerSpline; i++)
+        for (int i = 0; i < SplineControlPointsPerSpline; i++)
         {
             if (UseStructuredSpline)
             {
@@ -69,9 +70,9 @@ public class SplinesPerformanceTest : SyncScript
                 controlPointPositions[i] = RandomVector3(SplineGenerationArea);
         }
 
-        //In and Out tangent
+        // In and Out tangent
         var tangents = new Vector3[SplineControlPointsPerSpline * 2];
-        for (var i = 0; i < SplineControlPointsPerSpline * 2; i++)
+        for (int i = 0; i < SplineControlPointsPerSpline * 2; i++)
         {
             tangents[i] = RandomOffsetVector3();
         }
@@ -88,7 +89,7 @@ public class SplinesPerformanceTest : SyncScript
         SplineEntities[iteration] = splineEntity;
         SplineComponents[iteration] = splineComponent;
 
-        for (var i = 0; i < controlPointPositions.Length; i++)
+        for (int i = 0; i < controlPointPositions.Length; i++)
         {
             splineComponent.Spline.Add(new SplineControlPoint
             {
@@ -96,13 +97,7 @@ public class SplinesPerformanceTest : SyncScript
                 TangentIn = tangents[i * 2],
                 TangentOut = tangents[i * 2 + 1],
             });
-            (splineComponent.Spline.SplineEvaluator as SplineEvaluator)?.SampleResolutionPerCurve = SplineCurveCount;
-            //var controlPointEntity = new Entity("controlPoint" + i, controlPointPositions[i]);
-            //var controlPointComponent = new SplineNodeComponent(SplineCurveCount, tangents[i * 2], tangents[i * 2 + 1]);
-            //controlPointEntity.Add(controlPointComponent);
-            //
-            //splineEntity.AddChild(controlPointEntity);
-            //SplineComponent.Nodes.Add(controlPointComponent);
+            //(splineComponent.SplineEvaluator as SplineEvaluator)?.SampleResolutionPerCurve = SplineCurveCount;
         }
 
         // We use a spline renderer if we want to view our spline in the game
@@ -121,19 +116,19 @@ public class SplinesPerformanceTest : SyncScript
         DebugText.Print($"Press G to generate {SplineAmount} splines", new Int2(HelpTextStartX, 40));
         DebugText.Print($"Press B to toggle bounding box", new Int2(HelpTextStartX, 80));
 
-        //Clean existing splines
+        // Clean existing splines
         if (Input.IsKeyPressed(Keys.C))
         {
             ClearSplines();
         }
 
-        //Generate new splines
+        // Generate new splines
         if (Input.IsKeyPressed(Keys.G))
         {
             GenerateSplines();
         }
 
-        //Generate new splines
+        // Generate new splines
         if (Input.IsKeyPressed(Keys.B))
         {
             ToggleBoundingBox();
@@ -142,16 +137,16 @@ public class SplinesPerformanceTest : SyncScript
 
     private void ToggleBoundingBox()
     {
-        var bb = SplineComponents[0].DebugRenderSettings.ShowBoundingBox;
-        for (var i = 0; i < SplineAmount; i++)
+        bool show = SplineComponents[0].DebugRenderSettings.ShowBoundingBox;
+        for (int i = 0; i < SplineAmount; i++)
         {
-            SplineComponents[i].DebugRenderSettings.ShowBoundingBox = !bb;
+            SplineComponents[i].DebugRenderSettings.ShowBoundingBox = !show;
         }
     }
 
     private void ClearSplines()
     {
-        for (var i = 0; i < SplineAmount; i++)
+        for (int i = 0; i < SplineAmount; i++)
         {
             Entity.Scene.Entities.Remove(SplineEntities[i]);
         }

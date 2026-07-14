@@ -29,7 +29,7 @@ public struct BezierCurve
     public readonly Vector3 EndPosition => P3;
 
     public BezierCurve(Vector3 p0, Vector3 p3)
-        : this(p0, p0, p3, p3)
+        : this(p0, p0 + SplineUtil.CalculateLinearHandle(p0, p3), p3 + SplineUtil.CalculateLinearHandle(p3, p0), p3)
     { }
 
     public BezierCurve(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
@@ -43,9 +43,25 @@ public struct BezierCurve
     public BezierCurve(in SplineControlPoint controlPoint1, in SplineControlPoint controlPoint2)
     {
         P0 = controlPoint1.Position;
-        P1 = controlPoint1.TangentOutPosition;
-        P2 = controlPoint2.TangentInPosition;
         P3 = controlPoint2.Position;
+        if (controlPoint1.Type == SplineControlPointType.Linear)
+        {
+
+            P1 = P0 + SplineUtil.CalculateLinearHandle(P0, P3);
+        }
+        else
+        {
+            P1 = controlPoint1.TangentOutPosition;
+        }
+        if (controlPoint2.Type == SplineControlPointType.Linear)
+        {
+
+            P2 = P3 + SplineUtil.CalculateLinearHandle(P3, P0);
+        }
+        else
+        {
+            P2 = controlPoint2.TangentInPosition;
+        }
     }
 
     public readonly Vector3 GetPosition(float t)
@@ -70,7 +86,52 @@ public struct BezierCurve
         var tangent = (3f * uu * (P1 - P0))
             + (6f * u * t * (P2 - P1))
             + (3f * tt * (P3 - P2));
-        tangent.Normalize();
-        return tangent;
+        if (TryNormalize(ref tangent))
+        {
+            return tangent;
+        }
+
+        if (t <= 0)
+        {
+            tangent = P2 - P0;
+            if (TryNormalize(ref tangent))
+            {
+                return tangent;
+            }
+        }
+        else if (t >= 1f)
+        {
+            tangent = P3 - P1;
+            if (TryNormalize(ref tangent))
+            {
+                return tangent;
+            }
+        }
+
+        // Interior degenerate point: try get tangent by getting nearby `t`
+        float t0 = MathF.Max(0f, t - MathUtil.ZeroTolerance);
+        float t1 = MathF.Min(1f, t + MathUtil.ZeroTolerance);
+        if (t1 > t0)
+        {
+            tangent = GetPosition(t1) - GetPosition(t0);
+            if (TryNormalize(ref tangent))
+            {
+                return tangent;
+            }
+        }
+
+        // Complete failure
+        return Vector3.Zero;
+    }
+
+    private static bool TryNormalize(ref Vector3 tangent)
+    {
+        float tangentLengthSqrd = tangent.LengthSquared();
+        if (!MathUtil.IsZero(tangentLengthSqrd))
+        {
+            tangent /= MathF.Sqrt(tangentLengthSqrd);
+            return true;
+        }
+        return false;
     }
 }

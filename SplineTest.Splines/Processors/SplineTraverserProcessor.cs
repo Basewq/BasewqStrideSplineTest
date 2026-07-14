@@ -48,7 +48,7 @@ public class SplineTraverserProcessor : EntityProcessor<SplineTraverserComponent
         }
 
         splineTraverserComponents.Add(component);
-        component.SplineTraverser.Spline = component.SplineComponent?.Spline;
+        component.SplineTraverser.SplineEvaluator = component.SplineComponent?.SplineEvaluator;
         //component.SplineTraverser.Entity = entity;
 
         entity.Transform.PostOperations.Add(data.TransformOperation);
@@ -68,8 +68,7 @@ public class SplineTraverserProcessor : EntityProcessor<SplineTraverserComponent
         public SplinePropertyChangedEventHandler OnSplinePropertyChangedAction;
         public SplineControlPointEventHandler<SplineControlPointsChangedEventArgs> OnSplineControlPointCollectionChangedAction;
 
-        internal SplineSample PreviousSplineSample;
-        internal bool AttachedToSpline;
+        internal bool IsAttachedToSpline;
 
         public AssociatedData(SplineTraverserProcessor processor, SplineTraverserComponent component)
         {
@@ -80,7 +79,7 @@ public class SplineTraverserProcessor : EntityProcessor<SplineTraverserComponent
         private void Update(SplineTraverserProcessor processor, SplineTraverserComponent component)
         {
             processor.splineTraverserComponents.Add(component);
-            AttachedToSpline = false;
+            IsAttachedToSpline = false;
         }
     }
 
@@ -91,26 +90,18 @@ public class SplineTraverserProcessor : EntityProcessor<SplineTraverserComponent
             if (!IsValidComponent(component))
                 continue;
 
-            if (!data.AttachedToSpline)
+            if (!data.IsAttachedToSpline)
             {
                 DetermineOriginAndTarget(component, data);
             }
 
-            if (!component.IsMoving || component.Speed == 0 || !data.AttachedToSpline)
+            if (!component.IsMoving || component.Speed == 0 || !data.IsAttachedToSpline)
             {
                 continue;
             }
 
             float dt = (float)gameTime.Elapsed.TotalSeconds;
             component.SplineTraverser.Update(dt);
-            var curSplineSample = component.SplineTraverser.CurrentSplineSample;
-            //component.Entity.Transform.Position = curSplineSample.Position;
-            //if (component.SplineTraverser.IsRotating)
-            //{
-            //    component.Entity.Transform.Rotation = curSplineSample.Rotation;
-            //}
-
-            data.PreviousSplineSample = curSplineSample;
         }
     }
 
@@ -140,9 +131,9 @@ public class SplineTraverserProcessor : EntityProcessor<SplineTraverserComponent
         if (component.SplineTraverser.IsRotating)
         {
             var forwardRotation = Quaternion.BetweenDirections(Vector3.UnitZ, curSplineSample.Tangent);
-            component.Entity.Transform.Rotation = curSplineSample.Rotation * forwardRotation;
+            component.Entity.Transform.Rotation = curSplineSample.Orientation * forwardRotation;
         }
 
-        data.AttachedToSpline = true;
+        data.IsAttachedToSpline = true;
     }
 }

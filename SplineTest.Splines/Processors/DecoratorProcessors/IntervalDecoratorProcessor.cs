@@ -1,7 +1,9 @@
 // Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
+using Stride.Core.Mathematics;
 using Stride.Engine.Splines.Components;
+using Stride.Engine.Splines.Models;
 using Stride.Engine.Splines.Models.Decorators;
 
 namespace Stride.Engine.Splines.Processors.DecoratorProcessors;
@@ -15,22 +17,31 @@ public class IntervalDecoratorProcessor : BaseSplineDecoratorProcessor
     /// </summary>
     public override void Decorate(SplineDecoratorComponent component)
     {
-        float totalSplineDistance = component.SplineComponent?.Spline?.GetTotalDistance() ?? 0;
+        var spline = component.SplineComponent?.Spline;
+        var splineEval = component.SplineComponent?.SplineEvaluator;
         if (component.Entity is null
-            || component.SplineComponent is null
-            || totalSplineDistance <= 0
-            || component.DecoratorSettings.Decorations.Count <= 0
+            || spline is null
+            || spline.Count < 2
+            || component.DecoratorSettings is null
+            || component.DecoratorSettings.Decorations.Count == 0
             || component.DecoratorSettings is not SplineIntervalDecoratorSettings intervalDecoratorSettings)
         {
             return;
         }
 
-        var random = new Random();
+        splineEval ??= new SplineEvaluator(spline);
+        float totalSplineDistance = splineEval.GetTotalDistance();
+        if (totalSplineDistance <= 0)
+        {
+            return;
+        }
+
+        var random = new Random();      // TODO should allow RNG seed
         float totalIntervalDistance = 0.0f;
         int iteration = 0;
 
-        float minInterval = Math.Max(intervalDecoratorSettings.Interval.X, 0.000001f);
-        float maxInterval = Math.Max(intervalDecoratorSettings.Interval.Y, minInterval + 0.000001f);    // Must always increase
+        float minInterval = Math.Max(intervalDecoratorSettings.Interval.X, MathUtil.ZeroTolerance);
+        float maxInterval = Math.Max(intervalDecoratorSettings.Interval.Y, minInterval + MathUtil.ZeroTolerance);    // Must always increase
         float intervalRange = maxInterval - minInterval;
         while (iteration < 1000)
         {
@@ -43,7 +54,7 @@ public class IntervalDecoratorProcessor : BaseSplineDecoratorProcessor
             }
 
             float splineT = totalIntervalDistance / totalSplineDistance;
-            CreateInstance(component, iteration, splineT, random);
+            CreateInstance(component, iteration, splineEval, splineT, random);
 
             iteration++;
         }
