@@ -162,9 +162,5 @@ Hierarchy:
                                     TangentOut: {X: 1.0, Y: 0.0, Z: 0.0}
                         DebugRenderSettings:
                             ShowCurves: false
-                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4

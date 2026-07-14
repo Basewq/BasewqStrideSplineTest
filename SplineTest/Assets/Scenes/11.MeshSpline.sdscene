@@ -77,10 +77,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Entity:
                 Id: 0593fca2-393d-4f15-8217-9d9ba1755502
                 Name: CylinderTubeSpline-looped
@@ -129,10 +126,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Entity:
                 Id: 0b6a66ba-f524-40fc-b5ce-65cc8b60768a
                 Name: UVTestRoadSpline
@@ -179,10 +173,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Entity:
                 Id: 12139075-6b32-4a96-8f64-c86e4e669b79
                 Name: BoxSpline-looped
@@ -229,10 +220,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Entity:
                 Id: 15a0040d-1ae0-40e5-9166-f3d007a4c224
                 Name: MeshShapeSplineXZ
@@ -284,10 +272,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Entity:
                 Id: 31538e2b-b1fc-466a-8f1c-a4c37f5980d2
                 Name: Ambient light
@@ -342,10 +327,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Entity:
                 Id: 39c6e7e1-3823-4fc2-a3bc-d2b3936680d7
                 Name: CyllinderSpline_MediumPoly
@@ -394,10 +376,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Entity:
                 Id: 3a8da8ee-5413-4804-bd14-a33a9ce75a2f
                 Name: Camera
@@ -480,10 +459,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Folder: null
             Entity:
                 Id: 496d904a-97d4-4ce9-b029-39b9c0d93f6f
@@ -533,10 +509,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Entity:
                 Id: 4e218d94-49f5-4f7e-a33e-9cf8887734fa
                 Name: CyllinderTubeSpline
@@ -585,10 +558,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Entity:
                 Id: 80de15f9-c67f-4d9b-a678-a4ae26f677f9
                 Name: UVTestBoxSpline
@@ -635,10 +605,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Folder: null
             Entity:
                 Id: 8aac7a2e-3fd2-48af-923e-24d35312a3de
@@ -691,10 +658,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Folder: null
             Entity:
                 Id: 8afcd270-48c2-4b7e-b5cf-847faab9ac4e
@@ -744,10 +708,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Entity:
                 Id: 9b6b991c-b2b3-4746-81a8-a84a12b9d9cc
                 Name: MeshShapeTargetXZ
@@ -787,10 +748,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Entity:
                 Id: a3186170-0839-4471-b74d-67a8a5d7333a
                 Name: Camera
@@ -889,10 +847,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Entity:
                 Id: bf40ae0e-15b0-4d2b-95f3-6a5c232e48f0
                 Name: DemoController
@@ -953,10 +908,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Entity:
                 Id: cdce7073-b5eb-4a4c-b660-fda1de108c23
                 Name: RoadSpline-looped
@@ -1003,10 +955,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Entity:
                 Id: d9e17211-c72c-4cd3-a7aa-11203f81701f
                 Name: CyllinderSpline_LowPoly
@@ -1055,10 +1004,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Entity:
                 Id: dc1d4c92-1327-47c1-93a4-0de1590c88fa
                 Name: BoxSpline
@@ -1105,10 +1051,7 @@ Hierarchy:
                             ShowCurves: true
                             CurveColor: {R: 0, G: 255, B: 255, A: 64}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Entity:
                 Id: e436febe-4c37-4096-95ba-b8fa067cd95b
                 Name: Directional light

@@ -152,12 +152,8 @@ Hierarchy:
                                     TangentOut: {X: 0.0, Y: 0.0, Z: -2.0}
                         DebugRenderSettings:
                             ShowCurves: true
-                            CurveColor: {R: 0, G: 255, B: 255, A: 255}
                             ShowControlPoints: false
-                            ControlPointColor: {R: 255, G: 255, B: 255, A: 255}
                             ShowBoundingBox: false
-                            BoundingBoxColor: {R: 255, G: 165, B: 0, A: 255}
-                            RenderGroup: Group4
         -   Entity:
                 Id: 98b59819-5c07-431e-b5ef-ede7b871c3e5
                 Name: Crate
