@@ -24,63 +24,70 @@ public class SplineMeshPlane : SplineMesh
         var vertices = new VertexPositionNormalTexture[vertexCount];
         var indices = new int[indexCount];
 
-        var halfWidth = Scale.X / 2;
-        int verticesIndex = 0;
-        int triangleIndex = 0;
-        float splineDistance = 0.0f;
+        float halfWidth = Scale.X * 0.5f;
 
-        for (int i = 0; i < splineSamplesCount - 1; i++)
+        // Single edge
+        Span<ProfileVertex> shapeProfileVertices = stackalloc ProfileVertex[]
         {
-            var startPoint = splineSamplesSpan[i].Position;
-            var targetPoint = splineSamplesSpan[i + 1].Position;
-            var forward = Vector3.Normalize(targetPoint - startPoint);
+            new ProfileVertex { Position = new(-halfWidth, 0, 0), Normal = Vector3.UnitY, ProfileT =  0 },
+            new ProfileVertex { Position = new(+halfWidth, 0, 0), Normal = Vector3.UnitY, ProfileT =  1 },
+        };
 
-            var left = Vector3.Cross(forward, Vector3.UnitY) * halfWidth;
-            var right = -left;
-            var normal = Vector3.UnitY;
+        int verticesIndex = 0;
+        int indicesIndex = 0;
+        float splineDistance = 0.0f;
+        var texCoordScale = UvScale with
+        {
+            X = UvScale.X == 0 ? 1 : 1f / UvScale.X,
+            Y = UvScale.Y == 0 ? 1 : 1f / UvScale.Y
+        };
+        var prevSplinePosition = splineSamplesSpan[0].Position;
+        for (int i = 0; i < splineSamplesCount; i++)
+        {
+            ref readonly var sample = ref splineSamplesSpan[i];
+            var splinePosition = sample.Position;
+            var splineRotation = sample.Orientation;
 
-            // Generate vertices around the spline at position 'startPoint'
-            if (i == 0)
+            splineDistance += Vector3.Distance(prevSplinePosition, splinePosition);
+            prevSplinePosition = splinePosition;
+            float textureY = splineDistance * texCoordScale.Y;
+            for (int profIdx = 0; profIdx < shapeProfileVertices.Length; profIdx++)
             {
-                vertices[verticesIndex] = new VertexPositionNormalTexture(startPoint + left, normal, new Vector2(0, 0));
-                vertices[verticesIndex + 1] = new VertexPositionNormalTexture(startPoint + right, normal, new Vector2(1, 0));
-                verticesIndex += 2;
+                ref readonly var profVert = ref shapeProfileVertices[profIdx];
+
+                var vertPos = splineRotation * profVert.Position;
+                vertPos += splinePosition;
+                var vertNorm = splineRotation * profVert.Normal;
+                float texCoordX = profVert.ProfileT * texCoordScale.X;
+
+                vertices[verticesIndex++] = CreateVertex(vertPos, vertNorm, new Vector2(texCoordX, textureY));
             }
-
-            // Generate vertices around the spline at position 'targetPoint'
-            splineDistance += Vector3.Distance(startPoint, targetPoint);
-            float textureY = splineDistance / UvScale.Y;
-            vertices[verticesIndex] = new VertexPositionNormalTexture(targetPoint + left, normal, new Vector2(0, textureY));
-            vertices[verticesIndex + 1] = new VertexPositionNormalTexture(targetPoint + right, normal, new Vector2(1, textureY));
-            verticesIndex += 2;
-
-            // Create indices
-            var indicesIndex = i * 6;
-            SetIndices(indices, triangleIndex, indicesIndex);
-            triangleIndex += 2;
         }
 
-        if (Spline.IsClosedLoop)
+        int shapeProfileVerticesCount = shapeProfileVertices.Length;
+        for (int i = 0; i < splineSamplesCount - 1; i++)
         {
-            // Stitch the start/end positions to remove seams.
-            int endStartIndex = vertices.Length - 2;
-            for (int i = 0; i < 2; i++)
+            int currentShapeStartIndex = i * shapeProfileVerticesCount;
+            int nextShapeStartIndex = (i + 1) * shapeProfileVerticesCount;
+
+            for (int j = 0; j < shapeProfileVerticesCount - 1; j++)
             {
-                StitchVertexPositions(vertices, i, endStartIndex + i);
+                int currentShapeVert0 = currentShapeStartIndex + j;
+                int currentShapeVert1 = currentShapeVert0 + 1;
+                int nextShapeVert0 = nextShapeStartIndex + j;
+                int nextShapeVert1 = nextShapeVert0 + 1;
+
+                indices[indicesIndex++] = currentShapeVert0;
+                indices[indicesIndex++] = nextShapeVert1;
+                indices[indicesIndex++] = nextShapeVert0;
+
+                indices[indicesIndex++] = currentShapeVert0;
+                indices[indicesIndex++] = currentShapeVert1;
+                indices[indicesIndex++] = nextShapeVert1;
             }
         }
 
         // Create the primitive object for further processing by the base class
         return new GeometricMeshData<VertexPositionNormalTexture>(vertices, indices, isLeftHanded: false);
-    }
-
-    private static void SetIndices(int[] indices, int triangleIndex, int indiceIndex)
-    {
-        indices[indiceIndex + 0] = triangleIndex + 0;
-        indices[indiceIndex + 1] = triangleIndex + 1;
-        indices[indiceIndex + 2] = triangleIndex + 2;
-        indices[indiceIndex + 3] = triangleIndex + 1;
-        indices[indiceIndex + 4] = triangleIndex + 3;
-        indices[indiceIndex + 5] = triangleIndex + 2;
     }
 }

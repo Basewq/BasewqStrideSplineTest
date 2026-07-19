@@ -206,7 +206,7 @@ Hierarchy:
                                     Position: {X: -7.8740573, Y: 0.0, Z: 13.571022}
                                     TangentIn: {X: 10.0, Y: 0.0, Z: 0.0}
                                     TangentOut: {X: 0.0, Y: 0.0, Z: 10.0}
-                                    Roll: {Radians: 0.0}
+                                    Roll: {Radians: 6.2831855}
                                     Type: Free
                         SplineEvaluator: !Stride.Engine.Splines.Models.SplineEvaluator,SplineTest.Splines
                             MaximumAngleError: {Radians: 0.05235988}
@@ -844,7 +844,7 @@ Hierarchy:
                                 MinimumSegmentLength: 0.01
                                 MaximumSubdivisionDepth: 8
                             Sides: 16
-                            Radius: {X: 0.2, Y: 1.0}
+                            Radius: {X: 0.5, Y: 1.0}
                         SplineComponent: ref!! d05140b4-dbab-4fe3-9fd5-362495f68f84
                     9b972c4c2dbb879f0daf66d57b0fb094: !Stride.Engine.Splines.Components.SplineComponent,SplineTest.Splines
                         Id: d05140b4-dbab-4fe3-9fd5-362495f68f84

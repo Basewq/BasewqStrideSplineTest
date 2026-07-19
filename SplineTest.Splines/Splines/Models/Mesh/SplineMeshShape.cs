@@ -34,12 +34,12 @@ public class SplineMeshShape : SplineMesh
         var splineSamplesSpan = CollectionsMarshal.AsSpan(splineSamples);
         var shapeProfileVertices = BuildProfileVertices(ShapeSplineComponent.Spline, ShapeSplineComponent.SplineEvaluator, ShapeSamplingSettings, ShapeProfilePlane, ShapeProfileFlipAxis, ShapeProfileInvertNormals);
 
-        int splinePointCount = splineSamplesSpan.Length;
+        int splineSamplesCount = splineSamplesSpan.Length;
         int shapeProfileVerticesCount = shapeProfileVertices.Length;
         int shapeProfileEdgeCount = shapeProfileVerticesCount - 1;
 
-        int totalVertexCount = splinePointCount * shapeProfileVerticesCount;
-        int totalIndicesCount = (splinePointCount - 1) * shapeProfileEdgeCount * 6;
+        int totalVertexCount = splineSamplesCount * shapeProfileVerticesCount;
+        int totalIndicesCount = (splineSamplesCount - 1) * shapeProfileEdgeCount * 6;
 
         var vertices = new VertexPositionNormalTexture[totalVertexCount];
         var indices = new int[totalIndicesCount];
@@ -47,9 +47,13 @@ public class SplineMeshShape : SplineMesh
         int verticesIndex = 0;
         int indicesIndex = 0;
         float splineDistance = 0.0f;
-
+        var texCoordScale = UvScale with
+        {
+            X = UvScale.X == 0 ? 1 : 1f / UvScale.X,
+            Y = UvScale.Y == 0 ? 1 : 1f / UvScale.Y
+        };
         var prevSplinePosition = splineSamplesSpan[0].Position;
-        for (int i = 0; i < splinePointCount; i++)
+        for (int i = 0; i < splineSamplesCount; i++)
         {
             ref readonly var sample = ref splineSamplesSpan[i];
             var splinePosition = sample.Position;
@@ -57,7 +61,7 @@ public class SplineMeshShape : SplineMesh
 
             splineDistance += Vector3.Distance(prevSplinePosition, splinePosition);
             prevSplinePosition = splinePosition;
-            float textureY = splineDistance / GetNonZeroOrOne(UvScale.Y);
+            float textureY = splineDistance * texCoordScale.Y;
             for (int profIdx = 0; profIdx < shapeProfileVertices.Length; profIdx++)
             {
                 ref readonly var profVert = ref shapeProfileVertices[profIdx];
@@ -65,13 +69,13 @@ public class SplineMeshShape : SplineMesh
                 var vertPos = splineRotation * profVert.Position;
                 vertPos += splinePosition;
                 var vertNorm = splineRotation * profVert.Normal;
-                float texCoordX = profVert.ProfileT / GetNonZeroOrOne(UvScale.X);
+                float texCoordX = profVert.ProfileT * texCoordScale.X;
 
                 vertices[verticesIndex++] = CreateVertex(vertPos, vertNorm, new Vector2(texCoordX, textureY));
             }
         }
 
-        for (int i = 0; i < splinePointCount - 1; i++)
+        for (int i = 0; i < splineSamplesCount - 1; i++)
         {
             int currentShapeStartIndex = i * shapeProfileVerticesCount;
             int nextShapeStartIndex = (i + 1) * shapeProfileVerticesCount;
@@ -100,10 +104,5 @@ public class SplineMeshShape : SplineMesh
 
         // Create the primitive object for further processing by the base class
         return new GeometricMeshData<VertexPositionNormalTexture>(vertices, indices, isLeftHanded: false);
-    }
-
-    private static float GetNonZeroOrOne(float value)
-    {
-        return value == 0 ? 1 : value;
     }
 }

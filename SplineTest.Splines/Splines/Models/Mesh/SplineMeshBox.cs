@@ -14,12 +14,12 @@ public class SplineMeshBox : SplineMesh
 {
     protected override GeometricMeshData<VertexPositionNormalTexture> CreatePrimitiveMeshData()
     {
-        var splinePoints = new List<Vector3>();
-        SplineExtensions.CollectSplineSamplePositionsByResolution(Spline, splinePoints);
-        var splinePointsSpan = CollectionsMarshal.AsSpan(splinePoints);
-        int splinePointCount = splinePointsSpan.Length;
-        int vertexCount = splinePointCount * 4 * 2;         // 4 vertPosOffset * 2 per corner - don't share vertices because we want hard normals/texture coords for each face
-        int indicesCount = (splinePointCount - 1) * 24;     // 4 quads * 2 tris * 3 indices
+        var splineSamples = new List<SplineSample>();
+        SplineExtensions.CollectSplineSamples(SplineEvaluator, MeshSamplingSettings, splineSamples);
+        var splineSamplesSpan = CollectionsMarshal.AsSpan(splineSamples);
+        int splineSamplesCount = splineSamplesSpan.Length;
+        int vertexCount = splineSamplesCount * 4 * 2;       // 4 edges * 2 vertices per edge - don't share vertices because we want hard normals/texture coords for each face
+        int indicesCount = (splineSamplesCount - 1) * 24;   // 4 quads * 2 tris * 3 indices
 
         if (CloseEnds && !Spline.IsClosedLoop)
         {
@@ -30,114 +30,84 @@ public class SplineMeshBox : SplineMesh
         var vertices = new VertexPositionNormalTexture[vertexCount];
         var indices = new int[indicesCount];
 
-        float halfWidth = Scale.X / 2;
-        var halfHeight3d = new Vector3(0, Scale.Y / 2, 0);
-        int verticesIndex = 0;
-        int triangleIndex = 0;
-        float splineDistance = 0.0f;
+        float halfWidth = Scale.X  * 0.5f;
+        float halfHeight = Scale.Y * 0.5f;
 
-        Span<Vector3> faceNormals = stackalloc Vector3[]
+        // Edges/Vertices in clockwise order, starting from top-left
+        Span<ProfileVertex> shapeProfileVertices = stackalloc ProfileVertex[]
         {
-            -Vector3.UnitY, // Down Vector3(0,1,0)
-            -Vector3.UnitX, // Right Vector3(0,1,0)
-            +Vector3.UnitY, // Up Vector3(0,1,0)
-            +Vector3.UnitX  // Left Vector3(0,1,0)
-        };
-        Span<Vector3> vertPosOffset = stackalloc Vector3[4];
-        for (int i = 0; i < splinePointCount - 1; i++)
-        {
-            var startPoint = splinePointsSpan[i];
-            var targetPoint = splinePointsSpan[i + 1];
-            var forward = Vector3.Normalize(targetPoint - startPoint);
-
-            var right = Vector3.Cross(forward, Vector3.UnitY) * halfWidth;      // TODO use spline's Up orientation in the future?
-            var left = -right;
-
-            // Create vertices
-            vertPosOffset[0] = left - halfHeight3d;   // Bottom left
-            vertPosOffset[1] = right - halfHeight3d;  // Bottom right
-            vertPosOffset[2] = right + halfHeight3d;  // Top right
-            vertPosOffset[3] = left + halfHeight3d;   // Top Left
-
-            // Generate vertices around the spline at position 'startPoint'
-            if (i == 0) // First vertices
-            {
-                // Loop over each face in following order: Bottom, Right, Top, Left
-                for (int offsetIdx = 0; offsetIdx < vertPosOffset.Length; offsetIdx++)
-                {
-                    vertices[verticesIndex] = CreateVertex(startPoint + vertPosOffset[offsetIdx], faceNormals[offsetIdx], new Vector2(0, 0));
-                    vertices[verticesIndex + 1] = CreateVertex(startPoint + vertPosOffset[(offsetIdx + 1) % 4], faceNormals[offsetIdx], new Vector2(1, 0));
-                    verticesIndex += 2;
-                }
-            }
-
-            // Generate vertices around the spline at position 'targetPoint'
-            splineDistance += Vector3.Distance(startPoint, targetPoint);
-            float texCoordY = splineDistance / UvScale.Y;
-            // Loop over each face in following order: Bottom, Right, Top, Left
-            for (int offsetIdx = 0; offsetIdx < vertPosOffset.Length; offsetIdx++)
-            {
-                vertices[verticesIndex] = CreateVertex(targetPoint + vertPosOffset[offsetIdx], faceNormals[offsetIdx], new Vector2(0, texCoordY));
-                vertices[verticesIndex + 1] = CreateVertex(targetPoint + vertPosOffset[(offsetIdx + 1) % 4], faceNormals[offsetIdx], new Vector2(1, texCoordY));
-                verticesIndex += 2;
-            }
-
-            // Create indices
-            int indiceIndex = i * 24;
-
-            // Bottom
-            indices[indiceIndex + 0] = 0 + triangleIndex;
-            indices[indiceIndex + 1] = 1 + triangleIndex;
-            indices[indiceIndex + 2] = 8 + triangleIndex;
-
-            indices[indiceIndex + 3] = 1 + triangleIndex;
-            indices[indiceIndex + 4] = 9 + triangleIndex;
-            indices[indiceIndex + 5] = 8 + triangleIndex;
-
-            // Right
-            indices[indiceIndex + 6] = 2 + triangleIndex;
-            indices[indiceIndex + 7] = 3 + triangleIndex;
-            indices[indiceIndex + 8] = 10 + triangleIndex;
-
-            indices[indiceIndex + 9] = 3 + triangleIndex;
-            indices[indiceIndex + 10] = 11 + triangleIndex;
-            indices[indiceIndex + 11] = 10 + triangleIndex;
-
             // Top
-            indices[indiceIndex + 12] = 4 + triangleIndex;
-            indices[indiceIndex + 13] = 5 + triangleIndex;
-            indices[indiceIndex + 14] = 12 + triangleIndex;
-
-            indices[indiceIndex + 15] = 5 + triangleIndex;
-            indices[indiceIndex + 16] = 13 + triangleIndex;
-            indices[indiceIndex + 17] = 12 + triangleIndex;
-
+            new ProfileVertex { Position = new(-halfWidth, +halfHeight, 0), Normal = +Vector3.UnitY, ProfileT =  0 },
+            new ProfileVertex { Position = new(+halfWidth, +halfHeight, 0), Normal = +Vector3.UnitY, ProfileT =  1 },
+            // Right
+            new ProfileVertex { Position = new(+halfWidth, +halfHeight, 0), Normal = +Vector3.UnitX, ProfileT =  0 },
+            new ProfileVertex { Position = new(+halfWidth, -halfHeight, 0), Normal = +Vector3.UnitX, ProfileT =  1 },
+            // Bottom
+            new ProfileVertex { Position = new(+halfWidth, -halfHeight, 0), Normal = -Vector3.UnitY, ProfileT =  0 },
+            new ProfileVertex { Position = new(-halfWidth, -halfHeight, 0), Normal = -Vector3.UnitY, ProfileT =  1 },
             // Left
-            indices[indiceIndex + 18] = 6 + triangleIndex;
-            indices[indiceIndex + 19] = 7 + triangleIndex;
-            indices[indiceIndex + 20] = 15 + triangleIndex;
+            new ProfileVertex { Position = new(-halfWidth, -halfHeight, 0), Normal = -Vector3.UnitX, ProfileT =  0 },
+            new ProfileVertex { Position = new(-halfWidth, +halfHeight, 0), Normal = -Vector3.UnitX, ProfileT =  1 },
+        };
 
-            indices[indiceIndex + 21] = 6 + triangleIndex;
-            indices[indiceIndex + 22] = 15 + triangleIndex;
-            indices[indiceIndex + 23] = 14 + triangleIndex;
+        int verticesIndex = 0;
+        int indicesIndex = 0;
+        float splineDistance = 0.0f;
+        var texCoordScale = UvScale with
+        {
+            X = UvScale.X == 0 ? 1 : 1f / UvScale.X,
+            Y = UvScale.Y == 0 ? 1 : 1f / UvScale.Y
+        };
+        var prevSplinePosition = splineSamplesSpan[0].Position;
+        for (int i = 0; i < splineSamplesCount; i++)
+        {
+            ref readonly var sample = ref splineSamplesSpan[i];
+            var splinePosition = sample.Position;
+            var splineRotation = sample.Orientation;
 
-            triangleIndex += 8;
+            splineDistance += Vector3.Distance(prevSplinePosition, splinePosition);
+            prevSplinePosition = splinePosition;
+            float textureY = splineDistance * texCoordScale.Y;
+            for (int profIdx = 0; profIdx < shapeProfileVertices.Length; profIdx++)
+            {
+                ref readonly var profVert = ref shapeProfileVertices[profIdx];
+
+                var vertPos = splineRotation * profVert.Position;
+                vertPos += splinePosition;
+                var vertNorm = splineRotation * profVert.Normal;
+                float texCoordX = profVert.ProfileT * texCoordScale.X;
+
+                vertices[verticesIndex++] = CreateVertex(vertPos, vertNorm, new Vector2(texCoordX, textureY));
+            }
         }
 
-        if (Spline.IsClosedLoop)
+        int shapeProfileVerticesCount = shapeProfileVertices.Length;
+        for (int i = 0; i < splineSamplesCount - 1; i++)
         {
-            // Stitch the start/end positions to remove seams.
-            int endStartIndex = vertices.Length - 8;
-            for (int i = 0; i < 8; i++)
+            int currentShapeStartIndex = i * shapeProfileVerticesCount;
+            int nextShapeStartIndex = (i + 1) * shapeProfileVerticesCount;
+            // Increment by 2 because edges are separate
+            for (int j = 0; j < shapeProfileVerticesCount - 1; j += 2)
             {
-                StitchVertexPositions(vertices, i, endStartIndex + i);
+                int currentShapeVert0 = currentShapeStartIndex + j;
+                int currentShapeVert1 = currentShapeVert0 + 1;
+                int nextShapeVert0 = nextShapeStartIndex + j;
+                int nextShapeVert1 = nextShapeVert0 + 1;
+
+                indices[indicesIndex++] = currentShapeVert0;
+                indices[indicesIndex++] = nextShapeVert1;
+                indices[indicesIndex++] = nextShapeVert0;
+
+                indices[indicesIndex++] = currentShapeVert0;
+                indices[indicesIndex++] = currentShapeVert1;
+                indices[indicesIndex++] = nextShapeVert1;
             }
         }
 
         // If this was the last loop, we do 1 additional check for Closing of the sides or looping the geometry
         if (!Spline.IsClosedLoop && CloseEnds)
         {
-            CloseBoxEnds(vertices, indices, verticesIndex, indicesCount, vertexCount);
+            CloseBoxEnds(splineSamplesSpan, vertices, indices, verticesIndex, indicesCount, vertexCount);
         }
 
         // Create the primitive object for further processing by the base class
@@ -145,44 +115,48 @@ public class SplineMeshBox : SplineMesh
     }
 
     private void CloseBoxEnds(
+        Span<SplineSample> splineSamples,
         VertexPositionNormalTexture[] vertices, int[] indices,
         int verticesIndex, int indicesCount, int vertexCount)
     {
         int backIndex = verticesIndex;
 
-        // Front face vertices
-        vertices[verticesIndex + 0] = CreateVertex(vertices[0].Position, -Vector3.UnitZ, new Vector2(0, 1));                // Bottom left
-        vertices[verticesIndex + 1] = CreateVertex(vertices[1].Position, -Vector3.UnitZ, new Vector2(1, 1));                // Bottom right
-        vertices[verticesIndex + 2] = CreateVertex(vertices[4].Position, -Vector3.UnitZ, new Vector2(1, 0));                // Top right
-        vertices[verticesIndex + 3] = CreateVertex(vertices[5].Position, -Vector3.UnitZ, new Vector2(0, 0));                // Top left
+        var startNormal = -splineSamples[0].Tangent;    // Face 'backwards' (ie. reversed tangent direction)
+        var endNormal = splineSamples[^1].Tangent;      // Face 'forward' (ie. along tangent direction)
 
-        // Back face vertices (effectively mirrored direction)
-        vertices[verticesIndex + 4] = CreateVertex(vertices[backIndex - 8].Position, Vector3.UnitZ, new Vector2(1, 1));     // Bottom right
-        vertices[verticesIndex + 5] = CreateVertex(vertices[backIndex - 7].Position, Vector3.UnitZ, new Vector2(0, 1));     // Bottom left
-        vertices[verticesIndex + 6] = CreateVertex(vertices[backIndex - 4].Position, Vector3.UnitZ, new Vector2(0, 0));     // Top left
-        vertices[verticesIndex + 7] = CreateVertex(vertices[backIndex - 3].Position, Vector3.UnitZ, new Vector2(1, 0));     // Top right
+        // Spline start 'front' face vertices (effectively the 'back' of the profile shape so vertices should be from mirrored position)
+        vertices[verticesIndex + 0] = CreateVertex(vertices[1].Position, startNormal, new Vector2(0, 0));                // Top left
+        vertices[verticesIndex + 1] = CreateVertex(vertices[0].Position, startNormal, new Vector2(1, 0));                // Top right
+        vertices[verticesIndex + 2] = CreateVertex(vertices[5].Position, startNormal, new Vector2(1, 1));                // Bottom right
+        vertices[verticesIndex + 3] = CreateVertex(vertices[4].Position, startNormal, new Vector2(0, 1));                // Bottom left
+
+        // Spline end 'back' face vertices (effectively the same direction as the profile shape)
+        vertices[verticesIndex + 4] = CreateVertex(vertices[backIndex - 8].Position, endNormal, new Vector2(0, 0));     // Top left
+        vertices[verticesIndex + 5] = CreateVertex(vertices[backIndex - 7].Position, endNormal, new Vector2(1, 0));     // Top right
+        vertices[verticesIndex + 6] = CreateVertex(vertices[backIndex - 4].Position, endNormal, new Vector2(1, 1));     // Bottom right
+        vertices[verticesIndex + 7] = CreateVertex(vertices[backIndex - 3].Position, endNormal, new Vector2(0, 1));     // Bottom left
 
         int closeIndicesIndex = indicesCount - 12;
         int vertexCountIndex = vertexCount - 8;
 
         // Front
         indices[closeIndicesIndex + 0] = vertexCountIndex + 0;
-        indices[closeIndicesIndex + 1] = vertexCountIndex + 3;
-        indices[closeIndicesIndex + 2] = vertexCountIndex + 2;
+        indices[closeIndicesIndex + 1] = vertexCountIndex + 2;
+        indices[closeIndicesIndex + 2] = vertexCountIndex + 3;
 
         indices[closeIndicesIndex + 3] = vertexCountIndex + 0;
-        indices[closeIndicesIndex + 4] = vertexCountIndex + 2;
-        indices[closeIndicesIndex + 5] = vertexCountIndex + 1;
+        indices[closeIndicesIndex + 4] = vertexCountIndex + 1;
+        indices[closeIndicesIndex + 5] = vertexCountIndex + 2;
         closeIndicesIndex += 6;
 
-        // Back (effectively mirrored direction)
+        // Back
         int closeVerticesIndex = vertexCount - 4;
-        indices[closeIndicesIndex + 0] = closeVerticesIndex + 1;
+        indices[closeIndicesIndex + 0] = closeVerticesIndex + 0;
         indices[closeIndicesIndex + 1] = closeVerticesIndex + 2;
         indices[closeIndicesIndex + 2] = closeVerticesIndex + 3;
 
-        indices[closeIndicesIndex + 3] = closeVerticesIndex + 1;
-        indices[closeIndicesIndex + 4] = closeVerticesIndex + 3;
-        indices[closeIndicesIndex + 5] = closeVerticesIndex + 0;
+        indices[closeIndicesIndex + 3] = closeVerticesIndex + 0;
+        indices[closeIndicesIndex + 4] = closeVerticesIndex + 1;
+        indices[closeIndicesIndex + 5] = closeVerticesIndex + 2;
     }
 }

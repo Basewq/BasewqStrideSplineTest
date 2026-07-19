@@ -4,7 +4,6 @@
 using Stride.Core;
 using Stride.Core.Mathematics;
 using Stride.Graphics;
-using System;
 using System.Runtime.InteropServices;
 
 namespace Stride.Engine.Splines.Models.Mesh;
@@ -25,324 +24,190 @@ public class SplineMeshTube : SplineMesh
 
     protected override GeometricMeshData<VertexPositionNormalTexture> CreatePrimitiveMeshData()
     {
-        var splinePoints = new List<Vector3>();
-        SplineExtensions.CollectSplineSamplePositionsByResolution(Spline, splinePoints);
-        var splinePointsSpan = CollectionsMarshal.AsSpan(splinePoints);
-        int splinePointCount = splinePointsSpan.Length;
-
         bool isHollow = Radius.X > 0;
+        if (!isHollow)
+        {
+            // Just a standard cylinder
+            return SplineMeshCylinder.CreateCylinder(
+                SplineEvaluator, MeshSamplingSettings,
+                Sides, Radius.Y, CloseEnds, Scale, UvScale);
+        }
+
+        var splineSamples = new List<SplineSample>();
+        SplineExtensions.CollectSplineSamples(SplineEvaluator, MeshSamplingSettings, splineSamples);
+        var splineSamplesSpan = CollectionsMarshal.AsSpan(splineSamples);
+        int splineSamplesCount = splineSamplesSpan.Length;
+
         int ringVertexCount = Sides + 1;        // +1 to duplicate start/end vertex for UV wrapping
-        int vertexCount = splinePointCount * ringVertexCount;
-        int indicesCount = (splinePointCount - 1) * Sides * 6;
-        if (isHollow)
-        {
-            // Effectively two cylinders
-            ringVertexCount *= 2;
-            vertexCount *= 2;
-            indicesCount *= 2;
-        }
+        int cylinderVertexCount = splineSamplesCount * ringVertexCount;
+        int cylinderIndicesCount = (splineSamplesCount - 1) * Sides * 6;
+
+        int totalVertexCount = cylinderVertexCount * 2;
+        int totalIndicesCount = cylinderIndicesCount * 2;
+
+        int innerTubeVerticesStartIndex = cylinderVertexCount;
+        int innerTubeIndicesStartIndex = cylinderIndicesCount;
 
         if (CloseEnds && !Spline.IsClosedLoop)
         {
-            if (isHollow)
-            {
-                // Cap made with quads (x2 for start and end caps)
-                int capVertCount = (Sides * 2) + 2;     // +2 to duplicate start/end vertex for UV wrapping
-                int capIndicesCount = Sides * 6;
-                vertexCount += capVertCount * 2;
-                indicesCount += capIndicesCount * 2;
-            }
-            else
-            {
-                // Cap made like pie slices (x2 for start and end caps)
-                int capVertCount = Sides + 1 + 1;       // +1 to duplicate start/end vertex for UV wrapping and another +1 for center vertex
-                int capIndicesCount = Sides * 3;
-                vertexCount += capVertCount * 2;
-                indicesCount += capIndicesCount * 2;
-            }
+            // Cap made with quads (x2 for start and end caps)
+            int capVertCount = ringVertexCount * 2;
+            int capIndicesCount = Sides * 6;
+            totalVertexCount += capVertCount * 2;
+            totalIndicesCount += capIndicesCount * 2;
         }
 
-        var vertices = new VertexPositionNormalTexture[vertexCount];
-        var indices = new int[indicesCount];
+        var shapeProfileVertices = new ProfileVertex[ringVertexCount];
+        float radiusScaleX = Scale.X;   // Actual radius not applied here due to outer/inner sizes
+        float radiusScaleY = Scale.Y;
+        for (int i = 0; i < ringVertexCount; i++)
+        {
+            float circleT = i / (float)Sides;       // Sides = ringVertexCount - 1
+            float angle = circleT * MathUtil.TwoPi;
+            float offsetX = -MathF.Cos(angle) * radiusScaleX;    // Start on (-1, 0) then go clockwise
+            float offsetY = MathF.Sin(angle) * radiusScaleY;
 
-        int verticesIndex = 0;
-        int indicesIndex = 0;
+            var position = new Vector3(offsetX, offsetY, 0);
+            var normal = Vector3.Normalize(position);
+            shapeProfileVertices[i] = new ProfileVertex { Position = position, Normal = normal, ProfileT = circleT };
+        }
+
+        var vertices = new VertexPositionNormalTexture[totalVertexCount];
+        var indices = new int[totalIndicesCount];
+
+        int outerTubeVerticesIndex = 0;
+        int outerTubeIndicesIndex = 0;
+        int innerTubeVerticesIndex = innerTubeVerticesStartIndex;
+        int innerTubeIndicesIndex = innerTubeIndicesStartIndex;
         float splineDistance = 0.0f;
-
-        float innerRadius = Radius.X;
-        float outerRadius = Radius.Y;
-
-        for (int i = 0; i < splinePointCount - 1; i++)
+        var texCoordScale = UvScale with
         {
-            var startPoint = splinePointsSpan[i];
-            var targetPoint = splinePointsSpan[i + 1];
-            var forward = Vector3.Normalize(targetPoint - startPoint);
-            var perpendicular = new Vector3(-forward.Z, 0, forward.X);  // Perpendicular vector on the XZ plane
+            X = UvScale.X == 0 ? 1 : 1f / UvScale.X,
+            Y = UvScale.Y == 0 ? 1 : 1f / UvScale.Y
+        };
+        var prevSplinePosition = splineSamplesSpan[0].Position;
+        var outerRadiusScale = new Vector3(Radius.Y, Radius.Y, 1);
+        var innerRadiusScale = new Vector3(Radius.X, Radius.X, 1);
+        for (int i = 0; i < splineSamplesCount; i++)
+        {
+            ref readonly var sample = ref splineSamplesSpan[i];
+            var splinePosition = sample.Position;
+            var splineRotation = sample.Orientation;
 
-            // Generate vertices around the spline at position 'startPoint'
-            if (i == 0)
+            splineDistance += Vector3.Distance(prevSplinePosition, splinePosition);
+            prevSplinePosition = splinePosition;
+            float textureY = splineDistance * texCoordScale.Y;
+            // Outer tube
+            for (int profIdx = 0; profIdx < shapeProfileVertices.Length; profIdx++)
             {
-                for (int side = 0; side <= Sides; side++)
-                {
-                    float angle = side * MathUtil.TwoPi / Sides;
-                    float cosAngle = MathF.Cos(angle);
-                    float sinAngle = MathF.Sin(angle);
+                ref readonly var profVert = ref shapeProfileVertices[profIdx];
 
-                    if (isHollow)
-                    {
-                        // Outer vertices
-                        var outerVertexPosition = startPoint + perpendicular * cosAngle * outerRadius + Vector3.UnitY * Scale.Y * sinAngle * outerRadius;
-                        var outerNormal = CalculateRadialNormal(outerVertexPosition, startPoint);
-                        vertices[verticesIndex++] = CreateVertex(outerVertexPosition, outerNormal, new Vector2(side / (float)Sides, 0));
+                var vertPos = splineRotation * (profVert.Position * outerRadiusScale);
+                vertPos += splinePosition;
+                var vertNorm = splineRotation * profVert.Normal;
+                float texCoordX = profVert.ProfileT * texCoordScale.X;
 
-                        // Inner vertices
-                        var innerVertexPosition = startPoint + perpendicular * cosAngle * innerRadius + Vector3.UnitY * Scale.Y * sinAngle * innerRadius;
-                        var innerNormal = -CalculateRadialNormal(innerVertexPosition, startPoint);
-                        vertices[verticesIndex++] = CreateVertex(innerVertexPosition, innerNormal, new Vector2(1 - side / (float)Sides, 0));
-                    }
-                    else
-                    {
-                        // Single radius (solid cylinder)
-                        var sideVertexPosition = startPoint + perpendicular * cosAngle * outerRadius + Vector3.UnitY * Scale.Y * sinAngle * outerRadius;
-                        var normal = CalculateRadialNormal(sideVertexPosition, startPoint);
-                        vertices[verticesIndex++] = CreateVertex(sideVertexPosition, normal, new Vector2(side / (float)Sides, 0));
-                    }
-                }
+                vertices[outerTubeVerticesIndex++] = CreateVertex(vertPos, vertNorm, new Vector2(texCoordX, textureY));
             }
-
-            // Generate vertices around the spline at position 'targetPoint'
-            splineDistance += Vector3.Distance(startPoint, targetPoint);
-            float textureY = splineDistance / UvScale.Y;
-            for (int side = 0; side <= Sides; side++)
+            // Inner tube
+            for (int profIdx = 0; profIdx < shapeProfileVertices.Length; profIdx++)
             {
-                float angle = side * MathUtil.TwoPi / Sides;
-                float cosAngle = MathF.Cos(angle);
-                float sinAngle = MathF.Sin(angle);
+                ref readonly var profVert = ref shapeProfileVertices[profIdx];
 
-                if (isHollow)
-                {
-                    // Outer vertices
-                    var outerVertexPosition = targetPoint + perpendicular * cosAngle * outerRadius + Vector3.UnitY * Scale.Y * sinAngle * outerRadius;
-                    var outerNormal = CalculateRadialNormal(outerVertexPosition, targetPoint);
-                    vertices[verticesIndex++] = CreateVertex(outerVertexPosition, outerNormal, new Vector2(side / (float)Sides, textureY));
+                var vertPos = splineRotation * (profVert.Position * innerRadiusScale);
+                vertPos += splinePosition;
+                var vertNorm = splineRotation * -profVert.Normal;
+                float texCoordX = profVert.ProfileT * texCoordScale.X;
 
-                    // Inner vertices
-                    var innerVertexPosition = targetPoint + perpendicular * cosAngle * innerRadius + Vector3.UnitY * Scale.Y * sinAngle * innerRadius;
-                    var innerNormal = -CalculateRadialNormal(innerVertexPosition, targetPoint);
-                    vertices[verticesIndex++] = CreateVertex(innerVertexPosition, innerNormal, new Vector2(1 - side / (float)Sides, textureY));
-                }
-                else
-                {
-                    // Single radius (solid cylinder)
-                    var sideVertexPosition = targetPoint + perpendicular * cosAngle * outerRadius + Vector3.UnitY * Scale.Y * sinAngle * outerRadius;
-                    var normal = CalculateRadialNormal(sideVertexPosition, targetPoint);
-                    vertices[verticesIndex++] = CreateVertex(sideVertexPosition, normal, new Vector2(side / (float)Sides, textureY));
-                }
+                vertices[innerTubeVerticesIndex++] = CreateVertex(vertPos, vertNorm, new Vector2(texCoordX, textureY));
             }
         }
 
-        // Generating indices for each cylinder segment
-        for (int i = 0; i < splinePointCount - 1; i++)
+        int shapeProfileVerticesCount = shapeProfileVertices.Length;
+        for (int i = 0; i < splineSamplesCount - 1; i++)
         {
-            int currentRingStartIndex = i * ringVertexCount;
-            int nextRingStartIndex = (i + 1) * ringVertexCount;
-
-            for (int side = 0; side < Sides; side++)
+            int currentShapeStartIndex = i * shapeProfileVerticesCount;
+            int nextShapeStartIndex = (i + 1) * shapeProfileVerticesCount;
+            // Outer tube indices
+            for (int j = 0; j < shapeProfileVerticesCount - 1; j++)
             {
-                if (isHollow)
-                {
-                    int currentRingVert0Outer = currentRingStartIndex + (side * 2);
-                    int currentRingVert1Outer = currentRingVert0Outer + 2;
-                    int nextRingVert0Outer = nextRingStartIndex + (side * 2);
-                    int nextRingVert1Outer = nextRingVert0Outer + 2;
+                int currentShapeVert0 = currentShapeStartIndex + j;
+                int currentShapeVert1 = currentShapeVert0 + 1;
+                int nextShapeVert0 = nextShapeStartIndex + j;
+                int nextShapeVert1 = nextShapeVert0 + 1;
 
-                    int currentRingVert0Inner = currentRingVert0Outer + 1;
-                    int currentRingVert1Inner = currentRingVert1Outer + 1;
-                    int nextRingVert0Inner = nextRingVert0Outer + 1;
-                    int nextRingVert1Inner = nextRingVert1Outer + 1;
+                indices[outerTubeIndicesIndex++] = currentShapeVert0;
+                indices[outerTubeIndicesIndex++] = nextShapeVert1;
+                indices[outerTubeIndicesIndex++] = nextShapeVert0;
 
-                    // Outer side
-                    indices[indicesIndex++] = currentRingVert0Outer;
-                    indices[indicesIndex++] = nextRingVert1Outer;
-                    indices[indicesIndex++] = nextRingVert0Outer;
+                indices[outerTubeIndicesIndex++] = currentShapeVert0;
+                indices[outerTubeIndicesIndex++] = currentShapeVert1;
+                indices[outerTubeIndicesIndex++] = nextShapeVert1;
+            }
+            // Inner tube indices
+            for (int j = 0; j < shapeProfileVerticesCount - 1; j++)
+            {
+                int currentShapeVert0 = currentShapeStartIndex + j + cylinderVertexCount;
+                int currentShapeVert1 = currentShapeVert0 + 1;
+                int nextShapeVert0 = nextShapeStartIndex + j + cylinderVertexCount;
+                int nextShapeVert1 = nextShapeVert0 + 1;
+                // Note the winding is reversed compared to the outer tube since we want to see the 'inside' of the tube
+                indices[innerTubeIndicesIndex++] = currentShapeVert0;
+                indices[innerTubeIndicesIndex++] = nextShapeVert0;
+                indices[innerTubeIndicesIndex++] = nextShapeVert1;
 
-                    indices[indicesIndex++] = currentRingVert0Outer;
-                    indices[indicesIndex++] = currentRingVert1Outer;
-                    indices[indicesIndex++] = nextRingVert1Outer;
-
-                    // Inner side
-                    indices[indicesIndex++] = currentRingVert0Inner;
-                    indices[indicesIndex++] = nextRingVert0Inner;
-                    indices[indicesIndex++] = nextRingVert1Inner;
-
-                    indices[indicesIndex++] = currentRingVert0Inner;
-                    indices[indicesIndex++] = nextRingVert1Inner;
-                    indices[indicesIndex++] = currentRingVert1Inner;
-                }
-                else
-                {
-                    int currentRingVert0 = currentRingStartIndex + side;
-                    int currentRingVert1 = currentRingVert0 + 1;
-                    int nextRingVert0 = nextRingStartIndex + side;
-                    int nextRingVert1 = nextRingVert0 + 1;
-
-                    indices[indicesIndex++] = currentRingVert0;
-                    indices[indicesIndex++] = nextRingVert1;
-                    indices[indicesIndex++] = nextRingVert0;
-
-                    indices[indicesIndex++] = currentRingVert0;
-                    indices[indicesIndex++] = currentRingVert1;
-                    indices[indicesIndex++] = nextRingVert1;
-                }
+                indices[innerTubeIndicesIndex++] = currentShapeVert0;
+                indices[innerTubeIndicesIndex++] = nextShapeVert1;
+                indices[innerTubeIndicesIndex++] = currentShapeVert1;
             }
         }
 
-        if (Spline.IsClosedLoop)
-        {
-            // Stitch the start/end positions to remove seams.
-            int endStartIndex = vertices.Length - ringVertexCount;
-            for (int i = 0; i < ringVertexCount; i++)
-            {
-                StitchVertexPositions(vertices, i, endStartIndex + i);
-            }
-        }
-
-        // Close the cylinder/tube ends
+        // Close the tube ends
         if (CloseEnds && !Spline.IsClosedLoop)
         {
-            if (isHollow)
-            {
-                CloseTubeEnds(Sides, splinePointsSpan, vertices, indices, ref indicesIndex);
-            }
-            else
-            {
-                CloseCylinderEnds(Sides, splinePointsSpan, vertices, indices, ref indicesIndex);
-            }
+            CloseTubeEnds(Sides, splineSamplesSpan, vertices, indices, ref innerTubeIndicesIndex);
         }
 
-        return new GeometricMeshData<VertexPositionNormalTexture>(vertices, indices, isLeftHanded: true);
+        return new GeometricMeshData<VertexPositionNormalTexture>(vertices, indices, isLeftHanded: false);
     }
 
-    private void CloseCylinderEnds(
-        int sides, Span<Vector3> splinePoints, VertexPositionNormalTexture[] vertices, int[] indices, ref int indicesIndex)
+    private static void CloseTubeEnds(
+        int sides, Span<SplineSample> splineSamples, VertexPositionNormalTexture[] vertices, int[] indices,
+        ref int indicesIndex)
     {
         int ringVertexCount = sides + 1;        // Duplicate start/end vertex for UV wrapping
-        int startCapVertexOffset = vertices.Length - (2 * (ringVertexCount + 1));       // +1 for the center vertex
-        int endCapVertexOffset = vertices.Length - (ringVertexCount + 1);
+        int cylinderVertexCount = splineSamples.Length * ringVertexCount;
+        int startOuterCapVertexOffset = 2 * cylinderVertexCount;
+        int startInnerCapVertexOffset = startOuterCapVertexOffset + (1 * ringVertexCount);
+        int endOuterCapVertexOffset = startOuterCapVertexOffset + (2 * ringVertexCount);
+        int endInnerCapVertexOffset = startOuterCapVertexOffset + (3 * ringVertexCount);
 
-        var startCenter = splinePoints[0];
-        var startCenterNext = splinePoints[1];
-        var endCenter = splinePoints[^1];
-        var endCenterPrev = splinePoints[^2];
-
-        var startNormal = Vector3.Normalize(startCenter - startCenterNext);         // Face 'backwards' (ie. reversed tangent direction)
-        var startPerpendicular = new Vector3(-startNormal.Z, 0, startNormal.X);     // Perpendicular vector on the XZ plane
-
-        var endNormal = Vector3.Normalize(endCenter - endCenterPrev);               // Face 'forward' (ie. along tangent direction)
-        var endPerpendicular = new Vector3(-endNormal.Z, 0, endNormal.X);           // Perpendicular vector on the XZ plane
-
-        float outerRadius = Radius.Y;
+        var startNormal = -splineSamples[0].Tangent;    // Face 'backwards' (ie. reversed tangent direction)
+        var endNormal = splineSamples[^1].Tangent;      // Face 'forward' (ie. along tangent direction)
 
         // Generate vertices for the caps
         for (int side = 0; side <= sides; side++)
         {
-            float angle = side * MathUtil.TwoPi / sides;
-            float offsetX = MathF.Cos(angle) * outerRadius;
-            float offsetY = MathF.Sin(angle) * outerRadius;
+            float circleT = side / (float)sides;
+            var texCoord0 = new Vector2(circleT, 0);
+            var texCoord1 = new Vector2(circleT, 1);
 
-            float texCoordCircleX = -MathF.Cos(angle);
-            float texCoordCircleY = -MathF.Sin(angle);
-            var texCoord = RemapCircleToSquare(texCoordCircleX, texCoordCircleY);
+            int outerStartCapPositionVertIdx = PositiveModulo((sides / 2) - side, sides);    // Start cap vertices is *mirrorred* from the profile shape, so get right side index and go counter-clockwise
+            int outerEndCapPositionVertIdx = cylinderVertexCount - ringVertexCount + side;
+            int innerStartCapPositionVertIdx = cylinderVertexCount + outerStartCapPositionVertIdx;
+            int innerEndCapPositionVertIdx = (2 * cylinderVertexCount) - ringVertexCount + side;
+            ref readonly var outerStartVert = ref vertices[outerStartCapPositionVertIdx];
+            ref readonly var outerEndVert = ref vertices[outerEndCapPositionVertIdx];
+            ref readonly var innerStartVert = ref vertices[innerStartCapPositionVertIdx];
+            ref readonly var innerEndVert = ref vertices[innerEndCapPositionVertIdx];
 
-            // Start cap vertices
-            var startCapPosition = startCenter + startPerpendicular * offsetX + Vector3.UnitY * Scale.Y * offsetY;
-            vertices[startCapVertexOffset + side] = new VertexPositionNormalTexture(startCapPosition, startNormal, new Vector2(texCoord.X, texCoord.Y));
+            // Start cap vertex
+            vertices[startOuterCapVertexOffset + side] = new VertexPositionNormalTexture(outerStartVert.Position, startNormal, texCoord0);
+            vertices[startInnerCapVertexOffset + side] = new VertexPositionNormalTexture(innerStartVert.Position, startNormal, texCoord1);
 
-            // End cap vertices
-            var endCapPosition = endCenter + endPerpendicular * offsetX + Vector3.UnitY * Scale.Y * offsetY;
-            vertices[endCapVertexOffset + side] = new VertexPositionNormalTexture(endCapPosition, endNormal, new Vector2(texCoord.X, texCoord.Y));
-        }
-
-        // Generate indices for the start cap
-        int startCenterVertexIndex = startCapVertexOffset + ringVertexCount;
-        vertices[startCenterVertexIndex] = new VertexPositionNormalTexture(startCenter, startNormal, new Vector2(0.5f, 0.5f));
-        for (int side = 0; side < sides; side++)
-        {
-            int nextSide = side + 1;
-
-            indices[indicesIndex++] = startCenterVertexIndex; // Center vertex of the start cap
-            indices[indicesIndex++] = startCapVertexOffset + side;
-            indices[indicesIndex++] = startCapVertexOffset + nextSide;
-        }
-
-        // Generate indices for the end cap
-        int endCenterVertexIndex = endCapVertexOffset + ringVertexCount;
-        vertices[endCenterVertexIndex] = new VertexPositionNormalTexture(endCenter, endNormal, new Vector2(0.5f, 0.5f));
-        for (int side = 0; side < sides; side++)
-        {
-            int nextSide = side + 1;
-
-            indices[indicesIndex++] = endCenterVertexIndex; // Center vertex of the end cap
-            indices[indicesIndex++] = endCapVertexOffset + side;
-            indices[indicesIndex++] = endCapVertexOffset + nextSide;
-        }
-    }
-
-    private static Vector2 RemapCircleToSquare(float x, float y)
-    {
-        float length = MathF.Sqrt(x * x + y * y);
-
-        // Move the circle's point onto the square
-        float scale = MathF.Max(MathF.Abs(x), MathF.Abs(y)) / length;
-        float sx = x / scale;
-        float sy = y / scale;
-
-        // Remap [-1, 1] to [0, 1]
-        return new Vector2(sx * 0.5f + 0.5f, sy * 0.5f + 0.5f);
-    }
-
-    private void CloseTubeEnds(int sides, Span<Vector3> splinePoints, VertexPositionNormalTexture[] vertices, int[] indices, ref int indicesIndex)
-    {
-        int ringVertexCount = sides + 1;        // Duplicate start/end vertex for UV wrapping
-        int startOuterCapVertexOffset = vertices.Length - 4 * ringVertexCount;
-        int startInnerCapVertexOffset = vertices.Length - 3 * ringVertexCount;
-        int endOuterCapVertexOffset = vertices.Length - 2 * ringVertexCount;
-        int endInnerCapVertexOffset = vertices.Length - ringVertexCount;
-
-        var startCenter = splinePoints[0];
-        var startCenterNext = splinePoints[1];
-        var endCenter = splinePoints[^1];
-        var endCenterPrev = splinePoints[^2];
-
-        var startNormal = Vector3.Normalize(startCenter - startCenterNext);         // Face 'backwards' (ie. reversed tangent direction)
-        var startPerpendicular = new Vector3(-startNormal.Z, 0, startNormal.X);     // Perpendicular vector on the XZ plane
-
-        var endNormal = Vector3.Normalize(endCenter - endCenterPrev);               // Face 'forward' (ie. along tangent direction)
-        var endPerpendicular = new Vector3(-endNormal.Z, 0, endNormal.X);           // Perpendicular vector on the XZ plane
-
-        float innerRadius = Radius.X;
-        float outerRadius = Radius.Y;
-
-        // Generate vertices for the caps
-        for (int side = 0; side <= sides; side++)
-        {
-            float angle = side * MathUtil.TwoPi / sides;
-            float cosAngle = MathF.Cos(angle);
-            float sinAngle = MathF.Sin(angle);
-
-            // Start cap vertices
-            var startOuterCapPosition = startCenter + startPerpendicular * cosAngle * outerRadius + Vector3.UnitY * Scale.Y * sinAngle * outerRadius;
-            var startInnerCapPosition = startCenter + startPerpendicular * cosAngle * innerRadius + Vector3.UnitY * Scale.Y * sinAngle * innerRadius;
-
-            vertices[startOuterCapVertexOffset + side] = new VertexPositionNormalTexture(startOuterCapPosition, startNormal, new Vector2(side / (float)sides, 0));
-            vertices[startInnerCapVertexOffset + side] = new VertexPositionNormalTexture(startInnerCapPosition, startNormal, new Vector2(side / (float)sides, 1));
-
-            // End cap vertices
-            var endOuterCapPosition = endCenter + endPerpendicular * cosAngle * outerRadius + Vector3.UnitY * Scale.Y * sinAngle * outerRadius;
-            var endInnerCapPosition = endCenter + endPerpendicular * cosAngle * innerRadius + Vector3.UnitY * Scale.Y * sinAngle * innerRadius;
-
-            vertices[endOuterCapVertexOffset + side] = new VertexPositionNormalTexture(endOuterCapPosition, endNormal, new Vector2(side / (float)sides, 0));
-            vertices[endInnerCapVertexOffset + side] = new VertexPositionNormalTexture(endInnerCapPosition, endNormal, new Vector2(side / (float)sides, 1));
+            // End cap vertex
+            vertices[endOuterCapVertexOffset + side] = new VertexPositionNormalTexture(outerEndVert.Position, endNormal, texCoord0);
+            vertices[endInnerCapVertexOffset + side] = new VertexPositionNormalTexture(innerEndVert.Position, endNormal, texCoord1);
         }
 
         // Generate indices for the start cap
@@ -377,6 +242,19 @@ public class SplineMeshTube : SplineMesh
             indices[indicesIndex++] = currentRingVert0;
             indices[indicesIndex++] = currentRingVert1;
             indices[indicesIndex++] = nextRingVert1;
+        }
+    }
+
+    private static int PositiveModulo(int value, int n)
+    {
+        int remainder = value % n;
+        if (value < 0)
+        {
+            return remainder + n;
+        }
+        else
+        {
+            return remainder;
         }
     }
 }
