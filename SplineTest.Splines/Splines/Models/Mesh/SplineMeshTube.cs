@@ -168,6 +168,21 @@ public class SplineMeshTube : SplineMesh
             CloseTubeEnds(Sides, splineSamplesSpan, vertices, indices, ref innerTubeIndicesIndex);
         }
 
+        // HACK: Need to undo PrimitiveProceduralModelBase's local space Scale
+        if (!Scale.Equals(Vector3.One))
+        {
+            var invScale = new Vector3
+            {
+                X = Scale.X == 0 ? 1 : 1f / Scale.X,
+                Y = Scale.Y == 0 ? 1 : 1f / Scale.Y,
+                Z = Scale.Z == 0 ? 1 : 1f / Scale.Z,
+            };
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                vertices[i].Position *= invScale;
+            }
+        }
+
         return new GeometricMeshData<VertexPositionNormalTexture>(vertices, indices, isLeftHanded: false);
     }
 

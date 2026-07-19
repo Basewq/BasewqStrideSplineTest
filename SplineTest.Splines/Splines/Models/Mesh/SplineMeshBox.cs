@@ -110,6 +110,21 @@ public class SplineMeshBox : SplineMesh
             CloseBoxEnds(splineSamplesSpan, vertices, indices, verticesIndex, indicesCount, vertexCount);
         }
 
+        // HACK: Need to undo PrimitiveProceduralModelBase's local space Scale
+        if (!Scale.Equals(Vector3.One))
+        {
+            var invScale = new Vector3
+            {
+                X = Scale.X == 0 ? 1 : 1f / Scale.X,
+                Y = Scale.Y == 0 ? 1 : 1f / Scale.Y,
+                Z = Scale.Z == 0 ? 1 : 1f / Scale.Z,
+            };
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                vertices[i].Position *= invScale;
+            }
+        }
+
         // Create the primitive object for further processing by the base class
         return new GeometricMeshData<VertexPositionNormalTexture>(vertices, indices, isLeftHanded: false);
     }

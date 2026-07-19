@@ -61,8 +61,16 @@ internal class EditorModule
             // HACK: Take IEditorGameController/SceneEditorController from another service because we can't get it ourselves
             var cameraService = sceneEditorGame.EditorServices.Get<IEditorGameCameraService>();
             var getEditorController_PropertyInfo = typeof(EditorGameCameraService).GetProperty("Controller", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            if (getEditorController_PropertyInfo is null)
+            {
+                throw new InvalidOperationException("EditorGameCameraService.Controller no longer exists.");
+            }
             var getEditorController_MethodInfo = getEditorController_PropertyInfo.GetGetMethod(nonPublic: true);
-            var sceneEditorController = getEditorController_MethodInfo?.Invoke(cameraService, []) as SceneEditorController;
+            var sceneEditorController = getEditorController_MethodInfo!.Invoke(cameraService, []) as SceneEditorController;
+            if (sceneEditorController is null)
+            {
+                throw new InvalidOperationException("EditorGameCameraService.Controller was null.");
+            }
 
             var splineEditorService = new EditorGameSplineEditorService(strideEditorService, sceneEditorController);
             sceneEditorGame.EditorServices.Add(splineEditorService);

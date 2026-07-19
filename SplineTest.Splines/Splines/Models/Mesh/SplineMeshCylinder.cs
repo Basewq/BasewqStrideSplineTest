@@ -130,6 +130,21 @@ public class SplineMeshCylinder : SplineMesh
             CloseCylinderEnds(sides, splineSamplesSpan, vertices, indices, ref indicesIndex);
         }
 
+        // HACK: Need to undo PrimitiveProceduralModelBase's local space Scale
+        if (!scale.Equals(Vector3.One))
+        {
+            var invScale = new Vector3
+            {
+                X = scale.X == 0 ? 1 : 1f / scale.X,
+                Y = scale.Y == 0 ? 1 : 1f / scale.Y,
+                Z = scale.Z == 0 ? 1 : 1f / scale.Z,
+            };
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                vertices[i].Position *= invScale;
+            }
+        }
+
         return new GeometricMeshData<VertexPositionNormalTexture>(vertices, indices, isLeftHanded: false);
     }
 

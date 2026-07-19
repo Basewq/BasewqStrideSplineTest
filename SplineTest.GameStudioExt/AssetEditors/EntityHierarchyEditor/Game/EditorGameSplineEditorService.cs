@@ -439,7 +439,7 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
         if (game is SceneEditorGame sceneEditorGame)
         {
             var gfxComp = sceneEditorGame.EditorSceneSystem?.GraphicsCompositor;
-            var fwdRenderer = (gfxComp.Editor as Stride.Rendering.Compositing.ForwardRenderer);
+            var fwdRenderer = gfxComp?.Editor as Stride.Rendering.Compositing.ForwardRenderer;
             if (gfxComp is not null && fwdRenderer is not null)
             {
                 if (!gfxComp.RenderFeatures.Any(x => x is LineVisualizerRenderFeature))
