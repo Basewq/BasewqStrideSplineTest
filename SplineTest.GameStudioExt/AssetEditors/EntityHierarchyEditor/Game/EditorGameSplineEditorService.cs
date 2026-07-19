@@ -93,6 +93,10 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
 
     protected override Task<bool> Initialize([NotNull] EditorServiceGame editorGame)
     {
+        if (IsInitialized)
+        {
+            return Task.FromResult(true);
+        }
         game = (EntityHierarchyEditorGame)editorGame;
         editorScene = game.EditorScene;
 
@@ -267,9 +271,6 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
         }
     }
 
-    // HACK: AssetPropertyGraph gets invoked twice for some reason...
-    private bool suppressCollectionRemove = false;
-    private bool suppressCollectionAdd = false;
     private void OnScenePropertyGraphItemChanged(object sender, AssetItemNodeChangeEventArgs e)
     {
         if (undoRedoService.TransactionInProgress)
@@ -279,13 +280,6 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
                 if (e.OldValue is SplineControlPoint
                     && TryGetSplineByModifiedControlPoints(e.Collection, e.Index, out var assetSplineComp, out int removedControlPointIndex))
                 {
-                    if (suppressCollectionRemove)
-                    {
-                        suppressCollectionRemove = false;
-                        return;
-                    }
-                    suppressCollectionRemove = true;
-
                     var assetTransactionBuilder = AssetTransactionBuilder.Begin(assetSplineComp);
 
                     var spline = assetSplineComp.Spline;
@@ -318,13 +312,6 @@ public class EditorGameSplineEditorService : EditorGameServiceBase
                 if (e.NewValue is SplineControlPoint
                     && TryGetSplineByModifiedControlPoints(e.Collection, e.Index, out var assetSplineComp, out int addedControlPointIndex))
                 {
-                    if (suppressCollectionAdd)
-                    {
-                        suppressCollectionAdd = false;
-                        return;
-                    }
-                    suppressCollectionAdd = true;
-
                     var assetTransactionBuilder = AssetTransactionBuilder.Begin(assetSplineComp);
 
                     var spline = assetSplineComp.Spline;

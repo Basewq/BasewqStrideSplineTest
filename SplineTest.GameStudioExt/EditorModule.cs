@@ -72,12 +72,17 @@ internal class EditorModule
             sceneEditorGame.EditorServices.Add(splineMeshCompChangeWatcherService);
             asyncDisposables.Add(splineMeshCompChangeWatcherService);
 
-
             // HACK: forced to do a late service registration
             sceneEditorGame.Script.AddTask(async () =>
             {
-                await splineEditorService.InitializeService(sceneEditorGame);
-                await splineMeshCompChangeWatcherService.InitializeService(sceneEditorGame);
+                if (!splineEditorService.IsInitialized)
+                {
+                    await splineEditorService.InitializeService(sceneEditorGame);
+                }
+                if (!splineMeshCompChangeWatcherService.IsInitialized)
+                {
+                    await splineMeshCompChangeWatcherService.InitializeService(sceneEditorGame);
+                }
             });
         }
     }
