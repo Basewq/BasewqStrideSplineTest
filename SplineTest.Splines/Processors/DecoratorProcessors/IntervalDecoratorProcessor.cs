@@ -40,8 +40,8 @@ public class IntervalDecoratorProcessor : BaseSplineDecoratorProcessor
         float totalIntervalDistance = 0.0f;
         int iteration = 0;
 
-        float minInterval = Math.Max(intervalDecoratorSettings.Interval.X, MathUtil.ZeroTolerance);
-        float maxInterval = Math.Max(intervalDecoratorSettings.Interval.Y, minInterval + MathUtil.ZeroTolerance);    // Must always increase
+        float minInterval = Math.Max(intervalDecoratorSettings.Interval.X, MathUtil.ZeroTolerance);     // Must always increase
+        float maxInterval = Math.Max(intervalDecoratorSettings.Interval.Y, minInterval);
         float intervalRange = maxInterval - minInterval;
         while (iteration < 1000)
         {
