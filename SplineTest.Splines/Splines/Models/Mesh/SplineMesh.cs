@@ -5,11 +5,13 @@ using Stride.Core;
 using Stride.Core.Mathematics;
 using Stride.Graphics;
 using Stride.Rendering.ProceduralModels;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 
 namespace Stride.Engine.Splines.Models.Mesh;
 
 [DataContract("Spline mesh")]
+[DataContractMetadataType(typeof(SplineMeshMetadata))]
 public abstract class SplineMesh : PrimitiveProceduralModelBase
 {
     /// <summary>
@@ -22,6 +24,9 @@ public abstract class SplineMesh : PrimitiveProceduralModelBase
     /// </summary>
     [DataMemberIgnore]
     protected internal ISplineEvaluator SplineEvaluator { get; set; }
+
+    [Display(510)]
+    public Vector2 MeshScale = Vector2.One;
 
     /// <summary>
     /// Generate geometry for endings
@@ -52,7 +57,7 @@ public abstract class SplineMesh : PrimitiveProceduralModelBase
     /// </summary>
     public static ProfileVertex[] BuildProfileVertices(
         Spline spline, ISplineEvaluator splineEvaluator, SplineSamplingSettings samplingSettings,
-        ShapeProfilePlane profilePlane, ShapeProfileFlipAxis profileFlipAxis, bool invertNormals)
+        ShapeProfilePlane profilePlane, ShapeProfileFlipAxis profileFlipAxis, bool invertNormals, Vector2 meshScale)
     {
         var splineSamples = new List<SplineSample>();
         SplineExtensions.CollectSplineSamples(splineEvaluator, samplingSettings, splineSamples);
@@ -118,6 +123,16 @@ public abstract class SplineMesh : PrimitiveProceduralModelBase
                 ProfileT = sample.SplineT
             };
         }
+        if (meshScale != Vector2.One)
+        {
+            var scale3d = new Vector3(meshScale, 1);
+            var inverseScaleMatrix = Matrix.Invert(Matrix.Scaling(scale3d));
+            for (int i = 0; i < profileVertices.Length; i++)
+            {
+                profileVertices[i].Position *= scale3d;
+                Vector3.TransformCoordinate(in profileVertices[i].Normal, in inverseScaleMatrix, out profileVertices[i].Normal);
+            }
+        }
 
         if (spline.IsClosedLoop)
         {
@@ -147,5 +162,13 @@ public abstract class SplineMesh : PrimitiveProceduralModelBase
         }
 
         return profileVertices;
+    }
+
+    private class SplineMeshMetadata
+    {
+        // Hide the original 'Scale' property which scales over the final mesh, rather than per section
+        [Display(Browsable = false)]
+        [DefaultValue(typeof(Vector3), "X:1 Y:1 Z:1")]
+        public Vector3 Scale { get; set; }
     }
 }

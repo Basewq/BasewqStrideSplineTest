@@ -49,12 +49,12 @@ Hierarchy:
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: b5c44060-3bd2-4813-9704-b982dce46663
                         SplineMesh: !SplineMeshPlane
-                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                             UvScale: {X: 1.0, Y: 1.0}
                             LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: 72665805-228b-445a-9c78-1453c4655823:Materials/RoadMaterial
+                            MeshScale: {X: 1.0, Y: 1.0}
                             CloseEnds: true
                             MeshSamplingSettings:
                                 MaximumPositionError: 0.05
@@ -108,12 +108,12 @@ Hierarchy:
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: f22241aa-f6e3-452f-9a32-4050a424b91b
                         SplineMesh: !SplineMeshCylinder
-                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                             UvScale: {X: 4.0, Y: 4.0}
                             LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: 4c76c97e-b37b-42f7-8e14-ba08ab0fbf88:Materials/FuturaMaterial
+                            MeshScale: {X: 1.0, Y: 1.0}
                             CloseEnds: true
                             MeshSamplingSettings:
                                 MaximumPositionError: 0.05
@@ -169,12 +169,12 @@ Hierarchy:
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: a08ded22-7ec3-4666-98df-505985cebb0c
                         SplineMesh: !SplineMeshPlane
-                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                             UvScale: {X: 1.0, Y: 1.0}
                             LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a355a68f-8949-4857-88cb-5caa189f2328:Materials/UVTestMaterial
+                            MeshScale: {X: 1.0, Y: 1.0}
                             CloseEnds: true
                             MeshSamplingSettings:
                                 MaximumPositionError: 0.5
@@ -228,12 +228,12 @@ Hierarchy:
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: 2a9ba767-4f47-4350-86c5-39aa3e6143eb
                         SplineMesh: !SplineMeshBox
-                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                             UvScale: {X: 1.0, Y: 1.0}
                             LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a1daa7bb-a33f-4c1d-a204-3ef5f36157e1:Materials/RedBrickMaterial
+                            MeshScale: {X: 1.0, Y: 1.0}
                             CloseEnds: false
                             MeshSamplingSettings:
                                 MaximumPositionError: 0.05
@@ -287,12 +287,12 @@ Hierarchy:
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: 8e08b28a-6306-4919-9c6c-28390e9a0d5e
                         SplineMesh: !SplineMeshShape
-                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                             UvScale: {X: 1.0, Y: 1.0}
                             LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a355a68f-8949-4857-88cb-5caa189f2328:Materials/UVTestMaterial
+                            MeshScale: {X: 1.0, Y: 1.0}
                             CloseEnds: true
                             MeshSamplingSettings:
                                 MaximumPositionError: 0.05
@@ -420,12 +420,12 @@ Hierarchy:
                     0f13d0678119184ee49980efbeea9c8a: !SplineMeshComponent
                         Id: f9957ca2-ab5f-4e4f-9c28-b07f0103695f
                         SplineMesh: !SplineMeshCylinder
-                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                             UvScale: {X: 4.0, Y: 4.0}
                             LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: 4c76c97e-b37b-42f7-8e14-ba08ab0fbf88:Materials/FuturaMaterial
+                            MeshScale: {X: 1.0, Y: 1.0}
                             CloseEnds: true
                             MeshSamplingSettings:
                                 MaximumPositionError: 0.05
@@ -517,12 +517,12 @@ Hierarchy:
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: 3542473f-5cc9-4a00-90fd-8139fa7cf8da
                         SplineMesh: !SplineMeshBox
-                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                             UvScale: {X: 1.0, Y: 1.0}
                             LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a355a68f-8949-4857-88cb-5caa189f2328:Materials/UVTestMaterial
+                            MeshScale: {X: 1.0, Y: 1.0}
                             CloseEnds: true
                             MeshSamplingSettings:
                                 MaximumPositionError: 0.05
@@ -577,12 +577,12 @@ Hierarchy:
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: 5ae81b0a-7a69-43ec-8296-dcc9734e9116
                         SplineMesh: !SplineMeshCylinder
-                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                             UvScale: {X: 1.0, Y: 1.0}
                             LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a355a68f-8949-4857-88cb-5caa189f2328:Materials/UVTestMaterial
+                            MeshScale: {X: 1.0, Y: 1.0}
                             CloseEnds: true
                             MeshSamplingSettings:
                                 MaximumPositionError: 0.05
@@ -638,12 +638,12 @@ Hierarchy:
                     0f13d0678119184ee49980efbeea9c8a: !SplineMeshComponent
                         Id: 7c316433-bbc3-416e-8baf-f6738775c717
                         SplineMesh: !SplineMeshTube
-                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                             UvScale: {X: 1.0, Y: 1.0}
                             LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a1daa7bb-a33f-4c1d-a204-3ef5f36157e1:Materials/RedBrickMaterial
+                            MeshScale: {X: 1.0, Y: 1.0}
                             CloseEnds: true
                             MeshSamplingSettings:
                                 MaximumPositionError: 0.05
@@ -699,12 +699,12 @@ Hierarchy:
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: 128ad675-6a1a-4b4e-9efb-e7655e602279
                         SplineMesh: !SplineMeshBox
-                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                             UvScale: {X: 1.0, Y: 1.0}
                             LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a355a68f-8949-4857-88cb-5caa189f2328:Materials/UVTestMaterial
+                            MeshScale: {X: 1.0, Y: 1.0}
                             CloseEnds: true
                             MeshSamplingSettings:
                                 MaximumPositionError: 0.05
@@ -759,12 +759,12 @@ Hierarchy:
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: 84f4a2a8-1dd4-49c3-892e-0dfc2a5749c3
                         SplineMesh: !SplineMeshShape
-                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                             UvScale: {X: 1.0, Y: 1.0}
                             LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a355a68f-8949-4857-88cb-5caa189f2328:Materials/UVTestMaterial
+                            MeshScale: {X: 1.0, Y: 1.0}
                             CloseEnds: false
                             MeshSamplingSettings:
                                 MaximumPositionError: 0.1
@@ -830,12 +830,12 @@ Hierarchy:
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: 7e72ec17-d2fc-4875-8bbd-5af08289f51a
                         SplineMesh: !SplineMeshTube
-                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                             UvScale: {X: 1.0, Y: 1.0}
                             LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a355a68f-8949-4857-88cb-5caa189f2328:Materials/UVTestMaterial
+                            MeshScale: {X: 1.0, Y: 1.0}
                             CloseEnds: true
                             MeshSamplingSettings:
                                 MaximumPositionError: 0.05
@@ -989,12 +989,12 @@ Hierarchy:
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: 158c2d3a-1f05-4593-8329-28cd42975e0c
                         SplineMesh: !SplineMeshCylinder
-                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                             UvScale: {X: 1.0, Y: 1.0}
                             LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a355a68f-8949-4857-88cb-5caa189f2328:Materials/UVTestMaterial
+                            MeshScale: {X: 1.0, Y: 1.0}
                             CloseEnds: false
                             MeshSamplingSettings:
                                 MaximumPositionError: 0.05
@@ -1062,12 +1062,12 @@ Hierarchy:
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: 18d79886-fd10-4ef5-91d8-d579b7d9fb1a
                         SplineMesh: !SplineMeshCylinder
-                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                             UvScale: {X: 4.0, Y: 4.0}
                             LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: 4c76c97e-b37b-42f7-8e14-ba08ab0fbf88:Materials/FuturaMaterial
+                            MeshScale: {X: 1.0, Y: 1.0}
                             CloseEnds: false
                             MeshSamplingSettings:
                                 MaximumPositionError: 0.05
@@ -1123,12 +1123,12 @@ Hierarchy:
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: af209539-abd1-4895-8157-719155a3ee30
                         SplineMesh: !SplineMeshPlane
-                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                             UvScale: {X: 1.0, Y: 1.0}
                             LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: 72665805-228b-445a-9c78-1453c4655823:Materials/RoadMaterial
+                            MeshScale: {X: 1.0, Y: 1.0}
                             CloseEnds: false
                             MeshSamplingSettings:
                                 MaximumPositionError: 0.05
@@ -1182,12 +1182,12 @@ Hierarchy:
                     0f13d0678119184ee49980efbeea9c8a: !SplineMeshComponent
                         Id: 848f131c-a5a3-42af-a9fc-208624acde74
                         SplineMesh: !SplineMeshCylinder
-                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                             UvScale: {X: 4.0, Y: 4.0}
                             LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: 4c76c97e-b37b-42f7-8e14-ba08ab0fbf88:Materials/FuturaMaterial
+                            MeshScale: {X: 1.0, Y: 1.0}
                             CloseEnds: true
                             MeshSamplingSettings:
                                 MaximumPositionError: 0.05
@@ -1243,12 +1243,12 @@ Hierarchy:
                     8c117e8a57d8e67a131b508617b3e340: !SplineMeshComponent
                         Id: 31701bb4-d3d5-4211-9fed-644aa98ec774
                         SplineMesh: !SplineMeshBox
-                            Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                             UvScale: {X: 1.0, Y: 1.0}
                             LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
                             NumberOfTextureCoordinates: 10
                             MaterialInstance:
                                 Material: a1daa7bb-a33f-4c1d-a204-3ef5f36157e1:Materials/RedBrickMaterial
+                            MeshScale: {X: 1.0, Y: 1.0}
                             CloseEnds: true
                             MeshSamplingSettings:
                                 MaximumPositionError: 0.05

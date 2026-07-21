@@ -24,7 +24,7 @@ public class SplineMeshPlane : SplineMesh
         var vertices = new VertexPositionNormalTexture[vertexCount];
         var indices = new int[indexCount];
 
-        float halfWidth = Scale.X * 0.5f;
+        float halfWidth = MeshScale.X * 0.5f;
 
         // Single edge
         Span<ProfileVertex> shapeProfileVertices = stackalloc ProfileVertex[]
@@ -84,21 +84,6 @@ public class SplineMeshPlane : SplineMesh
                 indices[indicesIndex++] = currentShapeVert0;
                 indices[indicesIndex++] = currentShapeVert1;
                 indices[indicesIndex++] = nextShapeVert1;
-            }
-        }
-
-        // HACK: Need to undo PrimitiveProceduralModelBase's local space Scale
-        if (!Scale.Equals(Vector3.One))
-        {
-            var invScale = new Vector3
-            {
-                X = Scale.X == 0 ? 1 : 1f / Scale.X,
-                Y = Scale.Y == 0 ? 1 : 1f / Scale.Y,
-                Z = Scale.Z == 0 ? 1 : 1f / Scale.Z,
-            };
-            for (int i = 0; i < vertices.Length; i++)
-            {
-                vertices[i].Position *= invScale;
             }
         }
 

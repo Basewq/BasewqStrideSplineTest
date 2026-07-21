@@ -32,7 +32,10 @@ public class SplineMeshShape : SplineMesh
         var splineSamples = new List<SplineSample>();
         SplineExtensions.CollectSplineSamples(SplineEvaluator, MeshSamplingSettings, splineSamples);
         var splineSamplesSpan = CollectionsMarshal.AsSpan(splineSamples);
-        var shapeProfileVertices = BuildProfileVertices(ShapeSplineComponent.Spline, ShapeSplineComponent.SplineEvaluator, ShapeSamplingSettings, ShapeProfilePlane, ShapeProfileFlipAxis, ShapeProfileInvertNormals);
+        var shapeProfileVertices = BuildProfileVertices(
+            ShapeSplineComponent.Spline, ShapeSplineComponent.SplineEvaluator, ShapeSamplingSettings,
+            ShapeProfilePlane, ShapeProfileFlipAxis,
+            ShapeProfileInvertNormals, MeshScale);
 
         int splineSamplesCount = splineSamplesSpan.Length;
         int shapeProfileVerticesCount = shapeProfileVertices.Length;
@@ -99,21 +102,6 @@ public class SplineMeshShape : SplineMesh
                 indices[indicesIndex++] = currentShapeVert0;
                 indices[indicesIndex++] = currentShapeVert1;
                 indices[indicesIndex++] = nextShapeVert1;
-            }
-        }
-
-        // HACK: Need to undo PrimitiveProceduralModelBase's local space Scale
-        if (!Scale.Equals(Vector3.One))
-        {
-            var invScale = new Vector3
-            {
-                X = Scale.X == 0 ? 1 : 1f / Scale.X,
-                Y = Scale.Y == 0 ? 1 : 1f / Scale.Y,
-                Z = Scale.Z == 0 ? 1 : 1f / Scale.Z,
-            };
-            for (int i = 0; i < vertices.Length; i++)
-            {
-                vertices[i].Position *= invScale;
             }
         }
 

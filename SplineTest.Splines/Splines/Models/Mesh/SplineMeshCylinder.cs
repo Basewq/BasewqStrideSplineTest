@@ -26,12 +26,12 @@ public class SplineMeshCylinder : SplineMesh
     {
         return CreateCylinder(
             SplineEvaluator, MeshSamplingSettings,
-            Sides, Radius, CloseEnds, Scale, UvScale);
+            Sides, Radius, CloseEnds, MeshScale, UvScale);
     }
 
     public static GeometricMeshData<VertexPositionNormalTexture> CreateCylinder(
         ISplineEvaluator splineEvaluator, SplineSamplingSettings meshSamplingSettings,
-        int sides, float radius, bool CloseEnds, Vector3 scale, Vector2 uvScale)
+        int sides, float radius, bool CloseEnds, Vector2 meshScale, Vector2 uvScale)
     {
         var splineSamples = new List<SplineSample>();
         SplineExtensions.CollectSplineSamples(splineEvaluator, meshSamplingSettings, splineSamples);
@@ -53,18 +53,26 @@ public class SplineMeshCylinder : SplineMesh
         }
 
         var shapeProfileVertices = new ProfileVertex[ringVertexCount];
-        float radiusX = radius * scale.X;
-        float radiusY = radius * scale.Y;
         for (int i = 0; i < ringVertexCount; i++)
         {
             float circleT = i / (float)sides;       // Sides = ringVertexCount - 1
             float angle = circleT * MathUtil.TwoPi;
-            float offsetX = -MathF.Cos(angle) * radiusX;    // Start on (-1, 0) then go clockwise
-            float offsetY = MathF.Sin(angle) * radiusY;
+            float offsetX = -MathF.Cos(angle) * radius;     // Start on (-1, 0) then go clockwise
+            float offsetY = MathF.Sin(angle) * radius;
 
             var position = new Vector3(offsetX, offsetY, 0);
             var normal = Vector3.Normalize(position);
             shapeProfileVertices[i] = new ProfileVertex { Position = position, Normal = normal, ProfileT = circleT };
+        }
+        if (meshScale != Vector2.One)
+        {
+            var scale3d = new Vector3(meshScale, 1);
+            var inverseScaleMatrix = Matrix.Invert(Matrix.Scaling(scale3d));
+            for (int i = 0; i < shapeProfileVertices.Length; i++)
+            {
+                shapeProfileVertices[i].Position *= scale3d;
+                Vector3.TransformCoordinate(in shapeProfileVertices[i].Normal, in inverseScaleMatrix, out shapeProfileVertices[i].Normal);
+            }
         }
 
         var vertices = new VertexPositionNormalTexture[vertexCount];
@@ -128,21 +136,6 @@ public class SplineMeshCylinder : SplineMesh
         if (CloseEnds && !spline.IsClosedLoop)
         {
             CloseCylinderEnds(sides, splineSamplesSpan, vertices, indices, ref indicesIndex);
-        }
-
-        // HACK: Need to undo PrimitiveProceduralModelBase's local space Scale
-        if (!scale.Equals(Vector3.One))
-        {
-            var invScale = new Vector3
-            {
-                X = scale.X == 0 ? 1 : 1f / scale.X,
-                Y = scale.Y == 0 ? 1 : 1f / scale.Y,
-                Z = scale.Z == 0 ? 1 : 1f / scale.Z,
-            };
-            for (int i = 0; i < vertices.Length; i++)
-            {
-                vertices[i].Position *= invScale;
-            }
         }
 
         return new GeometricMeshData<VertexPositionNormalTexture>(vertices, indices, isLeftHanded: false);
